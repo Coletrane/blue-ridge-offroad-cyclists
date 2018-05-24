@@ -1,0 +1,41 @@
+{
+  "name": "rimba-member-manager",
+  "version": "0.1.0",
+  "description": "Database, and UI for managing memberships for Roanoke IMBA ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coletrane/rimba-member-manager.git"
+  },
+  "keywords": [
+    "react",
+    "next",
+    "serverless",
+    "lambda",
+    "dynamodb"
+  ],
+  "author": "Cole Inman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Coletrane/rimba-member-manager/issues"
+  },
+  "homepage": "https://github.com/Coletrane/rimba-member-manager#readme",
+  "dependencies": {
+    "aws-sdk": "^2.245.1",
+    "axios": "^0.18.0",
+    "dotenv": "^5.0.1",
+    "next": "^6.0.3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^5.2.0",
+    "serverless-dynamodb-local": "^0.2.30",
+    "serverless-offline": "^3.23.1",
+    "standard": "^11.0.1"
+  }
+}
