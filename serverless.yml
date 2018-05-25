@@ -1,0 +1,138 @@
+service: rimba-member-manager
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  environment:
+    USERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-USERS
+    DONATIONS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-DONTATIONS
+    
+functions:
+  create:
+    handler: lambda/users/create.create
+    events:
+      - http:
+          path: lambda/users
+          method: post
+          cors: true
+
+  list:
+    handler: lambda/users/list.list
+    events:
+      - http:
+          path: lambda/users
+          method: get
+          cors: true
+
+  get:
+    handler: lambda/users/get.get
+    events:
+      - http:
+          path: lambda/users/{id}
+          method: get
+          cors: true
+
+  update:
+    handler: lambda/users/update.update
+    events:
+      - http:
+          path: lambda/users/{id}
+          method: put
+          cors: true
+
+  delete:
+    handler: lambda/users/delete.delete
+    events:
+      - http:
+          path: lambda/users/{id}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    UsersDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: N
+          -
+            AttributeName: email
+            AttributeType: S
+          -
+            AttributeName: name
+            AttributeType: S
+          -
+            AttributeName: address
+            AttributeType: S
+          -
+            AttributeName: phoneNumber
+            AttributeType: N
+          -
+            AttributeName: birthday
+            AttributeType: S
+          -
+            AttributeName: noEmail
+            AttributeType: BOOL
+          -
+            AttributeName: isMember
+            AttributeType: BOOL
+          -
+            AttributeName: autoRenew
+            AttributeType: BOOL
+          -
+            AttributeName: memberUntil
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.USERS_TABLE}
+    DonationsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+        -
+          AttributeName: id
+          AttributeType: N
+        -
+          AttributeName: userId
+          AttributeType: N
+        -
+          AttributeName: amount
+          AttributeType: N
+        -
+          AttributeName: date
+          AttributeType: S
+        -
+          AttributeName: payMethod
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      TableName: ${self:provider.environment.DONATIONS_TABLE}

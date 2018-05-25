@@ -1,5 +1,4 @@
-const { createServer } = require('http')
-const { parse } = require('url')
+const express = require('express')
 const next = require('next')
 
 const port = parseInt(process.env.PORT, 10) || 3000
@@ -9,9 +8,11 @@ const handle = app.getRequestHandler()
 
 app.prepare()
   .then(() => {
-    createServer((req, res) => {
-        handle(req, res, parsedUrl)
-    }).listen(port, (err) => {
+    const server = express()
+
+    // Put in api calls here if needed
+
+    server.listen(port, (err) => {
         if (err) throw err
         console.log(`> Ready on http://localhost:${port}`)
       })
