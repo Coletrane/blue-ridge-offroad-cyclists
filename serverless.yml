@@ -19,12 +19,12 @@ provider:
   name: aws
   runtime: nodejs8.10
   environment:
-    USERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-USERS
-    DONATIONS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-DONTATIONS
+    USERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-users
+    DONATIONS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-donations
     
 functions:
   create:
-    handler: lambda/users/create.create
+    handler: lambda/users/create
     events:
       - http:
           path: lambda/users
@@ -32,7 +32,7 @@ functions:
           cors: true
 
   list:
-    handler: lambda/users/list.list
+    handler: lambda/users/list
     events:
       - http:
           path: lambda/users
@@ -40,7 +40,7 @@ functions:
           cors: true
 
   get:
-    handler: lambda/users/get.get
+    handler: lambda/users/get
     events:
       - http:
           path: lambda/users/{id}
@@ -48,7 +48,7 @@ functions:
           cors: true
 
   update:
-    handler: lambda/users/update.update
+    handler: lambda/users/update
     events:
       - http:
           path: lambda/users/{id}
@@ -56,7 +56,7 @@ functions:
           cors: true
 
   delete:
-    handler: lambda/users/delete.delete
+    handler: lambda/users/delete
     events:
       - http:
           path: lambda/users/{id}
@@ -65,41 +65,15 @@ functions:
 
 resources:
   Resources:
-    UsersDynamoDbTable:
+    UsersTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
+        TableName: ${self:provider.environment.USERS_TABLE}
         AttributeDefinitions:
           -
             AttributeName: id
             AttributeType: N
-          -
-            AttributeName: email
-            AttributeType: S
-          -
-            AttributeName: name
-            AttributeType: S
-          -
-            AttributeName: address
-            AttributeType: S
-          -
-            AttributeName: phoneNumber
-            AttributeType: N
-          -
-            AttributeName: birthday
-            AttributeType: S
-          -
-            AttributeName: noEmail
-            AttributeType: B
-          -
-            AttributeName: isMember
-            AttributeType: B
-          -
-            AttributeName: autoRenew
-            AttributeType: B
-          -
-            AttributeName: memberUntil
-            AttributeType: S
         KeySchema:
           -
             AttributeName: id
@@ -107,32 +81,19 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.USERS_TABLE}
-    DonationsDynamoDbTable:
+    DontationsTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
+        TableName: ${self:provider.environment.DONATIONS_TABLE}
         AttributeDefinitions:
         -
           AttributeName: id
           AttributeType: N
-        -
-          AttributeName: userId
-          AttributeType: N
-        -
-          AttributeName: amount
-          AttributeType: N
-        -
-          AttributeName: date
-          AttributeType: S
-        -
-          AttributeName: payMethod
-          AttributeType: S
-      KeySchema:
+        KeySchema:
         -
           AttributeName: id
           KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-      TableName: ${self:provider.environment.DONATIONS_TABLE}
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

@@ -33,14 +33,41 @@ const requiredFields = [
   }
 ]
 
-module.exports.create = (event, context, callback) => {
+// FIXME: just here for documentation
+const optionalFields = [
+  {
+    field: 'phoneNumber',
+    type: 'number'
+  },
+  {
+    field: 'noEmail',
+    type: 'boolean',
+    default: false
+  },
+  {
+    field: 'isMember',
+    type: 'boolean',
+    default: false
+  },
+  {
+    field: 'autoRenew',
+    type: 'boolean',
+    default: true
+  },
+  {
+    field: 'memberUntil',
+    type: 'string'
+  }
+]
+
+module.exports = (event, context, callback) => {
   const timestamp = moment().utc().toISOString()
-  const data = JSON.parse(event.data)
+  const reqBody = JSON.parse(event.data)
 
   // Check event data against required types
   requiredFields.forEach(obj => {
-    if (typeof data[obj.field] !== obj.type) {
-      const errString = `Validation failed ${data[obj.field]} is not a ${obj.type}`
+    if (!reqBody[obj.field] || typeof reqBody[obj.field] !== obj.type) {
+      const errString = `Validation failed ${reqBody[obj.field]} is not a ${obj.type}`
       console.error(errString)
       callback(null, {
         statusCode: 400,
@@ -51,8 +78,8 @@ module.exports.create = (event, context, callback) => {
   })
 
   // Verify birthday is a valid ISO String
-  if (!moment(data.birthday).isValid()) {
-    const errString = `${data.birthday} is not a valid ISO string!`
+  if (!moment(reqBody.birthday).isValid()) {
+    const errString = `${reqBody.birthday} is not a valid ISO string!`
     console.error((errString))
     callback(null, {
       statusCode: 400,
@@ -68,13 +95,21 @@ module.exports.create = (event, context, callback) => {
     TableName: process.env.USERS_TABLE,
     Item: {
       id: uuid.v1(),
-      email: data.email,
-      name: data.name,
+      email: reqBody.email,
+      name: reqBody.name,
       // TODO: sanitize commas on the front end
-      address: `${data.street}, ${data.city}, ${data.zip}`,
-      birthday: data.birthday
+      address: `${reqBody.street}, ${reqBody.city}, ${reqBody.zip}`,
+      birthday: reqBody.birthday,
+      phoneNumber: reqBody.phoneNumber,
+      noEmail: reqBody.noEmail || false,
+      isMember: reqBody.isMember || false,
+      autoRenew: reqBody.autoRenew || false,
+      memberUntil: reqBody.memberUntil,
+      dateCreated: timestamp,
+      dateUpdated: timestamp
     }
   }
+
   // Write to DB
   db.put(params, (err, user) => {
     if (err) {
@@ -82,14 +117,14 @@ module.exports.create = (event, context, callback) => {
       callback(null, {
         statusCode: error.statusCode || 500,
         headers: { 'Content-Type': 'text/plain' },
-        body: `DB error creating user: ${JSON.stringify(data)}`,
+        body: `DB error creating user: ${JSON.stringify(reqBody)}`,
       })
       return
     }
 
     const res = {
       statusCode: 200,
-      body: JSON.stringify(data)
+      body: JSON.stringify(user)
     }
     callback(null, res)
   })
