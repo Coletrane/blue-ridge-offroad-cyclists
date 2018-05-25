@@ -90,13 +90,13 @@ resources:
             AttributeType: S
           -
             AttributeName: noEmail
-            AttributeType: BOOL
+            AttributeType: B
           -
             AttributeName: isMember
-            AttributeType: BOOL
+            AttributeType: B
           -
             AttributeName: autoRenew
-            AttributeType: BOOL
+            AttributeType: B
           -
             AttributeName: memberUntil
             AttributeType: S
