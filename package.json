@@ -27,8 +27,11 @@
   },
   "homepage": "https://github.com/Coletrane/rimba-member-manager#readme",
   "dependencies": {
+    "aws-amplify": "^0.4.1",
     "aws-sdk": "^2.245.1",
+    "aws-serverless-express": "^3.2.0",
     "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "moment": "^2.22.1",
