@@ -65,22 +65,6 @@ functions:
 
 resources:
   Resources:
-    UsersTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        TableName: ${self:provider.environment.USERS_TABLE}
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: N
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
     DontationsTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain

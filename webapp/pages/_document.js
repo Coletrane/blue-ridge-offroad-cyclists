@@ -6,9 +6,6 @@ export default class RIMBADocument extends Document {
     return (
       <html lang="en">
         <Head>
-          <title>
-            RIMBA Member Manager
-          </title>
             <meta charSet="utf-8"/>
             <meta name="viewport"
                   content="initial-scale=1.0, width=device-width"/>

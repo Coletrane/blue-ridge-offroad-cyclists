@@ -27,25 +27,37 @@
   },
   "homepage": "https://github.com/Coletrane/rimba-member-manager#readme",
   "dependencies": {
-    "aws-amplify": "^0.4.1",
-    "aws-sdk": "^2.245.1",
+    "@material-ui/core": "^1.3.0",
+    "amazon-cognito-auth-js": "^1.2.3",
+    "aws-sdk": "^2.263.1",
     "aws-serverless-express": "^3.2.0",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
-    "moment": "^2.22.1",
+    "moment": "^2.22.2",
     "next": "^6.0.3",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "prop-types": "^15.6.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-redux": "^5.0.7"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "eslint": "^4.0.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-react": "^7.10.0",
+    "eslint-plugin-standard": "^3.1.0",
     "mocha": "^5.2.0",
+    "prettier": "^1.13.6",
+    "redux": "^4.0.0",
     "serverless-dynamodb-local": "^0.2.30",
-    "serverless-offline": "^3.23.1",
+    "serverless-offline": "^3.25.4",
     "standard": "^11.0.1"
+  },
+  "prettier": {
+    "semi": false
   }
 }
