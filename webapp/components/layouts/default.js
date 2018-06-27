@@ -1,6 +1,11 @@
 import React from "react"
 import Link from "next/link"
 import Head from "next/head"
+import AppBar from "@material-ui/core/AppBar"
+import Toolbar from "@material-ui/core/Toolbar"
+import Button from "@material-ui/core/Button"
+import IconButton from "@material-ui/core/IconButton"
+import MenuIcon from "@material-ui/icons/Menu"
 
 import PropTypes from "prop-types"
 
@@ -22,12 +27,13 @@ export default class DefaultLayout extends React.Component {
     const notLoggedIn = false
     if (notLoggedIn) {
       text = "Login"
-      loginLogoutFn = ""
     } else {
       text = "Logout"
     }
 
-    return <Link href={loginLogoutFn}>{text}</Link>
+    return {
+      text: text
+    }
   }
 
   render() {
@@ -36,18 +42,21 @@ export default class DefaultLayout extends React.Component {
         <Head>
           <title>{this.props.title}</title>
         </Head>
-        <header>
-          <nav>
-            <Link href="/">
-              <a>Home</a>
-            </Link>{" "}
-            |
-            {this.loginButton}
-          </nav>
-        </header>
-
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="Menu"
+            >
+              <MenuIcon />
+            </IconButton>
+            Roanoke IMBA
+            <Button color="inherit" onClick={DefaultLayout.loginButton.fn}>
+              {DefaultLayout.loginButton.text}
+            </Button>
+          </Toolbar>
+        </AppBar>
         {this.props.children}
-
         <footer>
           Copyright 2018 Cole Inman
           <Link href={githubUrl}>GitHub</Link>

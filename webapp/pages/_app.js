@@ -1,27 +1,25 @@
-import App, {Container} from 'next/app'
-import React from 'react'
-import Amplify from 'aws-amplify'
+import App, { Container } from "next/app"
+import React from "react"
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-Amplify.configure({
-  userPoolId: 'us-east-1_X7spDXoVy',
-  region: 'us-east-1',
-
-})
 export default class MyApp extends App {
-  static async getInitialProps ({ Component, router, ctx }) {
+  static async getInitialProps({ Component, router, ctx }) {
     let pageProps = {}
 
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
     }
 
-    return {pageProps}
+    return { pageProps }
   }
 
-  render () {
-    const {Component, pageProps} = this.props
-    return <Container>
-      <Component {...pageProps} />
-    </Container>
+  render() {
+    const { Component, pageProps } = this.props
+    return (
+      <Container>
+        <CssBaseline/>
+        <Component {...pageProps} />
+      </Container>
+    )
   }
 }

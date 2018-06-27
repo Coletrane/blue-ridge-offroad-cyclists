@@ -1,77 +1,81 @@
-const uuid = require('uuid')
-const db = require('./dynamodb')
-const moment = require('moment')
-const axios = require('axios')
-require('dotenv').config()
+const uuid = require("uuid")
+const db = require("./dynamodb")
+const moment = require("moment")
+const axios = require("axios")
+require("dotenv").config()
 
 addressVerificationApiUrl = ``
 
 const requiredFields = [
   {
-    field: 'email',
-    type: 'string'
+    field: "email",
+    type: "string"
   },
   {
-    field: 'name',
-    type: 'string'
+    field: "name",
+    type: "string"
   },
   {
-    field: 'street',
-    type: 'string'
+    field: "street",
+    type: "string"
   },
   {
-    field: 'city',
-    type: 'string'
+    field: "city",
+    type: "string"
   },
   {
-    field: 'zip',
-    type: 'number'
+    field: "zip",
+    type: "number"
   },
   {
-    field: 'birthday',
-    type: 'string'    // UTC ISO string
+    field: "birthday",
+    type: "string" // UTC ISO string
   }
 ]
 
 // FIXME: just here for documentation
 const optionalFields = [
   {
-    field: 'phoneNumber',
-    type: 'number'
+    field: "phoneNumber",
+    type: "number"
   },
   {
-    field: 'noEmail',
-    type: 'boolean',
+    field: "noEmail",
+    type: "boolean",
     default: false
   },
   {
-    field: 'isMember',
-    type: 'boolean',
+    field: "isMember",
+    type: "boolean",
     default: false
   },
   {
-    field: 'autoRenew',
-    type: 'boolean',
+    field: "autoRenew",
+    type: "boolean",
     default: true
   },
   {
-    field: 'memberUntil',
-    type: 'string'
+    field: "memberUntil",
+    type: "string"
   }
 ]
 
 module.exports = (event, context, callback) => {
-  const timestamp = moment().utc().toISOString()
+  const timestamp = moment()
+    .utc()
+    .toISOString()
   const reqBody = JSON.parse(event.data)
 
   // Check event data against required types
   requiredFields.forEach(obj => {
     if (!reqBody[obj.field] || typeof reqBody[obj.field] !== obj.type) {
-      const errString = `Validation failed ${reqBody[obj.field]} is not a ${obj.type}`
+      const errString = `Validation failed ${reqBody[obj.field]} is not a ${
+        obj.type
+      }`
       console.error(errString)
       callback(null, {
         statusCode: 400,
-        headers: {'Content-Type': 'text/plain'},
+        headers: { "Content-Type": "text/plain" },
         body: errString
       })
     }
@@ -80,16 +84,15 @@ module.exports = (event, context, callback) => {
   // Verify birthday is a valid ISO String
   if (!moment(reqBody.birthday).isValid()) {
     const errString = `${reqBody.birthday} is not a valid ISO string!`
-    console.error((errString))
+    console.error(errString)
     callback(null, {
       statusCode: 400,
-      headers: {'Content-Type': 'text/plain'},
+      headers: { "Content-Type": "text/plain" },
       body: errString
     })
   }
 
   // TODO: verify address
-
 
   const params = {
     TableName: process.env.USERS_TABLE,
@@ -116,8 +119,8 @@ module.exports = (event, context, callback) => {
       console.error(err)
       callback(null, {
         statusCode: error.statusCode || 500,
-        headers: { 'Content-Type': 'text/plain' },
-        body: `DB error creating user: ${JSON.stringify(reqBody)}`,
+        headers: { "Content-Type": "text/plain" },
+        body: `DB error creating user: ${JSON.stringify(reqBody)}`
       })
       return
     }
