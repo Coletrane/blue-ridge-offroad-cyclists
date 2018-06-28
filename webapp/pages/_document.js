@@ -23,11 +23,14 @@ export default class RIMBADocument extends Document {
           />
           <meta
             name="description"
-            content="Member login and management for board members of the Roanoke chapter of the International Mountain Biking Association"
+            content="Member login and management for members of the Roanoke chapter of the International Mountain Biking Association"
+          />
+          <link
+            href="https://fonts.googleapis.com/css?family=Exo+2:700|IBM+Plex+Mono"
+            rel="stylesheet"
           />
           {this.props.styleTags}
         </Head>
-
         <Body>
           <Main />
           <NextScript />
@@ -40,4 +43,17 @@ export default class RIMBADocument extends Document {
 const Body = styled.body`
   margin: 0;
   background-color: black;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Exo 2", sans-serif;
+  }
+
+  p {
+    font-family: "IBM Plex Mono", monospace;
+  }
 `

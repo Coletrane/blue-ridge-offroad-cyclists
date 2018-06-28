@@ -1,25 +1,32 @@
 import App, { Container } from "next/app"
 import React from "react"
-import CssBaseline from '@material-ui/core/CssBaseline';
+import CssBaseline from "@material-ui/core/CssBaseline"
 
-export default class MyApp extends App {
-  static async getInitialProps({ Component, router, ctx }) {
-    let pageProps = {}
+import withReduxStore from '../store/with-redux-store'
+import { Provider } from "react-redux"
 
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx)
-    }
-
-    return { pageProps }
-  }
+class MyApp extends App {
+  // static async getInitialProps({ Component, router, ctx }) {
+  //   let pageProps = {}
+  //
+  //   if (Component.getInitialProps) {
+  //     pageProps = await Component.getInitialProps(ctx)
+  //   }
+  //
+  //   return { pageProps }
+  // }
 
   render() {
-    const { Component, pageProps } = this.props
+    const { Component, pageProps, reduxStore } = this.props
     return (
       <Container>
-        <CssBaseline/>
-        <Component {...pageProps} />
+        <CssBaseline />
+        <Provider store={reduxStore}>
+          <Component {...pageProps} />
+        </Provider>
       </Container>
     )
   }
 }
+
+export default withReduxStore(MyApp)
