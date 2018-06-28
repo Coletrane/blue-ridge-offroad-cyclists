@@ -10,9 +10,13 @@ import MenuIcon from "@material-ui/icons/Menu"
 import styled from "styled-components"
 import PropTypes from "prop-types"
 
-import { githubUrl } from "../../../consants"
+import { connect } from "react-redux"
+import { logout } from "../../store/auth"
+import { githubUrl } from "../../../constants"
 
-export default class DefaultLayout extends React.Component {
+const mapStateToProps = state => ({ ...state.auth })
+
+class DefaultLayout extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     children: PropTypes.element
@@ -21,19 +25,47 @@ export default class DefaultLayout extends React.Component {
     title: "Roanoke International Mountain Biking Association"
   }
 
-  static get loginButton() {
-    let text
-    // let loginLogoutFn
-
-    const notLoggedIn = false
-    if (notLoggedIn) {
-      text = "Login"
-    } else {
-      text = "Logout"
+  constructor(props) {
+    super(props)
+    this.state = {
+      loginWindowOpen: false
     }
+  }
 
-    return {
-      text: text
+  logout() {
+    const { dispatch } = this.props
+    dispatch(logout)
+  }
+
+  openLoginWindow() {
+    this.setState({
+      loginWindowOpen: true
+    })
+  }
+  closeLoginWindow() {
+    this.setState({
+      loginWindowOpen: false
+    })
+  }
+
+  get loginButton() {
+    if (this.props.loggedIn) {
+      return (
+        <Button color="inherit" onClick={this.logout()}>
+          <h3>Logout</h3>
+        </Button>
+      )
+    } else {
+      return (
+        <div>
+          <Button color="inherit">
+            <h3>Register</h3>
+          </Button>
+          <Button color="inherit">
+            <h3>Login</h3>
+          </Button>
+        </div>
+      )
     }
   }
 
@@ -51,9 +83,7 @@ export default class DefaultLayout extends React.Component {
               </IconButton>
             </MenuButton>
             <Title>Roanoke IMBA</Title>
-            <Button color="inherit">
-              <h2>{DefaultLayout.loginButton.text}</h2>
-            </Button>
+            {this.loginButton}
           </Toolbar>
         </AppBar>
         {this.props.children}
@@ -77,3 +107,5 @@ const MenuButton = styled.div`
 const Title = styled.h1`
   flex: 1;
 `
+
+export default connect(mapStateToProps)(DefaultLayout)
