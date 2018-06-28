@@ -7,11 +7,20 @@
       "modules": true
     }
   },
+  "env": {
+    "es6": true
+  },
   "globals": {
     "document": true,
     "window": true,
     "process": true
   },
   "plugins": ["react"],
-  "extends": ["eslint:recommended", "plugin:react/recommended"]
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "rules": {
+    "react/no-this-in-sfc": "error",
+    "react/no-access-state-in-setstate": "error",
+    "react/no-direct-mutation-state": "error",
+    "class-methods-use-this": "error"
+  }
 }

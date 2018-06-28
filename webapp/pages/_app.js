@@ -6,15 +6,15 @@ import withReduxStore from '../store/with-redux-store'
 import { Provider } from "react-redux"
 
 class MyApp extends App {
-  // static async getInitialProps({ Component, router, ctx }) {
-  //   let pageProps = {}
-  //
-  //   if (Component.getInitialProps) {
-  //     pageProps = await Component.getInitialProps(ctx)
-  //   }
-  //
-  //   return { pageProps }
-  // }
+  static async getInitialProps({ Component, router, ctx }) {
+    let pageProps = {}
+
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx)
+    }
+
+    return { pageProps }
+  }
 
   render() {
     const { Component, pageProps, reduxStore } = this.props

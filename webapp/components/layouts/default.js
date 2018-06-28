@@ -21,7 +21,7 @@ export default class DefaultLayout extends React.Component {
     title: "Roanoke International Mountain Biking Association"
   }
 
-  get loginButton() {
+  static get loginButton() {
     let text
     // let loginLogoutFn
 
@@ -52,7 +52,7 @@ export default class DefaultLayout extends React.Component {
             </MenuButton>
             <Title>Roanoke IMBA</Title>
             <Button color="inherit">
-              <h2>{this.loginButton.text}</h2>
+              <h2>{DefaultLayout.loginButton.text}</h2>
             </Button>
           </Toolbar>
         </AppBar>
