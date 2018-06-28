@@ -1,3 +1,15 @@
+import {
+  CognitoUserPool,
+  CognitoUserAttribute,
+  CognitoUser
+} from "amazon-cognito-identity-js"
+
+
+const userPool = new CognitoUserPool({
+  UserPoolId: process.env.COGNITO_POOL_ID,
+  ClientId: process.env.COGNITO_CLIENT_ID
+})
+
 export const authState = {
   loggedIn: false,
   username: "",
@@ -25,7 +37,7 @@ export const authReducer = (state = authState, action) => {
       return {
         ...state
       }
-    default: return state
+    default:
+      return state
   }
 }
-
