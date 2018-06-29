@@ -16,21 +16,6 @@ export const authActionTypes = {
   REGISTER: "REGISTER",
   LOGOUT: "LOGOUT"
 }
-export const login = dispatch => {
-  return dispatch({
-    type: authActionTypes.LOGIN,
-  })
-}
-export const register = dispatch => {
-  return dispatch({
-    type: authActionTypes.REGISTER
-  })
-}
-export const logout = dispatch => {
-  return dispatch({
-    type: authActionTypes.LOGOUT
-  })
-}
 
 export const authServiceActionTypes = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
