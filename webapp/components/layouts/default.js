@@ -54,11 +54,11 @@ class DefaultLayout extends React.Component {
     }
   }
 
-  openLoginWindow(registering) {
-    this.props.openLoginWindow()
-    this.setState({
+  async openLoginWindow(registering) {
+    await this.setState({
       registering: registering
     })
+    this.props.openLoginWindow()
   }
   closeLoginWindow() {
     this.props.closeLoginWindow()
