@@ -60,7 +60,8 @@ class LoginWindow extends React.Component {
   cancel() {
     this.props.closeLoginWindow()
   }
-  submit() {
+  async submit() {
+    
     this.props.closeLoginWindow()
   }
 
@@ -73,75 +74,6 @@ class LoginWindow extends React.Component {
   }
 
   render() {
-    let form = [
-      <TextField
-        key={0}
-        autoFocus
-        margin="dense"
-        id="email"
-        label="Email Address"
-        type="email"
-        fullWidth
-      />
-    ]
-
-    if (this.props.registering) {
-      form.push(
-        <TextField
-          key={1}
-          margin="dense"
-          id="name"
-          label="Name"
-          type="text"
-          fullWidth
-        />
-      )
-
-      form.push(
-        <TextField
-          key={form.length}
-          margin="dense"
-          id="address"
-          label="Address"
-          type="text"
-          fullWidth
-        />
-      )
-      form.push(
-        <TextField
-          key={form.length}
-          margin="dense"
-          id="city"
-          label="City"
-          type="text"
-        />
-      )
-
-      form.push(
-        <Select
-          key={form.length}
-          value={this.state.state.abbreviation}
-          onChange={event => {
-            this.setState({
-              state: usStates.find(
-                state => state.abbreviation === event.target.value
-              )
-            })
-          }}
-          id="state"
-          label="State"
-        >
-          {usStates.map((state, i) => {
-            return (
-              <MenuItem key={i} value={state.abbreviation}>
-                {state.abbreviation}
-              </MenuItem>
-            )
-          })}
-        </Select>
-      )
-    }
-
     return (
       <Dialog
         open={this.props.loginWindowOpen}
@@ -150,14 +82,104 @@ class LoginWindow extends React.Component {
         <DialogTitle id="form-dialog-title">{this.title}</DialogTitle>
         <DialogContent>
           <DialogContentText />
-          {form}
           <TextField
-            key={form.length}
+            autoFocus
+            margin="dense"
+            id="email"
+            label="Email Address"
+            type="email"
+            fullWidth
+            onChange={event => {
+              this.setState({
+                email: event.target.value
+              })
+            }}
+          />
+          {(() => {
+            if (this.props.registering) {
+              return (
+                <div>
+                  <TextField
+                    margin="dense"
+                    id="name"
+                    label="Name"
+                    type="text"
+                    fullWidth
+                    onChange={event => {
+                      this.setState({
+                        name: event.target.value
+                      })
+                    }}
+                  />
+                  <TextField
+                    margin="dense"
+                    id="address"
+                    label="Address"
+                    type="text"
+                    fullWidth
+                    onChange={event => {
+                      this.setState({
+                        address: event.target.value
+                      })
+                    }}
+                  />
+                  <TextField
+                    margin="dense"
+                    id="city"
+                    label="City"
+                    type="text"
+                    onChange={event => {
+                      this.setState({
+                        city: event.target.value
+                      })
+                    }}
+                  />
+                  <Select
+                    value={this.state.state.abbreviation}
+                    id="state"
+                    label="State"
+                    onChange={event => {
+                      this.setState({
+                        state: usStates.find(
+                          state => state.abbreviation === event.target.value
+                        )
+                      })
+                    }}
+                  >
+                    {usStates.map((state, i) => {
+                      return (
+                        <MenuItem key={i} value={state.abbreviation}>
+                          {state.abbreviation}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                  <TextField
+                    margin="dense"
+                    id="zipCode"
+                    label="Zip Code"
+                    type="number"
+                    onChange={event => {
+                      this.setState({
+                        zipCode: event.target.value
+                      })
+                    }}
+                  />
+                </div>
+              )
+            }
+          })()}
+          <TextField
             margin="dense"
             id="password"
             label="Password"
             type="password"
             fullWidth
+            onChange={event => {
+              this.setState({
+                password: event.target.value
+              })
+            }}
           />
         </DialogContent>
         <DialogActions>

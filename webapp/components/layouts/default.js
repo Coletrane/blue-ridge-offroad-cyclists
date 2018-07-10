@@ -64,26 +64,6 @@ class DefaultLayout extends React.Component {
     this.props.closeLoginWindow()
   }
 
-  get loginButton() {
-    if (this.props.loggedIn) {
-      return (
-        <Button color="inherit" onClick={this.logout()}>
-          <h3>Logout</h3>
-        </Button>
-      )
-    } else {
-      return (
-        <div>
-          <Button color="inherit" onClick={() => this.openLoginWindow(true)}>
-            <h3>Register</h3>
-          </Button>
-          <Button color="inherit" onClick={() => this.openLoginWindow(false)}>
-            <h3>Login</h3>
-          </Button>
-        </div>
-      )
-    }
-  }
   render() {
     return (
       <div>
@@ -98,12 +78,35 @@ class DefaultLayout extends React.Component {
               </IconButton>
             </MenuButton>
             <Title>Roanoke IMBA</Title>
-            {this.loginButton}
+            {(() => {
+              if (this.props.loggedIn) {
+                return (
+                  <Button color="inherit" onClick={this.logout()}>
+                    <h3>Logout</h3>
+                  </Button>
+                )
+              } else {
+                return (
+                  <div>
+                    <Button
+                      color="inherit"
+                      onClick={() => this.openLoginWindow(true)}
+                    >
+                      <h3>Register</h3>
+                    </Button>
+                    <Button
+                      color="inherit"
+                      onClick={() => this.openLoginWindow(false)}
+                    >
+                      <h3>Login</h3>
+                    </Button>
+                  </div>
+                )
+              }
+            })()}
           </Toolbar>
         </AppBar>
-        <LoginWindow
-          registering={this.state.registering}
-        />
+        <LoginWindow registering={this.state.registering} />
         {this.props.children}
         <footer>
           Copyright 2018 Cole Inman
