@@ -1,45 +1,26 @@
-import {
-  CognitoUserPool,
-  CognitoUserAttribute,
-  CognitoUser
-} from "amazon-cognito-identity-js"
+import Amplify, {Auth} from "aws-amplify"
 
-const userPool = new CognitoUserPool({
-  UserPoolId: process.env.COGNITO_POOL_ID,
-  ClientId: process.env.COGNITO_CLIENT_ID
+Amplify.configure({
+  Auth: {
+    userPoolId: process.env.COGNITO_POOL_ID,
+    userPoolWebClientId: process.env.COGNITO_CLIENT_ID,
+    region: 'us-east-1'
+  }
 })
 
 export const register = async user => {
-  console.log(process.env.COGNITO_POOL_ID)
-  console.log(process.env.COGNITO_CLIENT_ID)
-  const attributes = [
-    new CognitoUserAttribute({
-      Name: "name",
-      Value: user.name
-    }),
-    new CognitoUserAttribute({
-      Name: "address",
-      Value: user.address
-    }),
-    new CognitoUserAttribute({
-      Name: "email",
-      Value: user.email
-    })
-  ]
+  const attributes = {
+    name: user.name,
+    address: user.address,
+    email: user.email
+  }
   if (user.phone) {
-    attributes.push(
-      new CognitoUserAttribute({
-        Name: "phone_number",
-        Value: user.phone
-      })
-    )
+    attributes.phone = user.phone
   }
 
-  userPool.signUp(user.email, user.password, attributes, null, (err, data) => {
-    if (err) {
-      return Promise.reject(err)
-    }
-
-    return Promise.resolve(data.user)
+  return Auth.signUp({
+    username: user.email,
+    password: user.password,
+    attributes: attributes
   })
 }

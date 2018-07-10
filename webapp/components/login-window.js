@@ -60,42 +60,39 @@ class LoginWindow extends React.Component {
     this.props.closeLoginWindow()
   }
 
-  inputsAreValid() {
+  updateErrors(callback) {
     const newState = {
-      emailError: !isEmail(this.state.email),
+      emailError: !isEmail(this.state.email || ' '),
       passwordError: this.state.password.length < 8, // TODO: regex
-      nameError: this.state.name.split(" ").length === 1,
+      nameError: this.state.name.split(" ").length < 2,
       addressError: !this.state.address,
       cityError: !this.state.city,
-      zipCodeError: !this.state.zipCode && !isPostalCode(this.state.zipCode, 'US')
+      zipCodeError: !isPostalCode(this.state.zipCode || ' ', "US")
     }
-    this.setState(newState, () => {
-      if (
-        !this.state.emailError ||
-        !this.state.passwordError ||
-        !this.state.nameError ||
-        !this.state.addressError ||
-        !this.state.zipCodeError
-      ) {
-        return true
-      }
-    })
+
+    this.setState(newState, callback)
   }
 
   submit() {
-    if (this.inputsAreValid()) {
-      if (this.props.registering) {
+    this.updateErrors(() => {
+      if (
+        this.props.registering &&
+        !this.state.emailError &&
+        !this.state.passwordError &&
+        !this.state.nameError &&
+        !this.state.addressError &&
+        !this.state.zipCodeError
+      ) {
         this.props.register({
           email: this.state.email,
           password: this.state.password,
           name: this.state.name,
           address: `${this.state.address} ${this.state.city} ${
             this.state.state.abbreviation
-          } ${this.state.zipCode}`
+            } ${this.state.zipCode}`
         })
       }
-      this.props.closeLoginWindow()
-    }
+    })
   }
 
   get title() {

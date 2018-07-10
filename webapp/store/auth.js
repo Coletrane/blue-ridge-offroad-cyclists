@@ -32,10 +32,10 @@ export const registerAction = user => async dispatch => {
 
   try {
     const registeredUser = await register(user)
-    dispatch({
-      type: _authActionTypes.REGISTER_SUCCESS,
-      payload: registeredUser
-    })
+      dispatch({
+        type: _authActionTypes.REGISTER_SUCCESS,
+        payload: registeredUser
+      })
   } catch (err) {
     dispatch({
       type: _authActionTypes.REGISTER_FAIL

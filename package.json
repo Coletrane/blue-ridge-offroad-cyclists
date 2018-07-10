@@ -31,6 +31,7 @@
     "@material-ui/icons": "^1.1.0",
     "amazon-cognito-auth-js": "^1.2.3",
     "amazon-cognito-identity-js": "^2.0.12",
+    "aws-amplify": "^0.4.8",
     "aws-sdk": "^2.265.1",
     "aws-serverless-express": "^3.2.0",
     "axios": "^0.18.0",
