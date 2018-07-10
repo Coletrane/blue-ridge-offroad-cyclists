@@ -14,10 +14,13 @@ import styled from "styled-components"
 import PropTypes from "prop-types"
 
 import { connect } from "react-redux"
-import { authActionTypes } from "../store/auth"
+import { registerAction } from "../store/auth"
 import { viewActionTypes } from "../store/view"
 
 import usStates from "../src/util/state-codes.json"
+
+import isEmail from "validator/lib/isEmail"
+import isPostalCode from "validator/lib/isPostalCode"
 
 const mapStateToProps = state => ({
   ...state.auth,
@@ -25,18 +28,14 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  register: () =>
-    dispatch({
-      type: authActionTypes.REGISTER
-    }),
-  login: () =>
-    dispatch({
-      type: authActionTypes.LOGIN
-    }),
-  closeLoginWindow: () =>
+  register: user => {
+    dispatch(registerAction(user))
+  },
+  closeLoginWindow: () => {
     dispatch({
       type: viewActionTypes.CLOSE_LOGIN_WINDOW
     })
+  }
 })
 
 class LoginWindow extends React.Component {
@@ -53,16 +52,50 @@ class LoginWindow extends React.Component {
       address: "",
       city: "",
       state: usStates[0],
-      zipCode: -1
+      zipCode: ""
     }
   }
 
   cancel() {
     this.props.closeLoginWindow()
   }
-  async submit() {
-    
-    this.props.closeLoginWindow()
+
+  inputsAreValid() {
+    const newState = {
+      emailError: !isEmail(this.state.email),
+      passwordError: this.state.password.length < 8, // TODO: regex
+      nameError: this.state.name.split(" ").length === 1,
+      addressError: !this.state.address,
+      cityError: !this.state.city,
+      zipCodeError: !this.state.zipCode && !isPostalCode(this.state.zipCode, 'US')
+    }
+    this.setState(newState, () => {
+      if (
+        !this.state.emailError ||
+        !this.state.passwordError ||
+        !this.state.nameError ||
+        !this.state.addressError ||
+        !this.state.zipCodeError
+      ) {
+        return true
+      }
+    })
+  }
+
+  submit() {
+    if (this.inputsAreValid()) {
+      if (this.props.registering) {
+        this.props.register({
+          email: this.state.email,
+          password: this.state.password,
+          name: this.state.name,
+          address: `${this.state.address} ${this.state.city} ${
+            this.state.state.abbreviation
+          } ${this.state.zipCode}`
+        })
+      }
+      this.props.closeLoginWindow()
+    }
   }
 
   get title() {
@@ -89,6 +122,7 @@ class LoginWindow extends React.Component {
             label="Email Address"
             type="email"
             fullWidth
+            error={this.state.emailError}
             onChange={event => {
               this.setState({
                 email: event.target.value
@@ -105,6 +139,7 @@ class LoginWindow extends React.Component {
                     label="Name"
                     type="text"
                     fullWidth
+                    error={this.state.nameError}
                     onChange={event => {
                       this.setState({
                         name: event.target.value
@@ -117,6 +152,7 @@ class LoginWindow extends React.Component {
                     label="Address"
                     type="text"
                     fullWidth
+                    error={this.state.addressError}
                     onChange={event => {
                       this.setState({
                         address: event.target.value
@@ -128,6 +164,7 @@ class LoginWindow extends React.Component {
                     id="city"
                     label="City"
                     type="text"
+                    error={this.state.cityError}
                     onChange={event => {
                       this.setState({
                         city: event.target.value
@@ -158,7 +195,8 @@ class LoginWindow extends React.Component {
                     margin="dense"
                     id="zipCode"
                     label="Zip Code"
-                    type="number"
+                    type="text"
+                    error={this.state.zipCodeError}
                     onChange={event => {
                       this.setState({
                         zipCode: event.target.value
@@ -175,6 +213,7 @@ class LoginWindow extends React.Component {
             label="Password"
             type="password"
             fullWidth
+            error={this.state.passwordError}
             onChange={event => {
               this.setState({
                 password: event.target.value

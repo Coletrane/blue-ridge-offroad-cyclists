@@ -1,3 +1,5 @@
+import {register} from "../services/auth-service"
+
 export const authState = {
   loading: false,
   loggedIn: false,
@@ -8,7 +10,7 @@ export const authState = {
     name: "",
     address: ""
   },
-  role: ""
+  // role: ""
 }
 
 export const authActionTypes = {
@@ -16,13 +18,32 @@ export const authActionTypes = {
   REGISTER: "REGISTER",
   LOGOUT: "LOGOUT"
 }
-
-export const authServiceActionTypes = {
+const _authActionTypes = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
   LOGIN_FAIL: "LOGIN_FAIL",
   REGISTER_SUCCESS: "REGISTER_SUCCESS",
   REGISTER_FAIL: "REGISTER_FAIL"
 }
+
+export const registerAction = user => async dispatch => {
+  dispatch({
+    type: authActionTypes.REGISTER
+  })
+
+  try {
+    const registeredUser = await register(user)
+    dispatch({
+      type: _authActionTypes.REGISTER_SUCCESS,
+      payload: registeredUser
+    })
+  } catch (err) {
+    dispatch({
+      type: _authActionTypes.REGISTER_FAIL
+    })
+  }
+}
+
+
 
 export const authReducer = (state = authState, action) => {
   switch (action.type) {
@@ -31,15 +52,14 @@ export const authReducer = (state = authState, action) => {
         ...state,
         loading: true
       }
-    case authServiceActionTypes.LOGIN_SUCCESS:
+    case _authActionTypes.LOGIN_SUCCESS:
       return {
         ...state,
         loading: false,
         loggedIn: true,
-        email: action.payload.email,
-        role: action.payload.role
+        user: action.payload,
       }
-    case authServiceActionTypes.LOGIN_FAIL:
+    case _authActionTypes.LOGIN_FAIL:
       return {
         ...state,
         loading: false,
@@ -50,15 +70,14 @@ export const authReducer = (state = authState, action) => {
         ...state,
         loading: true
       }
-    case authServiceActionTypes.REGISTER_SUCCESS:
+    case _authActionTypes.REGISTER_SUCCESS:
       return {
         ...state,
         loading: false,
         loggedIn: true,
-        email: action.payload.email,
-        role: action.payload.role
+        user: action.payload,
       }
-    case authServiceActionTypes.REGISTER_FAIL:
+    case _authActionTypes.REGISTER_FAIL:
       return {
         ...state,
         loading: false,
