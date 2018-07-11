@@ -1,4 +1,4 @@
-import {register} from "../services/auth-service"
+import AuthService from "../services/auth-service"
 
 export const authState = {
   loading: false,
@@ -9,33 +9,36 @@ export const authState = {
     phone: null,
     name: "",
     address: ""
-  },
+  }
   // role: ""
 }
 
 export const authActionTypes = {
   LOGIN: "LOGIN",
   REGISTER: "REGISTER",
+  CONFIRM_REGISTER: "CONFIRM_REGISTER",
   LOGOUT: "LOGOUT"
 }
 const _authActionTypes = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
   LOGIN_FAIL: "LOGIN_FAIL",
   REGISTER_SUCCESS: "REGISTER_SUCCESS",
-  REGISTER_FAIL: "REGISTER_FAIL"
+  REGISTER_FAIL: "REGISTER_FAIL",
+  CONFIRM_REGISTER_SUCCESS: "CONFIRM_REGISTER_SUCCESS",
+  CONFIRM_REGISTER_FAIL: "CONFIRM_REGISTER_FAIL"
 }
 
-export const registerAction = user => async dispatch => {
+export const register = user => async dispatch => {
   dispatch({
     type: authActionTypes.REGISTER
   })
 
   try {
-    const registeredUser = await register(user)
-      dispatch({
-        type: _authActionTypes.REGISTER_SUCCESS,
-        payload: registeredUser
-      })
+    const registeredUser = await AuthService.register(user)
+    dispatch({
+      type: _authActionTypes.REGISTER_SUCCESS,
+      payload: registeredUser
+    })
   } catch (err) {
     dispatch({
       type: _authActionTypes.REGISTER_FAIL
@@ -43,7 +46,23 @@ export const registerAction = user => async dispatch => {
   }
 }
 
+export const confirmRegister = (email, code) => async dispatch => {
+  dispatch({
+    type: authActionTypes.CONFIRM_REGISTER
+  })
 
+  try {
+    const confirmedUser = await AuthService.confirmRegister(email, code)
+    dispatch({
+      type: _authActionTypes.CONFIRM_REGISTER_SUCCESS,
+      payload: confirmedUser
+    })
+  } catch (err) {
+    dispatch({
+      type: _authActionTypes.CONFIRM_REGISTER_FAIL
+    })
+  }
+}
 
 export const authReducer = (state = authState, action) => {
   switch (action.type) {
@@ -57,7 +76,7 @@ export const authReducer = (state = authState, action) => {
         ...state,
         loading: false,
         loggedIn: true,
-        user: action.payload,
+        user: action.payload
       }
     case _authActionTypes.LOGIN_FAIL:
       return {
@@ -74,10 +93,22 @@ export const authReducer = (state = authState, action) => {
       return {
         ...state,
         loading: false,
-        loggedIn: true,
-        user: action.payload,
+        user: action.payload
       }
     case _authActionTypes.REGISTER_FAIL:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: false
+      }
+    case _authActionTypes.CONFIRM_REGISTER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: true,
+        user: action.payload
+      }
+    case _authActionTypes.CONFIRM_REGISTER_FAIL:
       return {
         ...state,
         loading: false,
