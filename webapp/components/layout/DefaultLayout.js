@@ -6,7 +6,8 @@ import Toolbar from "@material-ui/core/Toolbar"
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import MenuIcon from "@material-ui/icons/Menu"
-import LoginWindow from "./login-window"
+import LoginWindow from "./LoginWindow"
+import Notifications from "./Notifications"
 
 import styled from "styled-components"
 import PropTypes from "prop-types"
@@ -106,6 +107,7 @@ class DefaultLayout extends React.Component {
             })()}
           </Toolbar>
         </AppBar>
+        <Notifications />
         <LoginWindow registering={this.state.registering} />
         {this.props.children}
         <footer>

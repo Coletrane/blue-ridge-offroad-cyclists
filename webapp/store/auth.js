@@ -37,10 +37,10 @@ export const register = user => async dispatch => {
   })
 
   try {
-    const registeredUser = await AuthService.register(user)
+    const res = await AuthService.register(user)
     dispatch({
       type: _authActionTypes.REGISTER_SUCCESS,
-      payload: registeredUser
+      payload: res
     })
   } catch (err) {
     dispatch({
@@ -55,10 +55,10 @@ export const confirmRegister = (email, code) => async dispatch => {
   })
 
   try {
-    const confirmedUser = await AuthService.confirmRegister(email, code)
+    const res = await AuthService.confirmRegister(email, code)
     dispatch({
       type: _authActionTypes.CONFIRM_REGISTER_SUCCESS,
-      payload: confirmedUser
+      payload: res
     })
   } catch (err) {
     dispatch({
@@ -73,8 +73,7 @@ export const forgotPassword = email => async dispatch => {
   })
 
   try {
-    const data = await AuthService.forgotPassword(email)
-    console.log(data)
+    const res = await AuthService.forgotPassword(email)
     dispatch({
       type: _authActionTypes.FORGOT_PASSWORD_SUCCESS
     })

@@ -1,5 +1,5 @@
 import React from "react"
-import DefaultLayout from "../components/layout/default"
+import DefaultLayout from "../components/layout/DefaultLayout"
 
 export default class Index extends React.Component {
   render() {

@@ -1,13 +1,18 @@
 export const viewState = {
   loginWindowOpen: false,
-  errorWindowOpen: false
+  notification: {
+    open: false,
+    message: "",
+    variant: "",
+    onClose: () => {} // TODO: figure out how to make this work
+  }
 }
 
 export const viewActionTypes = {
   OPEN_LOGIN_WINDOW: "OPEN_LOGIN_WINDOW",
   CLOSE_LOGIN_WINDOW: "CLOSE_LOGIN_WINDOW",
-  OPEN_ERROR_WINDOW: "OPEN_ERROR_WINDOW",
-  CLOSE_ERROR_WINDOW: "CLOSE_ERROR_WINDOW"
+  OPEN_NOTIFICATION: "OPEN_NOTIFICATION",
+  CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION"
 }
 
 export const viewReducer = (state = viewState, action) => {
@@ -30,20 +35,23 @@ export const viewReducer = (state = viewState, action) => {
       } else {
         return state
       }
-    case viewActionTypes.OPEN_ERROR_WINDOW:
-      if (!state.errorWindowOpen) {
+    case viewActionTypes.OPEN_NOTIFICATION:
+      if (!state.notification.open) {
         return {
           ...state,
-          errorWindowOpen: true
+          notification: {
+            ...action.payload,
+            open: true
+          }
         }
       } else {
         return state
       }
-    case viewActionTypes.CLOSE_ERROR_WINDOW:
-      if (state.errorWindowOpen) {
+    case viewActionTypes.CLOSE_NOTIFICATION:
+      if (state.notification.open) {
         return {
           ...state,
-          errorWindowOpen: false
+          notification: viewState.notification
         }
       } else {
         return state

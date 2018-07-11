@@ -42,7 +42,6 @@ export default class RIMBADocument extends Document {
 
 const Body = styled.body`
   margin: 0;
-  background-color: black;
 
   h1,
   h2,
