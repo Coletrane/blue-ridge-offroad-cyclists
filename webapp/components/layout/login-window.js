@@ -10,6 +10,7 @@ import Select from "@material-ui/core/Select"
 import MenuItem from "@material-ui/core/MenuItem"
 
 import PropTypes from "prop-types"
+import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { register, confirmRegister } from "../../store/auth"
@@ -67,15 +68,20 @@ class LoginWindow extends React.Component {
       confirmingCode: false,
       verificationCode: "",
       verificationCodeValid: false,
+      forgotPassword: false,
       typedState: ""
     }
   }
 
   cancel() {
-    if (this.state.confirmingCode) {
+    if (this.state.confirmingCode && !this.state.forgotPassword) {
       this.setState({
         confirmingCode: false,
         verificationCode: ""
+      })
+    } else if (this.state.forgotPassword && !this.state.confirmingCode) {
+      this.setState({
+        forgotPassword: false
       })
     } else {
       this.props.closeLoginWindow()
@@ -138,15 +144,11 @@ class LoginWindow extends React.Component {
     })
   }
 
-  openAuthCodeDialog() {
-    this.setState({
-      confirmingCode: true
-    })
-  }
-
   get title() {
     if (this.state.confirmingCode) {
       return "Enter Verification Code"
+    } else if (this.state.forgotPassword) {
+      return "Recover Password"
     } else if (this.props.registering) {
       return "Register"
     } else {
@@ -283,7 +285,11 @@ class LoginWindow extends React.Component {
             }
           })()}
           {(() => {
-            if (this.state.confirmingCode) {
+            if (
+              this.state.registering &&
+              this.state.confirmingCode &&
+              !this.state.forgotPassword
+            ) {
               return (
                 <TextField
                   id="verificationCode"
@@ -301,7 +307,12 @@ class LoginWindow extends React.Component {
                   }}
                 />
               )
-            } else {
+            }
+            if (
+              !this.state.registering &&
+              !this.state.confirmingCode &&
+              !this.state.forgotPassword
+            ) {
               return (
                 <TextField
                   margin="dense"
@@ -321,13 +332,37 @@ class LoginWindow extends React.Component {
           })()}
         </DialogContent>
         <DialogActions>
-          ]
-          <Button
-            onClick={() => this.openAuthCodeDialog()}
-            style={{ marginRight: "auto" }}
-          >
-            Have an authorization code?
-          </Button>
+          <LeftLinkButton>
+            {(() => {
+              if (this.props.registering) {
+                return (
+                  <Button
+                    onClick={() => {
+                      this.setState({
+                        confirmingCode: true,
+                        forgotPassword: false
+                      })
+                    }}
+                  >
+                    Have an authorization code?
+                  </Button>
+                )
+              } else {
+                return (
+                  <Button
+                    onClick={() => {
+                      this.setState({
+                        forgotPassword: true,
+                        confirmingCode: false
+                      })
+                    }}
+                  >
+                    Forgot Password?
+                  </Button>
+                )
+              }
+            })()}
+          </LeftLinkButton>
           <Button onClick={() => this.cancel()}>Cancel</Button>
           <Button
             onClick={() => this.submit()}
@@ -341,6 +376,10 @@ class LoginWindow extends React.Component {
     )
   }
 }
+
+const LeftLinkButton = styled.div`
+  margin-right: auto !important;
+`
 
 export default connect(
   mapStateToProps,

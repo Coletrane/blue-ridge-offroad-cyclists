@@ -28,5 +28,9 @@ export default {
 
   confirmRegister: async (email, code) => {
     return Auth.confirmSignUp(email, code)
+  },
+
+  forgotPassword: async email => {
+    return Auth.forgotPassword(email)
   }
 }

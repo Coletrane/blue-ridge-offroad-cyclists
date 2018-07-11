@@ -17,7 +17,8 @@ export const authActionTypes = {
   LOGIN: "LOGIN",
   REGISTER: "REGISTER",
   CONFIRM_REGISTER: "CONFIRM_REGISTER",
-  LOGOUT: "LOGOUT"
+  FORGOT_PASSWORD: "FORGOT_PASSWORD",
+  LOGOUT: "LOGOUT",
 }
 const _authActionTypes = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
@@ -25,7 +26,9 @@ const _authActionTypes = {
   REGISTER_SUCCESS: "REGISTER_SUCCESS",
   REGISTER_FAIL: "REGISTER_FAIL",
   CONFIRM_REGISTER_SUCCESS: "CONFIRM_REGISTER_SUCCESS",
-  CONFIRM_REGISTER_FAIL: "CONFIRM_REGISTER_FAIL"
+  CONFIRM_REGISTER_FAIL: "CONFIRM_REGISTER_FAIL",
+  FORGOT_PASSWORD_SUCCESS: "FORGOT_PASSWORD_SUCCESS",
+  FORGOT_PASSWORD_FAIL: "FORGOT_PASSWORD_FAIL"
 }
 
 export const register = user => async dispatch => {
@@ -60,6 +63,24 @@ export const confirmRegister = (email, code) => async dispatch => {
   } catch (err) {
     dispatch({
       type: _authActionTypes.CONFIRM_REGISTER_FAIL
+    })
+  }
+}
+
+export const forgotPassword = email => async dispatch => {
+  dispatch({
+    type: authActionTypes.FORGOT_PASSWORD
+  })
+
+  try {
+    const data = await AuthService.forgotPassword(email)
+    console.log(data)
+    dispatch({
+      type: _authActionTypes.FORGOT_PASSWORD_SUCCESS
+    })
+  } catch (err) {
+    dispatch({
+      type:  _authActionTypes.FORGOT_PASSWORD_FAIL
     })
   }
 }
@@ -109,6 +130,18 @@ export const authReducer = (state = authState, action) => {
         user: action.payload
       }
     case _authActionTypes.CONFIRM_REGISTER_FAIL:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: false
+      }
+    case _authActionTypes.FORGOT_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: false
+      }
+    case _authActionTypes.FORGOT_PASSWORD_FAIL:
       return {
         ...state,
         loading: false,
