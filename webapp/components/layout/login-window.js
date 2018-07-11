@@ -4,7 +4,6 @@ import TextField from "@material-ui/core/TextField"
 import Dialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import Select from "@material-ui/core/Select"
@@ -171,11 +170,10 @@ class LoginWindow extends React.Component {
     return (
       <Dialog
         open={this.props.loginWindowOpen}
-        aria-labelledby="form-dialog-title"
+        aria-labelledby="login-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">{this.title}</DialogTitle>
+        <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText />
           <TextField
             autoFocus
             margin="dense"

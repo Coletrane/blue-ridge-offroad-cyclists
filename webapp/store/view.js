@@ -1,10 +1,13 @@
 export const viewState = {
   loginWindowOpen: false,
+  errorWindowOpen: false
 }
 
 export const viewActionTypes = {
   OPEN_LOGIN_WINDOW: "OPEN_LOGIN_WINDOW",
-  CLOSE_LOGIN_WINDOW: "CLOSE_LOGIN_WINDOW"
+  CLOSE_LOGIN_WINDOW: "CLOSE_LOGIN_WINDOW",
+  OPEN_ERROR_WINDOW: "OPEN_ERROR_WINDOW",
+  CLOSE_ERROR_WINDOW: "CLOSE_ERROR_WINDOW"
 }
 
 export const viewReducer = (state = viewState, action) => {
@@ -13,7 +16,7 @@ export const viewReducer = (state = viewState, action) => {
       if (!state.loginWindowOpen) {
         return {
           ...state,
-          loginWindowOpen: true,
+          loginWindowOpen: true
         }
       } else {
         return state
@@ -23,6 +26,24 @@ export const viewReducer = (state = viewState, action) => {
         return {
           ...state,
           loginWindowOpen: false
+        }
+      } else {
+        return state
+      }
+    case viewActionTypes.OPEN_ERROR_WINDOW:
+      if (!state.errorWindowOpen) {
+        return {
+          ...state,
+          errorWindowOpen: true
+        }
+      } else {
+        return state
+      }
+    case viewActionTypes.CLOSE_ERROR_WINDOW:
+      if (state.errorWindowOpen) {
+        return {
+          ...state,
+          errorWindowOpen: false
         }
       } else {
         return state
