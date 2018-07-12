@@ -24,6 +24,7 @@ export const variants = {
   warning: "warning",
   info: "info"
 }
+export const plsContact = "Please contact Cole Inman at eloc49@gmail.com"
 
 const mapStateToProps = state => ({
   store: {

@@ -14,7 +14,7 @@ import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
-import { register, confirmRegister } from "../../store/auth"
+import { register, confirmRegister, login } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
 import usStates from "../../src/util/state-codes.json"
@@ -36,6 +36,9 @@ const mapDispatchToProps = dispatch => ({
   },
   confirmRegister: (email, code) => {
     dispatch(confirmRegister(email, code))
+  },
+  login: (email, password) => {
+    dispatch(login(email, password))
   },
   closeLoginWindow: () => {
     dispatch({
@@ -137,13 +140,20 @@ class LoginWindow extends React.Component {
           } ${this.state.zipCode}`
         })
       } else if (
+        !this.props.registering &&
+        this.state.emailValid &&
+        this.state.passwordValid
+      ) {
+        this.props.login(this.state.email, this.state.password)
+      } else if (
+        this.props.registering &&
         this.state.confirmingCode &&
         this.state.verificationCodeValid
       ) {
-        this.props.confirmRegister({
-          email: this.state.email,
-          code: this.state.verificationCode
-        })
+        this.props.confirmRegister(
+          this.state.email,
+          this.state.verificationCode
+        )
       }
     })
   }

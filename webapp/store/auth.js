@@ -1,4 +1,6 @@
-import AuthService from "../services/auth-service"
+import AuthService from "../services/AuthService"
+import {viewActionTypes} from "./view"
+import {variants, plsContact} from "../components/layout/Notifications"
 
 export const authState = {
   loading: false,
@@ -31,6 +33,7 @@ const _authActionTypes = {
   FORGOT_PASSWORD_FAIL: "FORGOT_PASSWORD_FAIL"
 }
 
+// TODO: check all the payloads from AuthService
 export const register = user => async dispatch => {
   dispatch({
     type: authActionTypes.REGISTER
@@ -42,9 +45,29 @@ export const register = user => async dispatch => {
       type: _authActionTypes.REGISTER_SUCCESS,
       payload: res
     })
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: "Please check your inbox and confirm your email address.",
+        variant: variants.info
+      }
+    })
+    dispatch({
+      type: viewActionTypes.CLOSE_LOGIN_WINDOW
+    })
   } catch (err) {
     dispatch({
       type: _authActionTypes.REGISTER_FAIL
+    })
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: `There was an error registering. ${plsContact}`,
+        variant: variants.error
+      }
+    })
+    dispatch({
+      type: viewActionTypes.CLOSE_LOGIN_WINDOW
     })
   }
 }
@@ -60,9 +83,26 @@ export const confirmRegister = (email, code) => async dispatch => {
       type: _authActionTypes.CONFIRM_REGISTER_SUCCESS,
       payload: res
     })
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: "You have successfully verified your registration",
+        variant: variants.success
+      }
+    })
+    dispatch({
+      type: viewActionTypes.CLOSE_LOGIN_WINDOW
+    })
   } catch (err) {
     dispatch({
       type: _authActionTypes.CONFIRM_REGISTER_FAIL
+    })
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: `There was an error confirming your registration. ${plsContact}`,
+        variant: variants.error
+      }
     })
   }
 }
@@ -80,6 +120,46 @@ export const forgotPassword = email => async dispatch => {
   } catch (err) {
     dispatch({
       type:  _authActionTypes.FORGOT_PASSWORD_FAIL
+    })
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: "Check your inbox for a password reset link.",
+        variant: variants.info
+      }
+    })
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: `There was an error sending your password reset email. ${plsContact}`,
+        variant: variants.error
+      }
+    })
+  }
+}
+
+export const login = (email, password) => async dispatch => {
+  dispatch({
+    type: authActionTypes.LOGIN
+  })
+
+  try {
+    const res = AuthService.login(email, password)
+    dispatch({
+      type: _authActionTypes.LOGIN_SUCCESS
+    })
+    dispatch({
+      type: viewActionTypes.CLOSE_LOGIN_WINDOW
+    })
+  } catch (err) {
+    dispatch({
+      type: _authActionTypes.LOGIN_FAIL
+    })
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: `There was an error logging you in. ${plsContact}`
+      }
     })
   }
 }

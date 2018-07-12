@@ -32,5 +32,9 @@ export default {
 
   forgotPassword: async email => {
     return Auth.forgotPassword(email)
+  },
+
+  login: async (email, password) => {
+    return Auth.signIn(email, password)
   }
 }
