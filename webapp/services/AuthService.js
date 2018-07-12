@@ -19,22 +19,57 @@ export default {
       attributes.phone = user.phone
     }
 
-    return Auth.signUp({
-      username: user.email,
-      password: user.password,
-      attributes: attributes
-    })
+    try {
+      await Auth.signUp({
+        username: user.email,
+        password: user.password,
+        attributes: attributes
+      })
+      return {
+        email: user.email,
+        name: user.name,
+        phone: user.phone,
+        address: user.address
+      }
+    } catch (err) {
+      // TODO: sentry or something here
+      return null
+    }
   },
 
   confirmRegister: async (email, code) => {
-    return Auth.confirmSignUp(email, code)
+    try {
+      await Auth.confirmSignUp(email, code)
+      // TODO: inspect response and get user details
+      return {
+        email: email
+      }
+    } catch (err) {
+      return null
+    }
   },
 
   forgotPassword: async email => {
-    return Auth.forgotPassword(email)
+    try {
+      await Auth.forgotPassword(email)
+      return {
+        email: email
+      }
+    } catch (err) {
+      return  null
+    }
   },
 
   login: async (email, password) => {
-    return Auth.signIn(email, password)
+    try {
+      const res = await Auth.signIn(email, password)
+      console.log(res)
+      return {
+        email: email,
+        password: password
+      }
+    } catch (err) {
+      return null
+    }
   }
 }

@@ -39,11 +39,15 @@ export const register = user => async dispatch => {
     type: authActionTypes.REGISTER
   })
 
-  try {
-    const res = await AuthService.register(user)
+
+  const registeredUser = await AuthService.register(user)
+  if (registeredUser) {
     dispatch({
       type: _authActionTypes.REGISTER_SUCCESS,
-      payload: res
+      payload: {
+        email: registeredUser.email,
+        name: registeredUser.name
+      }
     })
     dispatch({
       type: viewActionTypes.OPEN_NOTIFICATION,
@@ -55,7 +59,7 @@ export const register = user => async dispatch => {
     dispatch({
       type: viewActionTypes.CLOSE_LOGIN_WINDOW
     })
-  } catch (err) {
+  } else {
     dispatch({
       type: _authActionTypes.REGISTER_FAIL
     })
@@ -193,6 +197,7 @@ export const authReducer = (state = authState, action) => {
       return {
         ...state,
         loading: false,
+        loggedIn: false,
         user: action.payload
       }
     case _authActionTypes.REGISTER_FAIL:

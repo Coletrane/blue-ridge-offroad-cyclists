@@ -95,6 +95,7 @@ class LoginWindow extends React.Component {
     }
   }
 
+  // TODO: refactor these into pure functions
   validateInput(callback) {
     const specialCharacters = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/
     const newState = {
@@ -126,6 +127,7 @@ class LoginWindow extends React.Component {
       if (
         this.props.registering &&
         this.state.emailValid &&
+        this.state.phoneValid &&
         this.state.passwordValid &&
         this.state.nameValid &&
         this.state.addressValid &&
@@ -137,7 +139,8 @@ class LoginWindow extends React.Component {
           name: this.state.name,
           address: `${this.state.address} ${this.state.city} ${
             this.state.state.abbreviation
-          } ${this.state.zipCode}`
+          } ${this.state.zipCode}`,
+          phone: this.state.phone
         })
       } else if (
         !this.props.registering &&
