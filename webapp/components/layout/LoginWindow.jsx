@@ -11,7 +11,6 @@ import MenuItem from "@material-ui/core/MenuItem"
 import CircularProgress from "@material-ui/core/CircularProgress"
 
 import PropTypes from "prop-types"
-import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { register, confirmRegister, login } from "../../store/auth"
@@ -192,7 +191,8 @@ class LoginWindow extends React.Component {
         aria-labelledby="login-dialog-title"
       >
         <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
-        <LoadingContainer
+        <CircularProgress
+          className="login-window-loading"
           style={(() => {
             if (!this.props.store.auth.loading) {
               return {
@@ -200,9 +200,9 @@ class LoginWindow extends React.Component {
               }
             }
           })()}
-        >
-          <CircularProgress size={60} thickness={4.6} />
-        </LoadingContainer>
+          size={60}
+          thickness={4.6}
+        />
         <div
           style={(() => {
             if (this.props.store.auth.loading) {
@@ -375,7 +375,6 @@ class LoginWindow extends React.Component {
             })()}
           </DialogContent>
           <DialogActions>
-            <LeftLinkButton>
               {(() => {
                 if (this.props.registering) {
                   return (
@@ -405,7 +404,6 @@ class LoginWindow extends React.Component {
                   )
                 }
               })()}
-            </LeftLinkButton>
             <Button onClick={() => this.cancel()}>Cancel</Button>
             <Button
               onClick={() => this.submit()}
@@ -420,13 +418,6 @@ class LoginWindow extends React.Component {
     )
   }
 }
-
-const LoadingContainer = styled.div`
-  margin: auto;
-`
-const LeftLinkButton = styled.div`
-  margin-right: auto !important;
-`
 
 export default connect(
   mapStateToProps,

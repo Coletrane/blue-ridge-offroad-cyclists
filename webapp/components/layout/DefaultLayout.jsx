@@ -1,22 +1,24 @@
 import React from "react"
-import Link from "next/link"
 import Head from "next/head"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import MenuIcon from "@material-ui/icons/Menu"
+import lightBlue from "@material-ui/core/colors/lightBlue"
+
 import LoginWindow from "./LoginWindow"
 import Notifications from "./Notifications"
+import RIMBAFooter from "./RIMBAFooter"
 
-import styled from "styled-components"
+import "./layout.css"
+
 import PropTypes from "prop-types"
 
 import { connect } from "react-redux"
 import { authActionTypes } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
-import { githubUrl } from "../../../constants"
 
 const mapStateToProps = state => ({
   ...state.auth,
@@ -73,12 +75,7 @@ class DefaultLayout extends React.Component {
         </Head>
         <AppBar position="static">
           <Toolbar>
-            <MenuButton>
-              <IconButton color="inherit" aria-label="Menu">
-                <MenuIcon />
-              </IconButton>
-            </MenuButton>
-            <Title>Roanoke IMBA</Title>
+            <h1 className="rimba-title">Roanoke IMBA</h1>
             {(() => {
               if (this.props.loggedIn) {
                 return (
@@ -110,26 +107,11 @@ class DefaultLayout extends React.Component {
         <Notifications />
         <LoginWindow registering={this.state.registering} />
         {this.props.children}
-        <footer>
-          Copyright 2018 Cole Inman
-          <Link href={githubUrl}>
-            <a>GitHub</a>
-          </Link>
-        </footer>
+        <RIMBAFooter/>
       </div>
     )
   }
 }
-
-const MenuButton = styled.div`
-  svg {
-    font-size: 38px;
-  }
-`
-
-const Title = styled.h1`
-  flex: 1;
-`
 
 export default connect(
   mapStateToProps,

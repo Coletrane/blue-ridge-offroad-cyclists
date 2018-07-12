@@ -3,7 +3,6 @@ import { Carousel } from "react-responsive-carousel"
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 
 import PropTypes from "prop-types"
-import styled from "styled-components"
 
 import routes from "../../util/routes"
 
@@ -14,7 +13,13 @@ class RIMBAHeader extends React.Component {
 
   render() {
     if (this.props.image) {
-      return <HeaderImage />
+      return (
+        <div className="header-image"
+             style={{
+               backgroundImage: `${routes.img}/${this.props.image}`
+             }}>
+        </div>
+      )
     } else {
       return (
         <Carousel>
@@ -27,8 +32,4 @@ class RIMBAHeader extends React.Component {
   }
 }
 
-const HeaderImage = styled.div`
-  width: 100%;
-  background-image: url(\"${props => props.image}\");
-`
 export default RIMBAHeader

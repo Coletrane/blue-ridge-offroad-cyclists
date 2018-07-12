@@ -1,0 +1,34 @@
+.rimba-title {
+  flex: 1;
+}
+
+.header-image {
+  width: 100%;
+}
+
+.login-window-loading {
+  margin: auto;
+}
+
+.left-link-button {
+  margin-right: auto !important;
+}
+
+.rimba-notification-content {
+  display: flex;
+  align-items: center;
+}
+.rimba-notification-content svg {
+  margin-right: 1rem;
+}
+
+footer {
+  text-align: center;
+}
+/*#client-snackbar {*/
+  /*display: flex;*/
+  /*align-items: center;*/
+/*}*/
+/*#client-snackbar svg {*/
+  /*margin-right: 1rem;*/
+/*}*/
