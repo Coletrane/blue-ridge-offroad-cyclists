@@ -1,3 +1,5 @@
+import { variants } from "../components/layout/Notifications"
+
 export const viewState = {
   loginWindowOpen: false,
   notification: {
@@ -36,7 +38,15 @@ export const viewReducer = (state = viewState, action) => {
         return state
       }
     case viewActionTypes.OPEN_NOTIFICATION:
-      if (!state.notification.open) {
+      if (
+        !state.notification.open &&
+        Object.keys(variants).find(variant => {
+          return (
+            variant === action.payload.variant &&
+            variants[variant] === action.payload.variant
+          )
+        })
+      ) {
         return {
           ...state,
           notification: {
