@@ -17,7 +17,7 @@ import { connect } from "react-redux"
 import { register, confirmRegister, login } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
-import usStates from "../../src/util/state-codes.json"
+import usStates from "../../util/state-codes.json"
 
 import isEmail from "validator/lib/isEmail"
 import isPostalCode from "validator/lib/isPostalCode"

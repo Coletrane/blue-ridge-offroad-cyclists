@@ -29,6 +29,7 @@ export default class RIMBADocument extends Document {
             href="https://fonts.googleapis.com/css?family=Exo+2:700|IBM+Plex+Mono"
             rel="stylesheet"
           />
+          <link rel="stylesheet" href="/_next/static/style.css" />
           {this.props.styleTags}
         </Head>
         <Body>
