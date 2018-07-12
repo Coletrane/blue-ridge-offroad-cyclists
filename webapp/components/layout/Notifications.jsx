@@ -101,14 +101,6 @@ class Notifications extends React.Component {
                 {this.props.store.view.notification.message}
               </span>
             }
-            onClose={() => {
-              if (
-                this.props.store.view.notification.onClose &&
-                typeof this.props.store.view.notification.onClose === "function"
-              ) {
-                this.props.store.view.notification.onClose()
-              }
-            }}
             action={[
               <IconButton
                 key="close"

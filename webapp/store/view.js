@@ -6,7 +6,6 @@ export const viewState = {
     open: false,
     message: "",
     variant: "",
-    onClose: () => {} // TODO: figure out how to make this work
   }
 }
 
