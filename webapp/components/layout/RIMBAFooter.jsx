@@ -5,11 +5,13 @@ import {theme} from "../../util/styles"
 
 import { githubUrl } from "../../../constants"
 
+// import "./footer.css"
+
 class RIMBAFooter extends React.Component {
   render() {
     return (
         <footer style={{
-          backgroundColor: theme.palette.primary.dark
+          backgroundColor: theme.palette.primary.main
         }}>
           <div>Copyright 2018 Cole Inman</div>
           <div>

@@ -11,7 +11,7 @@ import LoginWindow from "./LoginWindow"
 import Notifications from "./Notifications"
 import RIMBAFooter from "./RIMBAFooter"
 
-import "./layout.css"
+// import "./layout.css"
 
 import PropTypes from "prop-types"
 
@@ -117,3 +117,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DefaultLayout)
+
