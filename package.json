@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "webapp": "cd ./webapp && NODE_ENV=production node ./server.js",
-    "build": "next build ./webapp",
+    "build": "next build ./webapp && next export ./webapp",
     "dev": "next ./webapp"
   },
   "repository": {
@@ -44,6 +44,7 @@
     "jss": "^9.8.7",
     "moment": "^2.22.2",
     "next": "^6.1.1",
+    "postcss-loader": "^2.1.6",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -52,7 +53,6 @@
     "react-redux": "^5.0.7",
     "react-responsive-carousel": "^3.1.41",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^3.3.3",
     "validator": "^10.4.0"
   },
   "devDependencies": {
