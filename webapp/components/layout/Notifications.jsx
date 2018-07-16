@@ -62,7 +62,6 @@ class Notifications extends React.Component {
         autoHideDuration={10000}
       >
         <SnackbarContent
-          className="rimba-notification-content"
           aria-describedby="client-snackbar"
           style={(() => {
             let styles = {}

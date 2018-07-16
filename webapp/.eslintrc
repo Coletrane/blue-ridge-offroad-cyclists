@@ -8,12 +8,9 @@
     }
   },
   "env": {
-    "es6": true
-  },
-  "globals": {
-    "document": true,
-    "window": true,
-    "process": true
+    "es6": true,
+    "browser": true,
+    "node": true
   },
   "plugins": ["react"],
   "extends": ["eslint:recommended", "plugin:react/recommended"],
