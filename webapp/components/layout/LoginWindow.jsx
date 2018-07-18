@@ -14,7 +14,7 @@ import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
-import { register, confirmRegister, login } from "../../store/auth"
+import { register, login } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
 import usStates from "../../util/state-codes.json"
@@ -33,9 +33,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   register: user => {
     dispatch(register(user))
-  },
-  confirmRegister: (email, code) => {
-    dispatch(confirmRegister(email, code))
   },
   login: (email, password) => {
     dispatch(login(email, password))
@@ -71,22 +68,13 @@ class LoginWindow extends React.Component {
       zipCode: "",
       zipCodeValid: false,
       formSubmitted: false,
-      confirmingCode: false,
-      verificationCode: "",
-      verificationCodeValid: false,
-      verificationCodeSubmitted: false,
       forgotPassword: false,
       typedState: ""
     }
   }
 
   cancel() {
-    if (this.state.confirmingCode && !this.state.forgotPassword) {
-      this.setState({
-        confirmingCode: false,
-        verificationCode: ""
-      })
-    } else if (this.state.forgotPassword && !this.state.confirmingCode) {
+    if (this.state.forgotPassword) {
       this.setState({
         forgotPassword: false
       })
@@ -107,17 +95,10 @@ class LoginWindow extends React.Component {
       nameValid: this.state.name.split(" ").length > 1,
       addressValid: this.state.address,
       cityValid: this.state.city,
-      zipCodeValid: isPostalCode(this.state.zipCode || " ", "US"),
-      verificationCodeValid:
-        !isNaN(parseInt(this.state.verificationCode)) &&
-        this.state.verificationCode.length === 6
+      zipCodeValid: isPostalCode(this.state.zipCode || " ", "US")
     }
 
-    if (this.state.confirmingCode) {
-      newState.verificationCodeSubmitted = true
-    } else {
-      newState.formSubmitted = true
-    }
+    newState.formSubmitted = true
 
     this.setState(newState, callback)
   }
@@ -148,23 +129,12 @@ class LoginWindow extends React.Component {
         this.state.passwordValid
       ) {
         this.props.login(this.state.email, this.state.password)
-      } else if (
-        this.props.registering &&
-        this.state.confirmingCode &&
-        this.state.verificationCodeValid
-      ) {
-        this.props.confirmRegister(
-          this.state.email,
-          this.state.verificationCode
-        )
       }
     })
   }
 
   get title() {
-    if (this.state.confirmingCode) {
-      return "Enter Verification Code"
-    } else if (this.state.forgotPassword) {
+    if (this.state.forgotPassword) {
       return "Recover Password"
     } else if (this.props.registering) {
       return "Register"
@@ -216,7 +186,7 @@ class LoginWindow extends React.Component {
               }}
             />
             {(() => {
-              if (this.props.registering && !this.state.confirmingCode) {
+              if (this.props.registering) {
                 return (
                   <div>
                     <TextField
@@ -315,31 +285,7 @@ class LoginWindow extends React.Component {
             })()}
             {(() => {
               if (
-                this.props.registering &&
-                this.state.confirmingCode &&
-                !this.state.forgotPassword
-              ) {
-                return (
-                  <TextField
-                    id="verificationCode"
-                    label="Verification Code"
-                    type="text"
-                    style={{ margin: "auto" }}
-                    error={
-                      this.state.verificationCodeSubmitted &&
-                      !this.state.verificationCodeValid
-                    }
-                    onChange={event => {
-                      this.setState({
-                        verificationCode: event.target.value
-                      })
-                    }}
-                  />
-                )
-              }
-              if (
                 !this.state.registering &&
-                !this.state.confirmingCode &&
                 !this.state.forgotPassword
               ) {
                 return (
@@ -370,8 +316,7 @@ class LoginWindow extends React.Component {
                     <Button
                       onClick={() => {
                         this.setState({
-                          forgotPassword: true,
-                          confirmingCode: false
+                          forgotPassword: true
                         })
                       }}
                     >

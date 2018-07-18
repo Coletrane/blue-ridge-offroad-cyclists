@@ -18,7 +18,6 @@ export const authState = {
 export const authActionTypes = {
   LOGIN: "LOGIN",
   REGISTER: "REGISTER",
-  CONFIRM_REGISTER: "CONFIRM_REGISTER",
   FORGOT_PASSWORD: "FORGOT_PASSWORD",
   LOGOUT: "LOGOUT",
 }
@@ -27,8 +26,6 @@ const _authActionTypes = {
   LOGIN_FAIL: "LOGIN_FAIL",
   REGISTER_SUCCESS: "REGISTER_SUCCESS",
   REGISTER_FAIL: "REGISTER_FAIL",
-  CONFIRM_REGISTER_SUCCESS: "CONFIRM_REGISTER_SUCCESS",
-  CONFIRM_REGISTER_FAIL: "CONFIRM_REGISTER_FAIL",
   FORGOT_PASSWORD_SUCCESS: "FORGOT_PASSWORD_SUCCESS",
   FORGOT_PASSWORD_FAIL: "FORGOT_PASSWORD_FAIL"
 }
@@ -72,41 +69,6 @@ export const register = user => async dispatch => {
     })
     dispatch({
       type: viewActionTypes.CLOSE_LOGIN_WINDOW
-    })
-  }
-}
-
-export const confirmRegister = (email, code) => async dispatch => {
-  dispatch({
-    type: authActionTypes.CONFIRM_REGISTER
-  })
-
-  try {
-    const res = await AuthService.confirmRegister(email, code)
-    dispatch({
-      type: _authActionTypes.CONFIRM_REGISTER_SUCCESS,
-      payload: res
-    })
-    dispatch({
-      type: viewActionTypes.OPEN_NOTIFICATION,
-      payload: {
-        message: "You have successfully verified your registration",
-        variant: variants.success
-      }
-    })
-    dispatch({
-      type: viewActionTypes.CLOSE_LOGIN_WINDOW
-    })
-  } catch (err) {
-    dispatch({
-      type: _authActionTypes.CONFIRM_REGISTER_FAIL
-    })
-    dispatch({
-      type: viewActionTypes.OPEN_NOTIFICATION,
-      payload: {
-        message: `There was an error confirming your registration. ${plsContact}`,
-        variant: variants.error
-      }
     })
   }
 }
@@ -201,19 +163,6 @@ export const authReducer = (state = authState, action) => {
         user: action.payload
       }
     case _authActionTypes.REGISTER_FAIL:
-      return {
-        ...state,
-        loading: false,
-        loggedIn: false
-      }
-    case _authActionTypes.CONFIRM_REGISTER_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        loggedIn: true,
-        user: action.payload
-      }
-    case _authActionTypes.CONFIRM_REGISTER_FAIL:
       return {
         ...state,
         loading: false,

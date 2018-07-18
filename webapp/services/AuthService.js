@@ -37,18 +37,6 @@ export default {
     }
   },
 
-  confirmRegister: async (email, code) => {
-    try {
-      await Auth.confirmSignUp(email, code)
-      // TODO: inspect response and get user details
-      return {
-        email: email
-      }
-    } catch (err) {
-      return null
-    }
-  },
-
   forgotPassword: async email => {
     try {
       await Auth.forgotPassword(email)
