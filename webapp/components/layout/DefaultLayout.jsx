@@ -12,6 +12,7 @@ import Notifications from "./Notifications"
 import RIMBAFooter from "./RIMBAFooter"
 
 import PropTypes from "prop-types"
+import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { authActionTypes } from "../../store/auth"
@@ -73,7 +74,7 @@ class DefaultLayout extends React.Component {
         </Head>
         <AppBar position="static">
           <Toolbar>
-            <h1 className="rimba-title">Roanoke IMBA</h1>
+            <RIMBATitle className="rimba-title">Roanoke IMBA</RIMBATitle>
             {(() => {
               if (this.props.loggedIn) {
                 return (
@@ -110,6 +111,10 @@ class DefaultLayout extends React.Component {
     )
   }
 }
+
+const RIMBATitle = styled.h1`
+    flex: 1;
+`
 
 export default connect(
   mapStateToProps,

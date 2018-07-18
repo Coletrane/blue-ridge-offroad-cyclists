@@ -18,7 +18,7 @@
     "react/no-this-in-sfc": "error",
     "react/no-access-state-in-setstate": "error",
     "react/no-direct-mutation-state": "error",
-    "class-methods-use-this": "error",
+    "class-methods-use-this": "warn",
     "react/prop-types": [0]
   }
 }

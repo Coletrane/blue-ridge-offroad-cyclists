@@ -6,11 +6,12 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
-import Select from "@material-ui/core/Select"
 import MenuItem from "@material-ui/core/MenuItem"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import Select from "react-select"
 
 import PropTypes from "prop-types"
+import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { register, confirmRegister, login } from "../../store/auth"
@@ -191,27 +192,14 @@ class LoginWindow extends React.Component {
         aria-labelledby="login-dialog-title"
       >
         <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
-        <CircularProgress
-          className="login-window-loading"
-          style={(() => {
-            if (!this.props.store.auth.loading) {
-              return {
-                display: "none"
-              }
-            }
-          })()}
-          size={60}
-          thickness={4.6}
-        />
-        <div
-          style={(() => {
-            if (this.props.store.auth.loading) {
-              return {
-                visibility: "hidden"
-              }
-            }
-          })()}
-        >
+        <Loader loading={this.props.store.auth.loading}>
+          <CircularProgress
+            className="login-window-loading"
+            size={60}
+            thickness={4.6}
+          />
+        </Loader>
+        <DialogContentWrapper loading={this.props.store.auth.loading}>
           <DialogContent>
             <TextField
               autoFocus
@@ -375,22 +363,10 @@ class LoginWindow extends React.Component {
             })()}
           </DialogContent>
           <DialogActions>
-              {(() => {
-                if (this.props.registering) {
-                  return (
-                    <Button
-                      onClick={() => {
-                        this.setState({
-                          confirmingCode: true,
-                          forgotPassword: false
-                        })
-                      }}
-                    >
-                      Have an authorization code?
-                    </Button>
-                  )
-                } else {
-                  return (
+            {(() => {
+              if (!this.props.registering) {
+                return (
+                  <LeftLinkButton>
                     <Button
                       onClick={() => {
                         this.setState({
@@ -401,9 +377,10 @@ class LoginWindow extends React.Component {
                     >
                       Forgot Password?
                     </Button>
-                  )
-                }
-              })()}
+                  </LeftLinkButton>
+                )
+              }
+            })()}
             <Button onClick={() => this.cancel()}>Cancel</Button>
             <Button
               onClick={() => this.submit()}
@@ -413,11 +390,22 @@ class LoginWindow extends React.Component {
               Submit
             </Button>
           </DialogActions>
-        </div>
+        </DialogContentWrapper>
       </Dialog>
     )
   }
 }
+
+const Loader = styled.div`
+  margin: auto;
+  display: ${props => (props.loading ? "block" : "none")};
+`
+const DialogContentWrapper = styled.div`
+  visibility: ${props => (props.loading ? "hidden" : "")};
+`
+const LeftLinkButton = styled.div`
+  margin-right: auto !important;
+`
 
 export default connect(
   mapStateToProps,

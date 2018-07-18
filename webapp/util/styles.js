@@ -1,17 +1,19 @@
-import purple from "@material-ui/core/colors/purple"
-import lightBlue from "@material-ui/core/colors/lightBlue"
+// import purple from "@material-ui/core/colors/purple"
+// import lightBlue from "@material-ui/core/colors/lightBlue"
+import red from "@material-ui/core/colors/red"
+import orange from "@material-ui/core/colors/orange"
 
 export const theme = {
   palette: {
     primary: {
-      light: lightBlue[300],
-      main: lightBlue[500],
-      dark: lightBlue[700],
+      light: red[300],
+      main: red[500],
+      dark: red[700],
     },
     secondary: {
-      light: purple[300],
-      main: purple[500],
-      dark: purple[700],
+      light: orange[300],
+      main: orange[500],
+      dark: orange[700],
     },
   },
 }

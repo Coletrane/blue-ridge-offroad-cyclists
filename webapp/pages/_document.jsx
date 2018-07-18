@@ -1,9 +1,17 @@
 import React from "react"
 import Document, { Head, Main, NextScript } from "next/document"
 
-import "./_document.css"
+import styled, { ServerStyleSheet } from "styled-components"
 
 class RIMBADocument extends Document {
+  static getInitialProps({ renderPage }) {
+    const sheet = new ServerStyleSheet()
+    const page = renderPage(App => props =>
+      sheet.collectStyles(<App {...props} />)
+    )
+    const styleTags = sheet.getStyleElement()
+    return { ...page, styleTags }
+  }
 
   render() {
     return (
@@ -23,14 +31,34 @@ class RIMBADocument extends Document {
             rel="stylesheet"
           />
           <link rel="stylesheet" href="/_next/static/style.css" />
+          {this.props.styleTags}
         </Head>
-        <body>
+        <RIMBABody>
           <Main />
           <NextScript />
-        </body>
+        </RIMBABody>
       </html>
     )
   }
 }
+
+const RIMBABody = styled.body`
+  margin: 0;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Exo 2", sans-serif;
+  }
+
+  p,
+  div,
+  span {
+    font-family: "IBM Plex Mono", monospace;
+  }
+`
 
 export default RIMBADocument

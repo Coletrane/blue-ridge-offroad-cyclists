@@ -16,7 +16,7 @@ export default {
       email: user.email
     }
     if (user.phone) {
-      attributes.phone = user.phone
+      attributes["phone_number"] = user.phone
     }
 
     try {
