@@ -3,17 +3,29 @@
 import red from "@material-ui/core/colors/red"
 import orange from "@material-ui/core/colors/orange"
 
+export const fonts = {
+  IBMPlexMono: {
+    name: "IBM Plex Mono",
+    style: "monospace"
+  }
+}
+
 export const theme = {
   palette: {
     primary: {
       light: red[300],
       main: red[500],
-      dark: red[700],
+      dark: red[700]
     },
     secondary: {
       light: orange[300],
       main: orange[500],
-      dark: orange[700],
-    },
+      dark: orange[700]
+    }
   },
+  typography: {
+    fontFamily: Object.keys(fonts)
+      .map(font => fonts[font].name)
+      .join(",")
+  }
 }

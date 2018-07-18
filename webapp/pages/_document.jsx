@@ -54,11 +54,11 @@ const RIMBABody = styled.body`
     font-family: "Exo 2", sans-serif;
   }
 
-  p,
-  div,
-  span {
-    font-family: "IBM Plex Mono", monospace;
-  }
+  //p,
+  //div,
+  //span {
+  //  font-family: , monospace;
+  //}
 `
 
 export default RIMBADocument

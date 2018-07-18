@@ -8,7 +8,8 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import MenuItem from "@material-ui/core/MenuItem"
 import CircularProgress from "@material-ui/core/CircularProgress"
-import Select from "react-select"
+import NativeSelect from "@material-ui/core/NativeSelect"
+import Typography from "@material-ui/core/Typography"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -64,7 +65,7 @@ class LoginWindow extends React.Component {
       addressValid: false,
       city: "",
       cityValid: false,
-      state: usStates[0],
+      state: usStates.find(state => state.abbreviation === "VA"),
       zipCode: "",
       zipCodeValid: false,
       formSubmitted: false,
@@ -242,29 +243,29 @@ class LoginWindow extends React.Component {
                         })
                       }}
                     />
-                    <Select
-                      value={this.state.state.abbreviation}
-                      autoWidth
-                      id="state"
-                      label="State"
-                      onKeyUp={event => this.typeState(event)}
-                      onBlur={() => this.tearDownTypeState()}
-                      onChange={event => {
-                        this.setState({
-                          state: usStates.find(
-                            state => state.abbreviation === event.target.value
+                    <StateSelect>
+                      <NativeSelect
+                        margin="dense"
+                        value={this.state.state.name}
+                        id="state"
+                        label="State"
+                        onChange={event => {
+                          this.setState({
+                            state: usStates.find(
+                              state => state.name === event.target.value
+                            )
+                          })
+                        }}
+                      >
+                        {usStates.map((state, i) => {
+                          return (
+                            <option key={i} value={state.name}>
+                              {state.name}
+                            </option>
                           )
-                        })
-                      }}
-                    >
-                      {usStates.map((state, i) => {
-                        return (
-                          <MenuItem key={i} value={state.abbreviation}>
-                            {state.abbreviation}
-                          </MenuItem>
-                        )
-                      })}
-                    </Select>
+                        })}
+                      </NativeSelect>
+                    </StateSelect>
                     <TextField
                       margin="dense"
                       id="zipCode"
@@ -284,10 +285,7 @@ class LoginWindow extends React.Component {
               }
             })()}
             {(() => {
-              if (
-                !this.state.registering &&
-                !this.state.forgotPassword
-              ) {
+              if (!this.state.registering && !this.state.forgotPassword) {
                 return (
                   <TextField
                     margin="dense"
@@ -347,6 +345,14 @@ const Loader = styled.div`
 `
 const DialogContentWrapper = styled.div`
   visibility: ${props => (props.loading ? "hidden" : "")};
+`
+const StateSelect = styled.span`
+  div {
+    width: 8.75rem;
+  }
+  select {
+    padding-bottom: 6px;
+  }
 `
 const LeftLinkButton = styled.div`
   margin-right: auto !important;
