@@ -6,10 +6,9 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
-import MenuItem from "@material-ui/core/MenuItem"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import NativeSelect from "@material-ui/core/NativeSelect"
-import Typography from "@material-ui/core/Typography"
+import InputAdornment from "@material-ui/core/InputAdornment"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -199,8 +198,11 @@ class LoginWindow extends React.Component {
                       error={this.state.formSubmitted && !this.state.phoneValid}
                       onChange={event => {
                         this.setState({
-                          phone: event.target.value
+                          phone: `+1${event.target.value}`
                         })
+                      }}
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start">+1</InputAdornment>,
                       }}
                     />
                     <TextField

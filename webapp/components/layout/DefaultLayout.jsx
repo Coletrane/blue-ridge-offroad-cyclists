@@ -3,9 +3,6 @@ import Head from "next/head"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Button from "@material-ui/core/Button"
-import IconButton from "@material-ui/core/IconButton"
-import MenuIcon from "@material-ui/icons/Menu"
-import lightBlue from "@material-ui/core/colors/lightBlue"
 
 import LoginWindow from "./LoginWindow"
 import Notifications from "./Notifications"
@@ -43,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
 class DefaultLayout extends React.Component {
   static propTypes = {
     title: PropTypes.string,
-    children: PropTypes.element
+    children: PropTypes.arrayOf(PropTypes.element)
   }
   static defaultProps = {
     title: "Roanoke International Mountain Biking Association"
