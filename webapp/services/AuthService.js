@@ -50,11 +50,13 @@ export default {
 
   login: async (email, password) => {
     try {
-      const res = await Auth.signIn(email, password)
-      console.log(res)
+      await Auth.signIn(email, password)
+      const user = await Auth.currentAuthenticatedUser()
       return {
-        email: email,
-        password: password
+        email: user.attributes.email,
+        phone: user.attributes.phone_number,
+        name: user.attributes.name,
+        address: user.attributes.address,
       }
     } catch (err) {
       return null

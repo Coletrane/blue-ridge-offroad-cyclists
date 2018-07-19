@@ -22,10 +22,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  logout: () =>
-    dispatch({
-      type: authActionTypes.LOGOUT
-    }),
   openLoginWindow: payload =>
     dispatch({
       type: viewActionTypes.OPEN_LOGIN_WINDOW,
@@ -75,7 +71,7 @@ class DefaultLayout extends React.Component {
             {(() => {
               if (this.props.loggedIn) {
                 return (
-                  <Button color="inherit" onClick={this.logout()}>
+                  <Button color="inherit" onClick={() => {}}>
                     <h3>Logout</h3>
                   </Button>
                 )

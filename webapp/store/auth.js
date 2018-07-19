@@ -1,6 +1,6 @@
 import AuthService from "../services/AuthService"
-import {viewActionTypes} from "./view"
-import {variants, plsContact} from "../components/layout/Notifications"
+import { viewActionTypes } from "./view"
+import { variants, plsContact } from "../components/layout/Notifications"
 
 export const authState = {
   loading: false,
@@ -8,7 +8,7 @@ export const authState = {
   // Maps to what we have in Cognito
   user: {
     email: "",
-    phone: null,
+    phone: "",
     name: "",
     address: ""
   }
@@ -19,7 +19,7 @@ export const authActionTypes = {
   LOGIN: "LOGIN",
   REGISTER: "REGISTER",
   FORGOT_PASSWORD: "FORGOT_PASSWORD",
-  LOGOUT: "LOGOUT",
+  LOGOUT: "LOGOUT"
 }
 const _authActionTypes = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
@@ -35,7 +35,6 @@ export const register = user => async dispatch => {
   dispatch({
     type: authActionTypes.REGISTER
   })
-
 
   const registeredUser = await AuthService.register(user)
   if (registeredUser) {
@@ -85,7 +84,7 @@ export const forgotPassword = email => async dispatch => {
     })
   } catch (err) {
     dispatch({
-      type:  _authActionTypes.FORGOT_PASSWORD_FAIL
+      type: _authActionTypes.FORGOT_PASSWORD_FAIL
     })
     dispatch({
       type: viewActionTypes.OPEN_NOTIFICATION,
@@ -109,15 +108,16 @@ export const login = (email, password) => async dispatch => {
     type: authActionTypes.LOGIN
   })
 
-  try {
-    const res = AuthService.login(email, password)
+  const user = await AuthService.login(email, password)
+  if (user) {
     dispatch({
-      type: _authActionTypes.LOGIN_SUCCESS
+      type: _authActionTypes.LOGIN_SUCCESS,
+      payload: user
     })
     dispatch({
       type: viewActionTypes.CLOSE_LOGIN_WINDOW
     })
-  } catch (err) {
+  } else {
     dispatch({
       type: _authActionTypes.LOGIN_FAIL
     })
@@ -132,24 +132,6 @@ export const login = (email, password) => async dispatch => {
 
 export const authReducer = (state = authState, action) => {
   switch (action.type) {
-    case authActionTypes.LOGIN:
-      return {
-        ...state,
-        loading: true
-      }
-    case _authActionTypes.LOGIN_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        loggedIn: true,
-        user: action.payload
-      }
-    case _authActionTypes.LOGIN_FAIL:
-      return {
-        ...state,
-        loading: false,
-        loggedIn: false
-      }
     case authActionTypes.REGISTER:
       return {
         ...state,
@@ -175,6 +157,24 @@ export const authReducer = (state = authState, action) => {
         loggedIn: false
       }
     case _authActionTypes.FORGOT_PASSWORD_FAIL:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: false
+      }
+    case authActionTypes.LOGIN:
+      return {
+        ...state,
+        loading: true
+      }
+    case _authActionTypes.LOGIN_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: true,
+        user: action.payload
+      }
+    case _authActionTypes.LOGIN_FAIL:
       return {
         ...state,
         loading: false,
