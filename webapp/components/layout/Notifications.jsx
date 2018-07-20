@@ -41,16 +41,39 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class Notifications extends React.Component {
-  constructor(props) {
-    super(props)
+
+  variant = () => {
+    switch (this.props.store.view.notification.variant) {
+      case variants.error:
+        return {
+          color: red[600],
+          icon: <ErrorIcon />
+        }
+      case variants.success:
+        return {
+          color: green[600],
+          icon: <CheckCircleIcon />
+        }
+
+      case variants.warning:
+        return {
+          color: amber[600],
+          icon: <WarningIcon />
+        }
+
+      case variants.info:
+        return {
+          color: blue[600],
+          icon: <InfoIcon />
+        }
+    }
   }
 
   render() {
     return (
-      <SnackbarWrapper>
+      <SnackbarWrapper color={this.variant().color}>
         <Snackbar
           open={this.props.store.view.notification.open}
-          variant={this.props.store.view.notification.variant}
           // TODO: get this working
           // TransitionComponent={() => {
           //   return (
@@ -65,39 +88,11 @@ class Notifications extends React.Component {
           autoHideDuration={10000}
         >
           <SnackbarContent
-            aria-describedby="client-snackbar"
-            style={(() => {
-              let styles = {}
-              switch (this.props.store.view.notification.variant) {
-                case variants.error:
-                  styles.backgroundColor = red[600]
-                  break
-                case variants.success:
-                  styles.backgroundColor = green[600]
-                  break
-                case variants.warning:
-                  styles.backgroundColor = amber[600]
-                  break
-                case variants.info:
-                  styles.backgroundColor = blue[600]
-                  break
-              }
-              return styles
-            })()}
+            id="notification-snackbar"
+            aria-describedby="notification-content"
             message={
-              <span id="client-snackbar">
-                {(() => {
-                  switch (this.props.store.view.notification.variant) {
-                    case variants.error:
-                      return <ErrorIcon />
-                    case variants.success:
-                      return <CheckCircleIcon />
-                    case variants.warning:
-                      return <WarningIcon />
-                    case variants.info:
-                      return <InfoIcon />
-                  }
-                })()}
+              <span id="notification-content">
+                {this.variant().icon}
                 {this.props.store.view.notification.message}
               </span>
             }
@@ -106,7 +101,7 @@ class Notifications extends React.Component {
                 key="close"
                 aria-label="Close"
                 color="inherit"
-                onClick={() => this.props.closeNotification()}
+                onClick={this.props.closeNotification}
               >
                 <CloseIcon />
               </IconButton>
@@ -119,13 +114,16 @@ class Notifications extends React.Component {
 }
 
 const SnackbarWrapper = styled.div`
-  #client-snackbar {
+  #notification-content {
     display: flex;
     align-items: center;
   }
 
-  #client-snackbar svg {
+  #notification-content svg {
     margin-right: 1rem;
+  }
+  #notification-snackbar {
+    background-color: ${props => props.color};
   }
 `
 

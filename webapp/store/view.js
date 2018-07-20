@@ -1,7 +1,10 @@
 import { variants } from "../components/layout/Notifications"
 
 export const viewState = {
-  loginWindowOpen: false,
+  loginWindow: {
+    open: false,
+    registering: false
+  },
   notification: {
     open: false,
     message: "",
@@ -19,19 +22,25 @@ export const viewActionTypes = {
 export const viewReducer = (state = viewState, action) => {
   switch (action.type) {
     case viewActionTypes.OPEN_LOGIN_WINDOW:
-      if (!state.loginWindowOpen) {
+      if (!state.loginWindow.open) {
         return {
           ...state,
-          loginWindowOpen: true
+          loginWindow: {
+            open: true,
+            registering: action.payload.registering
+          }
         }
       } else {
         return state
       }
     case viewActionTypes.CLOSE_LOGIN_WINDOW:
-      if (state.loginWindowOpen) {
+      if (state.loginWindow.open) {
         return {
           ...state,
-          loginWindowOpen: false
+          loginWindow: {
+            ...state.loginWindow,
+            open: false
+          }
         }
       } else {
         return state

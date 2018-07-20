@@ -8,7 +8,9 @@ export const authState = {
   // Maps to what we have in Cognito
   user: {
     email: "",
+    email_verified: false,
     phone: "",
+    phone_verified: false,
     name: "",
     address: ""
   }
@@ -19,7 +21,8 @@ export const authActionTypes = {
   LOGIN: "LOGIN",
   REGISTER: "REGISTER",
   FORGOT_PASSWORD: "FORGOT_PASSWORD",
-  LOGOUT: "LOGOUT"
+  LOGOUT: "LOGOUT",
+  CHECK_SESSION: "CHECK_SESSION"
 }
 const _authActionTypes = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
@@ -27,7 +30,9 @@ const _authActionTypes = {
   REGISTER_SUCCESS: "REGISTER_SUCCESS",
   REGISTER_FAIL: "REGISTER_FAIL",
   FORGOT_PASSWORD_SUCCESS: "FORGOT_PASSWORD_SUCCESS",
-  FORGOT_PASSWORD_FAIL: "FORGOT_PASSWORD_FAIL"
+  FORGOT_PASSWORD_FAIL: "FORGOT_PASSWORD_FAIL",
+  CHECK_SESSION_SUCCESS: "CHECK_SESSION_SUCCESS",
+  CHECK_SESSION_FAIL: "CHECK_SESSION_FAIL"
 }
 
 // TODO: check all the payloads from AuthService
@@ -41,8 +46,10 @@ export const register = user => async dispatch => {
     dispatch({
       type: _authActionTypes.REGISTER_SUCCESS,
       payload: {
-        email: registeredUser.email,
-        name: registeredUser.name
+        user: {
+          email: registeredUser.email,
+          name: registeredUser.name
+        }
       }
     })
     dispatch({
@@ -112,7 +119,9 @@ export const login = (email, password) => async dispatch => {
   if (user) {
     dispatch({
       type: _authActionTypes.LOGIN_SUCCESS,
-      payload: user
+      payload: {
+        user: user
+      }
     })
     dispatch({
       type: viewActionTypes.CLOSE_LOGIN_WINDOW
@@ -130,6 +139,26 @@ export const login = (email, password) => async dispatch => {
   }
 }
 
+export const checkLoggedIn = () => async dispatch => {
+  dispatch({
+    type: authActionTypes.CHECK_SESSION
+  })
+
+  const user = await AuthService.getLoggedInUser()
+  if (user) {
+    dispatch({
+      type: _authActionTypes.CHECK_SESSION_SUCCESS,
+      payload: {
+        user: user
+      }
+    })
+  } else {
+    dispatch({
+      type: _authActionTypes.CHECK_SESSION_FAIL
+    })
+  }
+}
+
 export const authReducer = (state = authState, action) => {
   switch (action.type) {
     case authActionTypes.REGISTER:
@@ -142,7 +171,7 @@ export const authReducer = (state = authState, action) => {
         ...state,
         loading: false,
         loggedIn: false,
-        user: action.payload
+        user: action.payload.user
       }
     case _authActionTypes.REGISTER_FAIL:
       return {
@@ -172,7 +201,7 @@ export const authReducer = (state = authState, action) => {
         ...state,
         loading: false,
         loggedIn: true,
-        user: action.payload
+        user: action.payload.user
       }
     case _authActionTypes.LOGIN_FAIL:
       return {
@@ -183,6 +212,25 @@ export const authReducer = (state = authState, action) => {
     case authActionTypes.LOGOUT:
       return {
         ...state
+      }
+    case authActionTypes.CHECK_SESSION:
+      return {
+        ...state,
+        loading: true,
+        loggedIn: false
+      }
+    case _authActionTypes.CHECK_SESSION_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: true,
+        user: action.payload.user
+      }
+    case _authActionTypes.CHECK_SESSION_FAIL:
+      return {
+        ...state,
+        loading: false,
+        loggedin: false
       }
     default:
       return state

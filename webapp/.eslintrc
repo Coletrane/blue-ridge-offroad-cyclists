@@ -18,7 +18,14 @@
     "react/no-this-in-sfc": "error",
     "react/no-access-state-in-setstate": "error",
     "react/no-direct-mutation-state": "error",
-    "class-methods-use-this": "warn",
+    "class-methods-use-this": "error",
+    "react/no-unused-state": "error",
+    "react/no-will-update-set-state": "error",
+    "react/no-is-mounted": "error",
+    "react/prefer-stateless-function": "error",
+    "react/void-dom-elements-no-children": "error",
+    "react/jsx-no-bind": "error",
+    "react/jsx-curly-brace-presence": "error",
     "react/prop-types": [0]
   }
 }

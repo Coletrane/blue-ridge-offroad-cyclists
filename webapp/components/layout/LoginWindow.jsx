@@ -24,10 +24,8 @@ import isPostalCode from "validator/lib/isPostalCode"
 import isMobilePhone from "validator/lib/isMobilePhone"
 
 const mapStateToProps = state => ({
-  store: {
-    auth: state.auth,
-    view: state.view
-  }
+  auth: state.auth,
+  view: state.view
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -45,9 +43,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class LoginWindow extends React.Component {
-  static propTypes = {
-    registering: PropTypes.bool.isRequired
-  }
 
   constructor(props) {
     super(props)
@@ -68,12 +63,11 @@ class LoginWindow extends React.Component {
       zipCode: "",
       zipCodeValid: false,
       formSubmitted: false,
-      forgotPassword: false,
-      typedState: ""
+      forgotPassword: false
     }
   }
 
-  cancel() {
+  cancel = () => {
     if (this.state.forgotPassword) {
       this.setState({
         forgotPassword: false
@@ -83,30 +77,10 @@ class LoginWindow extends React.Component {
     }
   }
 
-  // TODO: refactor these into pure functions
-  validateInput(callback) {
-    const specialCharacters = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/
-    const newState = {
-      emailValid: isEmail(this.state.email || " "),
-      passwordValid:
-        this.state.password.length >= 8 &&
-        specialCharacters.test(this.state.password),
-      phoneValid: isMobilePhone(this.state.phone || " ", "en-US"),
-      nameValid: this.state.name.split(" ").length > 1,
-      addressValid: this.state.address,
-      cityValid: this.state.city,
-      zipCodeValid: isPostalCode(this.state.zipCode || " ", "US")
-    }
-
-    newState.formSubmitted = true
-
-    this.setState(newState, callback)
-  }
-
-  submit() {
+  submit = () => {
     this.validateInput(() => {
       if (
-        this.props.registering &&
+        this.props.view.loginWindow.registering &&
         this.state.emailValid &&
         this.state.phoneValid &&
         this.state.passwordValid &&
@@ -124,7 +98,7 @@ class LoginWindow extends React.Component {
           phone: this.state.phone
         })
       } else if (
-        !this.props.registering &&
+        !this.props.view.loginWindow.registering &&
         this.state.emailValid &&
         this.state.passwordValid
       ) {
@@ -133,43 +107,69 @@ class LoginWindow extends React.Component {
     })
   }
 
+  // TODO: refactor these into pure functions
+  validateInput(callback) {
+    const specialCharacters = /[ !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
+    const newState = {
+      emailValid: isEmail(this.state.email || " "),
+      passwordValid:
+        this.state.password.length >= 8 &&
+        specialCharacters.test(this.state.password),
+      phoneValid: isMobilePhone(this.state.phone || " ", "en-US"),
+      nameValid: this.state.name.split(" ").length > 1,
+      addressValid: this.state.address,
+      cityValid: this.state.city,
+      zipCodeValid: isPostalCode(this.state.zipCode || " ", "US")
+    }
+
+    newState.formSubmitted = true
+
+    this.setState(newState, callback)
+  }
+
   get title() {
     if (this.state.forgotPassword) {
       return "Recover Password"
-    } else if (this.props.registering) {
+    } else if (this.props.view.loginWindow.registering) {
       return "Register"
     } else {
       return "Login"
     }
   }
 
-  // TODO: get this working
-  typeState(event) {
+  handleBasicInput = event => {
     this.setState({
-      typeState: event.target.value
+      [event.target.id]: event.target.value
     })
   }
-  tearDownTypeState() {
+
+  handlePhoneInput = event => {
     this.setState({
-      typeState: ""
+      phone: `+1${event.target.value}`
+    })
+  }
+
+  forgotPassword = () => {
+    this.setState({
+      forgotPassword: true
     })
   }
 
   render() {
     return (
       <Dialog
-        open={this.props.store.view.loginWindowOpen}
+        open={this.props.view.loginWindow.open}
         aria-labelledby="login-dialog-title"
       >
         <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
-        <Loader loading={this.props.store.auth.loading}>
+        <Loader loading={this.props.auth.loading}>
           <CircularProgress
             className="login-window-loading"
             size={60}
             thickness={4.6}
           />
         </Loader>
-        <DialogContentWrapper loading={this.props.store.auth.loading}>
+        <DialogContentWrapper loading={this.props.auth.loading}>
           <DialogContent>
             <TextField
               autoFocus
@@ -179,159 +179,98 @@ class LoginWindow extends React.Component {
               type="email"
               fullWidth
               error={this.state.formSubmitted && !this.state.emailValid}
-              onChange={event => {
-                this.setState({
-                  email: event.target.value
-                })
-              }}
+              onChange={this.handleBasicInput}
             />
-            {(() => {
-              if (this.props.registering) {
-                return (
-                  <div>
-                    <TextField
-                      margin="dense"
-                      id="phone"
-                      label="Phone"
-                      type="text"
-                      fullWidth
-                      error={this.state.formSubmitted && !this.state.phoneValid}
-                      onChange={event => {
-                        this.setState({
-                          phone: `+1${event.target.value}`
-                        })
-                      }}
-                      InputProps={{
-                        startAdornment: <InputAdornment position="start">+1</InputAdornment>,
-                      }}
-                    />
-                    <TextField
-                      margin="dense"
-                      id="name"
-                      label="Name"
-                      type="text"
-                      fullWidth
-                      error={this.state.formSubmitted && !this.state.nameValid}
-                      onChange={event => {
-                        this.setState({
-                          name: event.target.value
-                        })
-                      }}
-                    />
-                    <TextField
-                      margin="dense"
-                      id="address"
-                      label="Address"
-                      type="text"
-                      fullWidth
-                      error={
-                        this.state.formSubmitted && !this.state.addressValid
-                      }
-                      onChange={event => {
-                        this.setState({
-                          address: event.target.value
-                        })
-                      }}
-                    />
-                    <TextField
-                      margin="dense"
-                      id="city"
-                      label="City"
-                      type="text"
-                      error={this.state.formSubmitted && !this.state.cityValid}
-                      onChange={event => {
-                        this.setState({
-                          city: event.target.value
-                        })
-                      }}
-                    />
-                    <StateSelect>
-                      <NativeSelect
-                        margin="dense"
-                        value={this.state.state.name}
-                        id="state"
-                        label="State"
-                        onChange={event => {
-                          this.setState({
-                            state: usStates.find(
-                              state => state.name === event.target.value
-                            )
-                          })
-                        }}
-                      >
-                        {usStates.map((state, i) => {
-                          return (
-                            <option key={i} value={state.name}>
-                              {state.name}
-                            </option>
-                          )
-                        })}
-                      </NativeSelect>
-                    </StateSelect>
-                    <TextField
-                      margin="dense"
-                      id="zipCode"
-                      label="Zip Code"
-                      type="text"
-                      error={
-                        this.state.formSubmitted && !this.state.zipCodeValid
-                      }
-                      onChange={event => {
-                        this.setState({
-                          zipCode: event.target.value
-                        })
-                      }}
-                    />
-                  </div>
-                )
-              }
-            })()}
-            {(() => {
-              if (!this.state.registering && !this.state.forgotPassword) {
-                return (
-                  <TextField
+            {this.props.view.loginWindow.registering && (
+              <div>
+                <TextField
+                  margin="dense"
+                  id="phone"
+                  label="Phone"
+                  type="text"
+                  fullWidth
+                  error={this.state.formSubmitted && !this.state.phoneValid}
+                  onChange={this.handlePhoneInput}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">+1</InputAdornment>
+                    )
+                  }}
+                />
+                <TextField
+                  margin="dense"
+                  id="name"
+                  label="Name"
+                  type="text"
+                  fullWidth
+                  error={this.state.formSubmitted && !this.state.nameValid}
+                  onChange={this.handleBasicInput}
+                />
+                <TextField
+                  margin="dense"
+                  id="address"
+                  label="Address"
+                  type="text"
+                  fullWidth
+                  error={this.state.formSubmitted && !this.state.addressValid}
+                  onChange={this.handleBasicInput}
+                />
+                <TextField
+                  margin="dense"
+                  id="city"
+                  label="City"
+                  type="text"
+                  error={this.state.formSubmitted && !this.state.cityValid}
+                  onChange={this.handleBasicInput}
+                />
+                <StateSelect>
+                  <NativeSelect
                     margin="dense"
-                    id="password"
-                    label="Password"
-                    type="password"
-                    fullWidth
-                    error={
-                      this.state.formSubmitted && !this.state.passwordValid
-                    }
-                    onChange={event => {
-                      this.setState({
-                        password: event.target.value
-                      })
-                    }}
-                  />
-                )
-              }
-            })()}
+                    value={this.state.state.name}
+                    id="state"
+                    label="State"
+                    onChange={this.handleBasicInput}
+                  >
+                    {usStates.map((state, i) => {
+                      return (
+                        <option key={i} value={state.name}>
+                          {state.name}
+                        </option>
+                      )
+                    })}
+                  </NativeSelect>
+                </StateSelect>
+                <TextField
+                  margin="dense"
+                  id="zipCode"
+                  label="Zip Code"
+                  type="text"
+                  error={this.state.formSubmitted && !this.state.zipCodeValid}
+                  onChange={this.handleBasicInput}
+                />
+              </div>
+            )}
+            {!this.state.registering &&
+              !this.state.forgotPassword && (
+                <TextField
+                  margin="dense"
+                  id="password"
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  error={this.state.formSubmitted && !this.state.passwordValid}
+                  onChange={this.handleBasicInput}
+                />
+              )}
           </DialogContent>
           <DialogActions>
-            {(() => {
-              if (!this.props.registering) {
-                return (
-                  <LeftLinkButton>
-                    <Button
-                      onClick={() => {
-                        this.setState({
-                          forgotPassword: true
-                        })
-                      }}
-                    >
-                      Forgot Password?
-                    </Button>
-                  </LeftLinkButton>
-                )
-              }
-            })()}
-            <Button onClick={() => this.cancel()}>Cancel</Button>
-            <Button
-              onClick={() => this.submit()}
-              variant="contained"
-              color="primary"
-            >
+            {!this.props.view.loginWindow.registering && (
+              <LeftLinkButton>
+                <Button onClick={this.forgotPassword}>Forgot Password?</Button>
+              </LeftLinkButton>
+            )}
+            <Button onClick={this.cancel}>Cancel</Button>
+            <Button onClick={this.submit} variant="contained" color="primary">
               Submit
             </Button>
           </DialogActions>

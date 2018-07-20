@@ -12,25 +12,25 @@ import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
-import { authActionTypes } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
-
+import { checkLoggedIn } from "../../store/auth"
 
 const mapStateToProps = state => ({
-  ...state.auth,
-  ...state.view
+  auth: state.auth,
+  view: state.view
 })
 
 const mapDispatchToProps = dispatch => ({
   openLoginWindow: payload =>
     dispatch({
       type: viewActionTypes.OPEN_LOGIN_WINDOW,
-      ...payload
+      payload: {
+        ...payload
+      }
     }),
-  closeLoginWindow: () =>
-    dispatch({
-      type: viewActionTypes.CLOSE_LOGIN_WINDOW
-    })
+  checkLoggedIn: () => {
+    dispatch(checkLoggedIn())
+  }
 })
 
 class DefaultLayout extends React.Component {
@@ -44,18 +44,15 @@ class DefaultLayout extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {
-      registering: false
-    }
+    this.props.checkLoggedIn()
   }
 
-  async openLoginWindow(registering) {
-    await this.setState({
+  openLoginWindow = registering => () => {
+    this.props.openLoginWindow({
       registering: registering
     })
-    this.props.openLoginWindow()
   }
-  closeLoginWindow() {
+  closeLoginWindow = () => {
     this.props.closeLoginWindow()
   }
 
@@ -71,7 +68,7 @@ class DefaultLayout extends React.Component {
             {(() => {
               if (this.props.loggedIn) {
                 return (
-                  <Button color="inherit" onClick={() => {}}>
+                  <Button color="inherit">
                     <h3>Logout</h3>
                   </Button>
                 )
@@ -80,13 +77,13 @@ class DefaultLayout extends React.Component {
                   <div>
                     <Button
                       color="inherit"
-                      onClick={() => this.openLoginWindow(true)}
+                      onClick={this.openLoginWindow(true)}
                     >
                       <h3>Register</h3>
                     </Button>
                     <Button
                       color="inherit"
-                      onClick={() => this.openLoginWindow(false)}
+                      onClick={this.openLoginWindow(false)}
                     >
                       <h3>Login</h3>
                     </Button>
@@ -96,21 +93,20 @@ class DefaultLayout extends React.Component {
             })()}
           </Toolbar>
         </AppBar>
-        <Notifications />
-        <LoginWindow registering={this.state.registering} />
+        {this.props.view.notification.open && <Notifications />}
+        {this.props.view.loginWindow.open && <LoginWindow />}
         {this.props.children}
-        <RIMBAFooter/>
+        <RIMBAFooter />
       </div>
     )
   }
 }
 
 const RIMBATitle = styled.h1`
-    flex: 1;
+  flex: 1;
 `
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DefaultLayout)
-

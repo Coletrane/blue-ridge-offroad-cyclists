@@ -15,29 +15,20 @@ class RIMBAHeader extends React.Component {
   render() {
     return (
       <HeaderWrapper>
-        {(() => {
-          if (this.props.image) {
-            return (
-              <HeaderImage
-                className="header-image"
-                style={{
-                  backgroundImage: `${routes.img}/${this.props.image}`
-                }}
-              />
-            )
-          } else {
-            return (
-              <Carousel>
-                <div>
-                  <img src={`${routes.img}/cove-social.jpg`} />
-                </div>
-              </Carousel>
-            )
-          }
-        })()}
+        {this.props.image && (
+          <HeaderImage backgroundImage={`${routes.img}/${this.props.image}`}/>
+        )}
+        {!this.props.image && (
+          <Carousel>
+            <div>
+              <img src={`${routes.img}/cove-social.jpg`} />
+            </div>
+          </Carousel>
+        )}
       </HeaderWrapper>
     )
   }
+
 }
 
 const HeaderWrapper = styled.header`
@@ -45,5 +36,7 @@ const HeaderWrapper = styled.header`
 `
 const HeaderImage = styled.div`
   width: 100%;
+  background-image: ${props => props.backgroundImage}
 `
+
 export default RIMBAHeader
