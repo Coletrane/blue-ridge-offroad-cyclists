@@ -13,7 +13,7 @@ import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { viewActionTypes } from "../../store/view"
-import { checkLoggedIn } from "../../store/auth"
+import { checkLoggedIn, logout } from "../../store/auth"
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -30,6 +30,9 @@ const mapDispatchToProps = dispatch => ({
     }),
   checkLoggedIn: () => {
     dispatch(checkLoggedIn())
+  },
+  logout: () => {
+    dispatch(logout())
   }
 })
 
@@ -52,9 +55,6 @@ class DefaultLayout extends React.Component {
       registering: registering
     })
   }
-  closeLoginWindow = () => {
-    this.props.closeLoginWindow()
-  }
 
   render() {
     return (
@@ -65,32 +65,23 @@ class DefaultLayout extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <RIMBATitle className="rimba-title">Roanoke IMBA</RIMBATitle>
-            {(() => {
-              if (this.props.loggedIn) {
-                return (
-                  <Button color="inherit">
-                    <h3>Logout</h3>
-                  </Button>
-                )
-              } else {
-                return (
-                  <div>
-                    <Button
-                      color="inherit"
-                      onClick={this.openLoginWindow(true)}
-                    >
-                      <h3>Register</h3>
-                    </Button>
-                    <Button
-                      color="inherit"
-                      onClick={this.openLoginWindow(false)}
-                    >
-                      <h3>Login</h3>
-                    </Button>
-                  </div>
-                )
-              }
-            })()}
+            {!this.props.auth.loading &&
+             this.props.auth.loggedIn && (
+              <Button color="inherit" onClick={this.props.logout}>
+                <h3>Logout</h3>
+              </Button>
+            )}
+            {!this.props.auth.loading &&
+             !this.props.auth.loggedIn && (
+              <div>
+                <Button color="inherit" onClick={this.openLoginWindow(true)}>
+                  <h3>Register</h3>
+                </Button>
+                <Button color="inherit" onClick={this.openLoginWindow(false)}>
+                  <h3>Login</h3>
+                </Button>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
         {this.props.view.notification.open && <Notifications />}

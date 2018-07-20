@@ -10,7 +10,6 @@ import CircularProgress from "@material-ui/core/CircularProgress"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
 
-import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"

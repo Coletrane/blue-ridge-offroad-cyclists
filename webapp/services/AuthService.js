@@ -61,7 +61,15 @@ const getLoggedInUser = async () => {
     const user = await Auth.currentAuthenticatedUser()
     return user.attributes
   } catch (err) {
-    return null
+    return err
+  }
+}
+
+const logout = async () => {
+  try {
+    return await Auth.signOut()
+  } catch (err) {
+    return err
   }
 }
 
@@ -69,5 +77,6 @@ export default {
   register,
   forgotPassword,
   login,
-  getLoggedInUser
+  getLoggedInUser,
+  logout
 }

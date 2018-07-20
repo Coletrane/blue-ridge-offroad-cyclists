@@ -1,6 +1,7 @@
 import AuthService from "../services/AuthService"
 import { viewActionTypes } from "./view"
 import { variants, plsContact } from "../components/layout/Notifications"
+import { notAuthString } from "../../constants"
 
 export const authState = {
   loading: false,
@@ -22,7 +23,7 @@ export const authActionTypes = {
   REGISTER: "REGISTER",
   FORGOT_PASSWORD: "FORGOT_PASSWORD",
   LOGOUT: "LOGOUT",
-  CHECK_SESSION: "CHECK_SESSION"
+  CHECK_LOGGED_IN: "CHECK_LOGGED_IN"
 }
 const _authActionTypes = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
@@ -31,8 +32,8 @@ const _authActionTypes = {
   REGISTER_FAIL: "REGISTER_FAIL",
   FORGOT_PASSWORD_SUCCESS: "FORGOT_PASSWORD_SUCCESS",
   FORGOT_PASSWORD_FAIL: "FORGOT_PASSWORD_FAIL",
-  CHECK_SESSION_SUCCESS: "CHECK_SESSION_SUCCESS",
-  CHECK_SESSION_FAIL: "CHECK_SESSION_FAIL"
+  CHECK_LOGGED_IN_SUCCESS: "CHECK_LOGGED_IN_SUCCESS",
+  CHECK_LOGGED_IN_FAIL: "CHECK_LOGGED_IN_FAIL"
 }
 
 // TODO: check all the payloads from AuthService
@@ -141,24 +142,31 @@ export const login = (email, password) => async dispatch => {
 
 export const checkLoggedIn = () => async dispatch => {
   dispatch({
-    type: authActionTypes.CHECK_SESSION
+    type: authActionTypes.CHECK_LOGGED_IN
   })
 
   const user = await AuthService.getLoggedInUser()
-  if (user) {
+  if (user || user === notAuthString) {
     dispatch({
-      type: _authActionTypes.CHECK_SESSION_SUCCESS,
+      type: _authActionTypes.CHECK_LOGGED_IN_SUCCESS,
       payload: {
+        loggedIn: user !== notAuthString,
         user: user
       }
     })
   } else {
     dispatch({
-      type: _authActionTypes.CHECK_SESSION_FAIL
+      type: _authActionTypes.CHECK_LOGGED_IN_FAIL
     })
   }
 }
 
+export const logout = () => async dispatch => {
+  await AuthService.logout()
+  dispatch({
+    type: authActionTypes.LOGOUT
+  })
+}
 export const authReducer = (state = authState, action) => {
   switch (action.type) {
     case authActionTypes.REGISTER:
@@ -211,22 +219,25 @@ export const authReducer = (state = authState, action) => {
       }
     case authActionTypes.LOGOUT:
       return {
-        ...state
+        ...state,
+        loggedIn: false,
+        user: {
+          ...authState.user
+        }
       }
-    case authActionTypes.CHECK_SESSION:
+    case authActionTypes.CHECK_LOGGED_IN:
       return {
         ...state,
-        loading: true,
-        loggedIn: false
+        loading: true
       }
-    case _authActionTypes.CHECK_SESSION_SUCCESS:
+    case _authActionTypes.CHECK_LOGGED_IN_SUCCESS:
       return {
         ...state,
         loading: false,
-        loggedIn: true,
+        loggedIn: action.payload.loggedIn,
         user: action.payload.user
       }
-    case _authActionTypes.CHECK_SESSION_FAIL:
+    case _authActionTypes.CHECK_LOGGED_IN_FAIL:
       return {
         ...state,
         loading: false,
