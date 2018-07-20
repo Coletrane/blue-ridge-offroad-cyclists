@@ -9,6 +9,9 @@ export const fonts = {
     style: "monospace"
   }
 }
+export const cssFont = (font) => {
+    return `${font.name}, ${font.style}`
+}
 
 export const theme = {
   palette: {

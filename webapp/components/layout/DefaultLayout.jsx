@@ -15,6 +15,8 @@ import { connect } from "react-redux"
 import { viewActionTypes } from "../../store/view"
 import { checkLoggedIn, logout } from "../../store/auth"
 
+import { fonts, cssFont } from "../../util/styles"
+
 const mapStateToProps = state => ({
   auth: state.auth,
   view: state.view
@@ -66,22 +68,28 @@ class DefaultLayout extends React.Component {
           <Toolbar>
             <RIMBATitle className="rimba-title">Roanoke IMBA</RIMBATitle>
             {!this.props.auth.loading &&
-             this.props.auth.loggedIn && (
-              <Button color="inherit" onClick={this.props.logout}>
-                <h3>Logout</h3>
-              </Button>
-            )}
+              this.props.auth.loggedIn && (
+                <div>
+                  <Username>
+                    <div>{this.props.auth.user.name}</div>
+                    <div>{this.props.auth.user.email}</div>
+                  </Username>
+                  <Button color="inherit" onClick={this.props.logout}>
+                    <h3>Logout</h3>
+                  </Button>
+                </div>
+              )}
             {!this.props.auth.loading &&
-             !this.props.auth.loggedIn && (
-              <div>
-                <Button color="inherit" onClick={this.openLoginWindow(true)}>
-                  <h3>Register</h3>
-                </Button>
-                <Button color="inherit" onClick={this.openLoginWindow(false)}>
-                  <h3>Login</h3>
-                </Button>
-              </div>
-            )}
+              !this.props.auth.loggedIn && (
+                <div>
+                  <Button color="inherit" onClick={this.openLoginWindow(true)}>
+                    <h3>Register</h3>
+                  </Button>
+                  <Button color="inherit" onClick={this.openLoginWindow(false)}>
+                    <h3>Login</h3>
+                  </Button>
+                </div>
+              )}
           </Toolbar>
         </AppBar>
         {this.props.view.notification.open && <Notifications />}
@@ -95,6 +103,11 @@ class DefaultLayout extends React.Component {
 
 const RIMBATitle = styled.h1`
   flex: 1;
+`
+const Username = styled.span`
+  font-family: ${cssFont(fonts.IBMPlexMono)};
+  display: inline-block;
+  vertical-align: middle;
 `
 
 export default connect(
