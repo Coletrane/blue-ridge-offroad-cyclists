@@ -4,10 +4,12 @@ import Head from "next/head"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Button from "@material-ui/core/Button"
-
+import Link from "next/link"
 import LoginWindow from "./LoginWindow"
 import Notifications from "./Notifications"
 import RIMBAFooter from "./RIMBAFooter"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faUserEdit } from "@fortawesome/free-solid-svg-icons/faUserEdit"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -61,7 +63,7 @@ class DefaultLayout extends React.Component {
 
   logout = async () => {
     await this.props.logout()
-    Router.push('/')
+    Router.push("/")
   }
 
   render() {
@@ -76,10 +78,15 @@ class DefaultLayout extends React.Component {
             {!this.props.auth.loading &&
               this.props.auth.loggedIn && (
                 <div>
-                  <Username>
-                    <div>{this.props.auth.user.name}</div>
-                    <div>{this.props.auth.user.email}</div>
-                  </Username>
+                  <Link href="/profile">
+                    <span>
+                      <FontAwesomeIcon icon={faUserEdit} />
+                      <Username>
+                        <div>{this.props.auth.user.name}</div>
+                        <div>{this.props.auth.user.email}</div>
+                      </Username>
+                    </span>
+                  </Link>
                   <Button color="inherit" onClick={this.logout}>
                     <h3>Logout</h3>
                   </Button>
@@ -115,6 +122,7 @@ const Username = styled.span`
   display: inline-block;
   vertical-align: middle;
   padding: 0 1rem;
+  cursor: pointer;
 `
 
 export default connect(
