@@ -10,6 +10,7 @@ import CircularProgress from "@material-ui/core/CircularProgress"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
 
+import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
@@ -42,16 +43,21 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class LoginWindow extends React.Component {
+  static propTypes = {
+    email: PropTypes.string,
+    name: PropTypes.string,
+  }
+
   constructor(props) {
     super(props)
     this.state = {
-      email: "",
+      email: this.props.email || "",
       emailValid: false,
       password: "",
       passwordValid: false,
       phone: "",
       phoneValid: false,
-      name: "",
+      name: this.props.name || "",
       nameValid: false,
       address: "",
       addressValid: false,
@@ -61,7 +67,7 @@ class LoginWindow extends React.Component {
       zipCode: "",
       zipCodeValid: false,
       formSubmitted: false,
-      forgotPassword: false
+      forgotPassword: false,
     }
   }
 
@@ -180,6 +186,7 @@ class LoginWindow extends React.Component {
                 type="email"
                 fullWidth
                 error={this.state.formSubmitted && !this.state.emailValid}
+                value={this.state.email}
                 onChange={this.handleBasicInput}
               />
               {this.props.view.loginWindow.registering && (
@@ -205,6 +212,7 @@ class LoginWindow extends React.Component {
                     type="text"
                     fullWidth
                     error={this.state.formSubmitted && !this.state.nameValid}
+                    value={this.state.name}
                     onChange={this.handleBasicInput}
                   />
                   <TextField
@@ -214,6 +222,7 @@ class LoginWindow extends React.Component {
                     type="text"
                     fullWidth
                     error={this.state.formSubmitted && !this.state.addressValid}
+                    value={this.state.address}
                     onChange={this.handleBasicInput}
                   />
                   <TextField
@@ -222,6 +231,7 @@ class LoginWindow extends React.Component {
                     label="City"
                     type="text"
                     error={this.state.formSubmitted && !this.state.cityValid}
+                    value={this.state.city}
                     onChange={this.handleBasicInput}
                   />
                   <StateSelect>
@@ -247,12 +257,14 @@ class LoginWindow extends React.Component {
                     label="Zip Code"
                     type="text"
                     error={this.state.formSubmitted && !this.state.zipCodeValid}
+                    value={this.state.zipCode}
                     onChange={this.handleBasicInput}
                   />
                 </div>
               )}
               {!this.state.registering &&
-                !this.state.forgotPassword && (
+                !this.state.forgotPassword &&
+                !this.props.email && (
                   <TextField
                     margin="dense"
                     id="password"
@@ -262,6 +274,7 @@ class LoginWindow extends React.Component {
                     error={
                       this.state.formSubmitted && !this.state.passwordValid
                     }
+                    value={this.state.password}
                     onChange={this.handleBasicInput}
                   />
                 )}
@@ -289,6 +302,9 @@ class LoginWindow extends React.Component {
 const Loader = styled.div`
   margin: auto;
   display: ${props => (props.loading ? "block" : "none")};
+  position: absolute;
+  left: 45%;
+  top: 37%;
 `
 const DialogContentWrapper = styled.div`
   visibility: ${props => (props.loading ? "hidden" : "")};

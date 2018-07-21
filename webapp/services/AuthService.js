@@ -2,6 +2,7 @@ import Amplify, { Auth } from "aws-amplify"
 
 Amplify.configure({
   Auth: {
+    identityPoolId: process.env.COGNITO_FEDERATED_POOL_ID,
     userPoolId: process.env.COGNITO_POOL_ID,
     userPoolWebClientId: process.env.COGNITO_CLIENT_ID,
     region: "us-east-1"
@@ -36,6 +37,20 @@ const register = async user => {
   }
 }
 
+const loginWithFacebook = async (fbRes, user) => {
+  let res
+  const loggedInUser = await getLoggedInUser()
+  if (!loggedInUser) {
+    res = await Auth.federatedSignIn(
+      "facebook",
+      {
+        token: fbRes.accessToken
+      },
+      user
+    )
+    console.log(res)
+  }
+}
 const forgotPassword = async email => {
   try {
     await Auth.forgotPassword(email)
@@ -59,7 +74,10 @@ const login = async (email, password) => {
 const getLoggedInUser = async () => {
   try {
     const user = await Auth.currentAuthenticatedUser()
-    return user.attributes
+    // Logged in without facebook
+    if (user.attributes) {
+      return user.attributes
+    }
   } catch (err) {
     return err
   }
@@ -75,6 +93,7 @@ const logout = async () => {
 
 export default {
   register,
+  loginWithFacebook,
   forgotPassword,
   login,
   getLoggedInUser,

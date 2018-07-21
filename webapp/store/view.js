@@ -3,7 +3,9 @@ import { variants } from "../components/layout/Notifications"
 export const viewState = {
   loginWindow: {
     open: false,
-    registering: false
+    registering: false,
+    email: "",
+    name: ""
   },
   notification: {
     open: false,
@@ -26,8 +28,8 @@ export const viewReducer = (state = viewState, action) => {
         return {
           ...state,
           loginWindow: {
-            open: true,
-            registering: action.payload.registering
+            ...action.payload,
+            open: true
           }
         }
       } else {

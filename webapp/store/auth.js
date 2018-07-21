@@ -13,7 +13,14 @@ export const authState = {
     phone: "",
     phone_verified: false,
     name: "",
-    address: ""
+    address: "",
+    // facebook login specific properties
+    accessToken: "",
+    expiresIn: -1,
+    id: "",
+    reauthorize_required_in: -1,
+    signedRequest: "",
+    userID: ""
   }
   // role: ""
 }
@@ -78,6 +85,20 @@ export const register = user => async dispatch => {
       type: viewActionTypes.CLOSE_LOGIN_WINDOW
     })
   }
+}
+
+export const loginWithFacebookCallback = fbRes => async dispatch => {
+  if (fbRes.accessToken) {
+    dispatch({
+      type: viewActionTypes.OPEN_LOGIN_WINDOW,
+      payload: {
+        email: fbRes.email,
+        name: fbRes.name,
+        registering: true
+      }
+    })
+  }
+  // const authRes = AuthService.loginWithFacebook(fbRes)
 }
 
 export const forgotPassword = email => async dispatch => {

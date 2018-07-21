@@ -8,6 +8,7 @@ import Link from "next/link"
 import LoginWindow from "./LoginWindow"
 import Notifications from "./Notifications"
 import RIMBAFooter from "./RIMBAFooter"
+import FacebookLogin from "react-facebook-login"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUserEdit } from "@fortawesome/free-solid-svg-icons/faUserEdit"
 
@@ -16,7 +17,12 @@ import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { viewActionTypes } from "../../store/view"
-import { checkLoggedIn, logout } from "../../store/auth"
+import {
+  checkLoggedIn,
+  logout,
+  loginWithFacebookCallback,
+  authActionTypes
+} from "../../store/auth"
 
 import { fonts, cssFont } from "../../util/styles"
 
@@ -38,6 +44,14 @@ const mapDispatchToProps = dispatch => ({
   },
   logout: () => {
     return dispatch(logout())
+  },
+  loginWithFacebook: () => {
+    dispatch({
+      type: authActionTypes.LOGIN
+    })
+  },
+  loginWithFacebookCallback: res => {
+    dispatch(loginWithFacebookCallback(res))
   }
 })
 
@@ -101,12 +115,25 @@ class DefaultLayout extends React.Component {
                   <Button color="inherit" onClick={this.openLoginWindow(false)}>
                     <h3>Login</h3>
                   </Button>
+                  <FacebookLogin
+                    appId={process.env.FACEBOOK_APP_ID}
+                    autoLoad={true}
+                    scope="public_profile,email,user_location"
+                    fields="name,email,location"
+                    onClick={this.props.loginWithFacebook}
+                    callback={this.props.loginWithFacebookCallback}
+                  />
                 </div>
               )}
           </Toolbar>
         </AppBar>
         {this.props.view.notification.open && <Notifications />}
-        {this.props.view.loginWindow.open && <LoginWindow />}
+        {this.props.view.loginWindow.open && (
+          <LoginWindow
+            email={this.props.view.loginWindow.email}
+            name={this.props.view.loginWindow.name}
+          />
+        )}
         {this.props.children}
         <RIMBAFooter />
       </div>
