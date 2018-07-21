@@ -42,7 +42,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class LoginWindow extends React.Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -76,7 +75,9 @@ class LoginWindow extends React.Component {
     }
   }
 
-  submit = () => {
+  submit = event => {
+    event.preventDefault()
+    event.stopPropagation()
     this.validateInput(() => {
       if (
         this.props.view.loginWindow.registering &&
@@ -168,112 +169,118 @@ class LoginWindow extends React.Component {
             thickness={4.6}
           />
         </Loader>
-        <DialogContentWrapper loading={this.props.auth.loading}>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="email"
-              label="Email Address"
-              type="email"
-              fullWidth
-              error={this.state.formSubmitted && !this.state.emailValid}
-              onChange={this.handleBasicInput}
-            />
-            {this.props.view.loginWindow.registering && (
-              <div>
-                <TextField
-                  margin="dense"
-                  id="phone"
-                  label="Phone"
-                  type="text"
-                  fullWidth
-                  error={this.state.formSubmitted && !this.state.phoneValid}
-                  onChange={this.handlePhoneInput}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">+1</InputAdornment>
-                    )
-                  }}
-                />
-                <TextField
-                  margin="dense"
-                  id="name"
-                  label="Name"
-                  type="text"
-                  fullWidth
-                  error={this.state.formSubmitted && !this.state.nameValid}
-                  onChange={this.handleBasicInput}
-                />
-                <TextField
-                  margin="dense"
-                  id="address"
-                  label="Address"
-                  type="text"
-                  fullWidth
-                  error={this.state.formSubmitted && !this.state.addressValid}
-                  onChange={this.handleBasicInput}
-                />
-                <TextField
-                  margin="dense"
-                  id="city"
-                  label="City"
-                  type="text"
-                  error={this.state.formSubmitted && !this.state.cityValid}
-                  onChange={this.handleBasicInput}
-                />
-                <StateSelect>
-                  <NativeSelect
+        <form onSubmit={this.submit}>
+          <DialogContentWrapper loading={this.props.auth.loading}>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="email"
+                label="Email Address"
+                type="email"
+                fullWidth
+                error={this.state.formSubmitted && !this.state.emailValid}
+                onChange={this.handleBasicInput}
+              />
+              {this.props.view.loginWindow.registering && (
+                <div>
+                  <TextField
                     margin="dense"
-                    value={this.state.state.name}
-                    id="state"
-                    label="State"
-                    onChange={this.handleBasicInput}
-                  >
-                    {usStates.map((state, i) => {
-                      return (
-                        <option key={i} value={state.name}>
-                          {state.name}
-                        </option>
+                    id="phone"
+                    label="Phone"
+                    type="text"
+                    fullWidth
+                    error={this.state.formSubmitted && !this.state.phoneValid}
+                    onChange={this.handlePhoneInput}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">+1</InputAdornment>
                       )
-                    })}
-                  </NativeSelect>
-                </StateSelect>
-                <TextField
-                  margin="dense"
-                  id="zipCode"
-                  label="Zip Code"
-                  type="text"
-                  error={this.state.formSubmitted && !this.state.zipCodeValid}
-                  onChange={this.handleBasicInput}
-                />
-              </div>
-            )}
-            {!this.state.registering &&
-              !this.state.forgotPassword && (
-                <TextField
-                  margin="dense"
-                  id="password"
-                  label="Password"
-                  type="password"
-                  fullWidth
-                  error={this.state.formSubmitted && !this.state.passwordValid}
-                  onChange={this.handleBasicInput}
-                />
+                    }}
+                  />
+                  <TextField
+                    margin="dense"
+                    id="name"
+                    label="Name"
+                    type="text"
+                    fullWidth
+                    error={this.state.formSubmitted && !this.state.nameValid}
+                    onChange={this.handleBasicInput}
+                  />
+                  <TextField
+                    margin="dense"
+                    id="address"
+                    label="Address"
+                    type="text"
+                    fullWidth
+                    error={this.state.formSubmitted && !this.state.addressValid}
+                    onChange={this.handleBasicInput}
+                  />
+                  <TextField
+                    margin="dense"
+                    id="city"
+                    label="City"
+                    type="text"
+                    error={this.state.formSubmitted && !this.state.cityValid}
+                    onChange={this.handleBasicInput}
+                  />
+                  <StateSelect>
+                    <NativeSelect
+                      margin="dense"
+                      value={this.state.state.name}
+                      id="state"
+                      label="State"
+                      onChange={this.handleBasicInput}
+                    >
+                      {usStates.map((state, i) => {
+                        return (
+                          <option key={i} value={state.name}>
+                            {state.name}
+                          </option>
+                        )
+                      })}
+                    </NativeSelect>
+                  </StateSelect>
+                  <TextField
+                    margin="dense"
+                    id="zipCode"
+                    label="Zip Code"
+                    type="text"
+                    error={this.state.formSubmitted && !this.state.zipCodeValid}
+                    onChange={this.handleBasicInput}
+                  />
+                </div>
               )}
-          </DialogContent>
-          <DialogActions>
-            {!this.props.view.loginWindow.registering && (
-              <LeftLinkButton>
-                <Button onClick={this.forgotPassword}>Forgot Password?</Button>
-              </LeftLinkButton>
-            )}
-            <Button onClick={this.cancel}>Cancel</Button>
-            <Button onClick={this.submit} variant="contained" color="primary">
-              Submit
-            </Button>
-          </DialogActions>
-        </DialogContentWrapper>
+              {!this.state.registering &&
+                !this.state.forgotPassword && (
+                  <TextField
+                    margin="dense"
+                    id="password"
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    error={
+                      this.state.formSubmitted && !this.state.passwordValid
+                    }
+                    onChange={this.handleBasicInput}
+                  />
+                )}
+            </DialogContent>
+            <DialogActions>
+              {!this.props.view.loginWindow.registering && (
+                <LeftLinkButton>
+                  <Button onClick={this.forgotPassword}>
+                    Forgot Password?
+                  </Button>
+                </LeftLinkButton>
+              )}
+              <Button onClick={this.cancel}>Cancel</Button>
+              <Button type="submit" variant="contained" color="primary">
+                Submit
+              </Button>
+            </DialogActions>
+          </DialogContentWrapper>
+        </form>
       </Dialog>
     )
   }

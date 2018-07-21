@@ -74,13 +74,7 @@ class Notifications extends React.Component {
       <SnackbarWrapper color={this.variant().color}>
         <Snackbar
           open={this.props.store.view.notification.open}
-          // TODO: get this working
-          // TransitionComponent={() => {
-          //   return (
-          //     <Slide direction="down">
-          //     </Slide>
-          //   )
-          // }}
+          onClose={this.props.closeNotification}
           anchorOrigin={{
             vertical: "center",
             horizontal: "center"

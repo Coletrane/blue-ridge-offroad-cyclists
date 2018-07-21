@@ -162,10 +162,10 @@ export const checkLoggedIn = () => async dispatch => {
 }
 
 export const logout = () => async dispatch => {
-  await AuthService.logout()
   dispatch({
     type: authActionTypes.LOGOUT
   })
+  return AuthService.logout()
 }
 export const authReducer = (state = authState, action) => {
   switch (action.type) {

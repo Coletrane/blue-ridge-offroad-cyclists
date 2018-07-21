@@ -1,4 +1,5 @@
 import React from "react"
+import Router from "next/router"
 import Head from "next/head"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
@@ -34,7 +35,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(checkLoggedIn())
   },
   logout: () => {
-    dispatch(logout())
+    return dispatch(logout())
   }
 })
 
@@ -58,6 +59,11 @@ class DefaultLayout extends React.Component {
     })
   }
 
+  logout = async () => {
+    await this.props.logout()
+    Router.push('/')
+  }
+
   render() {
     return (
       <div>
@@ -74,7 +80,7 @@ class DefaultLayout extends React.Component {
                     <div>{this.props.auth.user.name}</div>
                     <div>{this.props.auth.user.email}</div>
                   </Username>
-                  <Button color="inherit" onClick={this.props.logout}>
+                  <Button color="inherit" onClick={this.logout}>
                     <h3>Logout</h3>
                   </Button>
                 </div>
@@ -108,6 +114,7 @@ const Username = styled.span`
   font-family: ${cssFont(fonts.IBMPlexMono)};
   display: inline-block;
   vertical-align: middle;
+  padding: 0 1rem;
 `
 
 export default connect(
