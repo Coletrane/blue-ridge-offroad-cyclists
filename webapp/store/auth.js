@@ -170,7 +170,8 @@ export const login = (email, password) => async dispatch => {
     dispatch({
       type: viewActionTypes.OPEN_NOTIFICATION,
       payload: {
-        message: `There was an error logging you in. ${plsContact}`
+        message: `There was an error logging you in. ${plsContact}`,
+        variant: variants.error
       }
     })
   }
@@ -200,6 +201,13 @@ export const checkLoggedIn = () => async dispatch => {
 export const logout = () => async dispatch => {
   dispatch({
     type: authActionTypes.LOGOUT
+  })
+  dispatch({
+    type: viewActionTypes.OPEN_NOTIFICATION,
+    payload: {
+      message: "You have been successfully logged out.",
+      variant: variants.success
+    }
   })
   return AuthService.logout()
 }
