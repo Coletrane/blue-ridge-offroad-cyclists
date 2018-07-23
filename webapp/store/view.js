@@ -10,7 +10,7 @@ export const viewState = {
   notification: {
     open: false,
     message: "",
-    variant: "",
+    variant: ""
   }
 }
 
@@ -24,28 +24,22 @@ export const viewActionTypes = {
 export const viewReducer = (state = viewState, action) => {
   switch (action.type) {
     case viewActionTypes.OPEN_LOGIN_WINDOW:
-      if (!state.loginWindow.open) {
-        return {
-          ...state,
-          loginWindow: {
-            ...action.payload,
-            open: true
-          }
+      return {
+        ...state,
+        loginWindow: {
+          ...state.loginWindow,
+          ...action.payload,
+          open: true
         }
-      } else {
-        return state
       }
     case viewActionTypes.CLOSE_LOGIN_WINDOW:
-      if (state.loginWindow.open) {
-        return {
-          ...state,
-          loginWindow: {
-            ...state.loginWindow,
-            open: false
-          }
+      return {
+        ...state,
+        loginWindow: {
+          ...state.loginWindow,
+          ...action.payload,
+          open: false
         }
-      } else {
-        return state
       }
     case viewActionTypes.OPEN_NOTIFICATION:
       if (

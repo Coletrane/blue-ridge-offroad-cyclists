@@ -1,4 +1,5 @@
 import Amplify, { Auth } from "aws-amplify"
+import {notAuthString} from "../../constants"
 
 Amplify.configure({
   Auth: {
@@ -37,20 +38,6 @@ const register = async user => {
   }
 }
 
-const loginWithFacebook = async (fbRes, user) => {
-  let res
-  const loggedInUser = await getLoggedInUser()
-  if (!loggedInUser) {
-    res = await Auth.federatedSignIn(
-      "facebook",
-      {
-        token: fbRes.accessToken
-      },
-      user
-    )
-    console.log(res)
-  }
-}
 const forgotPassword = async email => {
   try {
     await Auth.forgotPassword(email)
@@ -93,7 +80,6 @@ const logout = async () => {
 
 export default {
   register,
-  loginWithFacebook,
   forgotPassword,
   login,
   getLoggedInUser,

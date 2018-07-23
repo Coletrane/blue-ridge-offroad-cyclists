@@ -37,6 +37,7 @@ const _authActionTypes = {
   LOGIN_FAIL: "LOGIN_FAIL",
   REGISTER_SUCCESS: "REGISTER_SUCCESS",
   REGISTER_FAIL: "REGISTER_FAIL",
+  REGISTER_WITH_FACEBOOK_CALLBACK: "REGISTER_WITH_FACEBOOK_CALLBACK",
   FORGOT_PASSWORD_SUCCESS: "FORGOT_PASSWORD_SUCCESS",
   FORGOT_PASSWORD_FAIL: "FORGOT_PASSWORD_FAIL",
   CHECK_LOGGED_IN_SUCCESS: "CHECK_LOGGED_IN_SUCCESS",
@@ -87,8 +88,9 @@ export const register = user => async dispatch => {
   }
 }
 
-export const loginWithFacebookCallback = fbRes => async dispatch => {
-  if (fbRes.accessToken) {
+export const registerWithFacebookCallback = fbRes => async dispatch => {
+  console.log(fbRes)
+  if (fbRes.email && fbRes.name) {
     dispatch({
       type: viewActionTypes.OPEN_LOGIN_WINDOW,
       payload: {
@@ -97,8 +99,21 @@ export const loginWithFacebookCallback = fbRes => async dispatch => {
         registering: true
       }
     })
+    dispatch({
+      type: _authActionTypes.REGISTER_WITH_FACEBOOK_CALLBACK
+    })
+  } else {
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: "There was a problem registering with Facebook, please register manually",
+        variant: variants.warning
+      }
+    })
+    dispatch({
+      type: _authActionTypes.REGISTER_FAIL
+    })
   }
-  // const authRes = AuthService.loginWithFacebook(fbRes)
 }
 
 export const forgotPassword = email => async dispatch => {
@@ -188,8 +203,27 @@ export const logout = () => async dispatch => {
   })
   return AuthService.logout()
 }
+
 export const authReducer = (state = authState, action) => {
   switch (action.type) {
+    case authActionTypes.LOGIN:
+      return {
+        ...state,
+        loading: true
+      }
+    case _authActionTypes.LOGIN_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: true,
+        user: action.payload.user
+      }
+    case _authActionTypes.LOGIN_FAIL:
+      return {
+        ...state,
+        loading: false,
+        loggedIn: false
+      }
     case authActionTypes.REGISTER:
       return {
         ...state,
@@ -208,6 +242,11 @@ export const authReducer = (state = authState, action) => {
         loading: false,
         loggedIn: false
       }
+    case _authActionTypes.REGISTER_WITH_FACEBOOK_CALLBACK:
+      return {
+        ...state,
+        loading: false
+      }
     case _authActionTypes.FORGOT_PASSWORD_SUCCESS:
       return {
         ...state,
@@ -215,24 +254,6 @@ export const authReducer = (state = authState, action) => {
         loggedIn: false
       }
     case _authActionTypes.FORGOT_PASSWORD_FAIL:
-      return {
-        ...state,
-        loading: false,
-        loggedIn: false
-      }
-    case authActionTypes.LOGIN:
-      return {
-        ...state,
-        loading: true
-      }
-    case _authActionTypes.LOGIN_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        loggedIn: true,
-        user: action.payload.user
-      }
-    case _authActionTypes.LOGIN_FAIL:
       return {
         ...state,
         loading: false,

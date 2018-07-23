@@ -34,6 +34,7 @@ class RIMBADocument extends Document {
           {this.props.styleTags}
         </Head>
         <RIMBABody>
+          <div id="fb-root" />
           <Main />
           <NextScript />
         </RIMBABody>

@@ -9,12 +9,18 @@ import withMobileDialog from "@material-ui/core/withMobileDialog"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
+import FacebookLogin from "react-facebook-login"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
-import { register, login } from "../../store/auth"
+import {
+  register,
+  login,
+  registerWithFacebookCallback,
+  authActionTypes
+} from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
 import usStates from "../../util/state-codes.json"
@@ -37,27 +43,40 @@ const mapDispatchToProps = dispatch => ({
   },
   closeLoginWindow: () => {
     dispatch({
-      type: viewActionTypes.CLOSE_LOGIN_WINDOW
+      type: viewActionTypes.CLOSE_LOGIN_WINDOW,
+      payload: {
+        name: "",
+        email: "",
+        registering: false
+      }
     })
+  },
+  registerWithFacebook: () => {
+    dispatch({
+      type: authActionTypes.REGISTER
+    })
+  },
+  registerWithFacebookCallback: fbRes => {
+    dispatch(registerWithFacebookCallback(fbRes))
   }
 })
 
 class LoginWindow extends React.Component {
   static propTypes = {
     email: PropTypes.string,
-    name: PropTypes.string,
+    name: PropTypes.string
   }
 
   constructor(props) {
     super(props)
     this.state = {
-      email: this.props.email || "",
+      email: this.props.email,
       emailValid: false,
       password: "",
       passwordValid: false,
       phone: "",
       phoneValid: false,
-      name: this.props.name || "",
+      name: this.props.name,
       nameValid: false,
       address: "",
       addressValid: false,
@@ -67,7 +86,7 @@ class LoginWindow extends React.Component {
       zipCode: "",
       zipCodeValid: false,
       formSubmitted: false,
-      forgotPassword: false,
+      forgotPassword: false
     }
   }
 
@@ -161,6 +180,18 @@ class LoginWindow extends React.Component {
     })
   }
 
+  componentDidUpdate() {
+    if (
+      this.props.email !== this.state.email &&
+      this.props.name !== this.state.name
+    ) {
+      this.setState({
+        email: this.props.email,
+        name: this.props.name
+      })
+    }
+  }
+
   render() {
     return (
       <Dialog
@@ -178,6 +209,15 @@ class LoginWindow extends React.Component {
         <form onSubmit={this.submit}>
           <DialogContentWrapper loading={this.props.auth.loading}>
             <DialogContent>
+              {this.props.view.loginWindow.registering && (
+                <FacebookLogin
+                  appId="434306560403731"
+                  fields="name,email"
+                  onClick={this.props.registerWithFacebook}
+                  callback={this.props.registerWithFacebookCallback}
+                  textButton="Register with Facebook"
+                />
+              )}
               <TextField
                 autoFocus
                 margin="dense"
@@ -262,9 +302,8 @@ class LoginWindow extends React.Component {
                   />
                 </div>
               )}
-              {!this.state.registering &&
-                !this.state.forgotPassword &&
-                !this.props.email && (
+              {!this.props.view.loginWindow.registering &&
+                !this.state.forgotPassword && (
                   <TextField
                     margin="dense"
                     id="password"

@@ -68,28 +68,6 @@ class RIMBApp extends App {
   // }
 
   render() {
-    // if (process.browser) {
-    //   window.fbAsyncInit = () => {
-    //     FB.init({
-    //       appId: process.env.FACEBOOK_APP_ID,
-    //       autoLogAppEvents: true,
-    //       xfbml: true,
-    //       version: "v3.0"
-    //     })
-    //   }
-    //   ;((d, s, id) => {
-    //     let js,
-    //       fjs = d.getElementsByTagName(s)[0]
-    //     if (d.getElementById(id)) {
-    //       return
-    //     }
-    //     js = d.createElement(s)
-    //     js.id = id
-    //     js.src = "https://connect.facebook.net/en_US/sdk.js"
-    //     fjs.parentNode.insertBefore(js, fjs)
-    //   })(document, "script", "facebook-jssdk")
-    // }
-
     const { Component, pageProps, reduxStore } = this.props
     return (
       <Container>

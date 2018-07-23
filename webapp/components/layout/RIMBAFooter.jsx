@@ -27,6 +27,7 @@ const RIMBAFooterWrapper = styled.footer`
   text-align: center;
   box-shadow: 0px -9px 25px 1px rgba(0, 0, 0, 0.75);
   font-family: ${fonts.IBMPlexMono.name}, ${fonts.IBMPlexMono.style};
+  color: white;
 `
 
 export default RIMBAFooter
