@@ -1,3 +1,1 @@
-export default {
-  img: "/static/img"
-}
+export const img = "/static/img"

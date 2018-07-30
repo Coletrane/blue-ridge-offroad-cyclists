@@ -89,7 +89,6 @@ export const register = user => async dispatch => {
 }
 
 export const registerWithFacebookCallback = fbRes => async dispatch => {
-  console.log(fbRes)
   if (fbRes.email && fbRes.name) {
     dispatch({
       type: viewActionTypes.OPEN_LOGIN_WINDOW,

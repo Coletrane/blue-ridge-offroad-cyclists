@@ -5,7 +5,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"
 import PropTypes from "prop-types"
 import styled from "styled-components"
 
-import routes from "../../util/routes"
+import {img} from "../../util/routes"
 
 class RIMBAHeader extends React.Component {
   static propTypes = {
@@ -16,12 +16,12 @@ class RIMBAHeader extends React.Component {
     return (
       <HeaderWrapper>
         {this.props.image && (
-          <HeaderImage backgroundImage={`${routes.img}/${this.props.image}`}/>
+          <HeaderImage backgroundImage={`${img}/${this.props.image}`}/>
         )}
         {!this.props.image && (
           <Carousel>
             <div>
-              <img src={`${routes.img}/cove-social.jpg`} />
+              <img src={`${img}/cove-social.jpg`} />
             </div>
           </Carousel>
         )}

@@ -16,11 +16,9 @@ import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { viewActionTypes } from "../../store/view"
-import {
-  checkLoggedIn,
-  logout,
-  authActionTypes
-} from "../../store/auth"
+import { checkLoggedIn, logout, authActionTypes } from "../../store/auth"
+
+import { img } from "../../util/routes"
 
 import { fonts, cssFont } from "../../util/styles"
 
@@ -42,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
   },
   logout: () => {
     return dispatch(logout())
-  },
+  }
 })
 
 class DefaultLayout extends React.Component {
@@ -78,6 +76,7 @@ class DefaultLayout extends React.Component {
         </Head>
         <AppBar position="static">
           <Toolbar>
+            <RIMBALogo src={`${img}/roanoke-chapter-white.png`} />
             <RIMBATitle className="rimba-title">Roanoke IMBA</RIMBATitle>
             {!this.props.auth.loading &&
               this.props.auth.loggedIn && (
@@ -123,6 +122,10 @@ class DefaultLayout extends React.Component {
   }
 }
 
+const RIMBALogo = styled.img`
+  width: 6rem;
+  padding: .25rem;
+`
 const RIMBATitle = styled.h1`
   flex: 1;
 `
