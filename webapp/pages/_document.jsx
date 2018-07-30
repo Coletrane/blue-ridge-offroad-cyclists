@@ -2,14 +2,18 @@ import React from "react"
 import Document, { Head, Main, NextScript } from "next/document"
 
 import styled, { ServerStyleSheet } from "styled-components"
+import { checkLoggedIn } from "../store/auth"
 
 class RIMBADocument extends Document {
-  static getInitialProps({ renderPage }) {
+  static getInitialProps({ renderPage, reduxStore }) {
     const sheet = new ServerStyleSheet()
     const page = renderPage(App => props =>
       sheet.collectStyles(<App {...props} />)
     )
     const styleTags = sheet.getStyleElement()
+
+    reduxStore.dispatch(checkLoggedIn())
+
     return { ...page, styleTags }
   }
 

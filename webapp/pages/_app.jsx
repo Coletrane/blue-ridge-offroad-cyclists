@@ -57,15 +57,15 @@ class RIMBApp extends App {
     }
   }
 
-  // static async getInitialProps({ Component, router, ctx }) {
-  //   let pageProps = {}
-  //
-  //   if (Component.getInitialProps) {
-  //     pageProps = await Component.getInitialProps(ctx)
-  //   }
-  //
-  //   return { pageProps }
-  // }
+  static async getInitialProps({ Component, context }) {
+    let pageProps = {}
+
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(context)
+    }
+
+    return { pageProps }
+  }
 
   render() {
     const { Component, pageProps, reduxStore } = this.props

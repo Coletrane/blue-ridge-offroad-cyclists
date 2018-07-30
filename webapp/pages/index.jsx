@@ -4,10 +4,7 @@ import RIMBAHeader from "../components/layout/RIMBAHeader"
 
 import styled from "styled-components"
 
-import {Auth} from "aws-amplify"
-
 const Index = () => {
-
 
   return (
     <DefaultLayout>

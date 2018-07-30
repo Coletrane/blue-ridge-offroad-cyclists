@@ -16,7 +16,7 @@ import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { viewActionTypes } from "../../store/view"
-import { checkLoggedIn, logout, authActionTypes } from "../../store/auth"
+import { logout } from "../../store/auth"
 
 import { img } from "../../util/routes"
 
@@ -35,9 +35,6 @@ const mapDispatchToProps = dispatch => ({
         ...payload
       }
     }),
-  checkLoggedIn: () => {
-    dispatch(checkLoggedIn())
-  },
   logout: () => {
     return dispatch(logout())
   }
@@ -50,11 +47,6 @@ class DefaultLayout extends React.Component {
   }
   static defaultProps = {
     title: "Roanoke International Mountain Biking Association"
-  }
-
-  constructor(props) {
-    super(props)
-    this.props.checkLoggedIn()
   }
 
   openLoginWindow = registering => () => {
