@@ -22,7 +22,9 @@ class UserInfoForm extends React.Component {
     address: PropTypes.string,
     city: PropTypes.string,
     state: PropTypes.string,
-    zipCode: PropTypes.string
+    zipCode: PropTypes.string,
+    registering: PropTypes.bool,
+    forgotPassword: PropTypes.bool
   }
 
   constructor(props) {
@@ -44,26 +46,19 @@ class UserInfoForm extends React.Component {
       zipCode: this.props.zipCode,
       zipCodeValid: false,
       formSubmitted: false,
-      forgotPassword: false
     }
     this.validateInput = this.validateInput.bind(this)
   }
 
   componentDidMount() {
     if (process.browser) {
-      document.addEventListener(
-        userInfoFormSubmit,
-        this.validateInput
-      )
+      document.addEventListener(userInfoFormSubmit, this.validateInput)
     }
   }
 
   componentWillUnmount() {
     if (process.browser) {
-      document.removeEventListener(
-        userInfoFormSubmit,
-        this.validateInput
-      )
+      document.removeEventListener(userInfoFormSubmit, this.validateInput)
     }
   }
 
@@ -83,7 +78,10 @@ class UserInfoForm extends React.Component {
 
     newState.formSubmitted = true
 
-    this.setState(newState, this.props.onValidate)
+    this.setState(newState, this.props.onValidate({
+      ...newState,
+      ...this.state
+    }))
   }
 
   handleBasicInput = event => {
@@ -112,7 +110,7 @@ class UserInfoForm extends React.Component {
 
   render() {
     return (
-      <div>
+      <UserInfoFormWrapper fullWidth={this.props.forgotPassword}>
         <TextField
           autoFocus
           margin="dense"
@@ -197,8 +195,7 @@ class UserInfoForm extends React.Component {
             />
           </div>
         )}
-        {!this.props.registering &&
-          !this.state.forgotPassword && (
+        {!this.props.forgotPassword && (
             <TextField
               margin="dense"
               id="password"
@@ -210,11 +207,14 @@ class UserInfoForm extends React.Component {
               onChange={this.handleBasicInput}
             />
           )}
-      </div>
+      </UserInfoFormWrapper>
     )
   }
 }
 
+const UserInfoFormWrapper = styled.div`
+  width: ${props => (props.fullWidth ? "26rem" : "")};
+`
 const StateSelect = styled.span`
   div {
     width: 8.75rem;

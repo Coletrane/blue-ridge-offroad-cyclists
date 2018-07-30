@@ -22,6 +22,9 @@ class Profile extends React.Component {
           <h4>{this.props.auth.phone}</h4>
           <h4>{this.props.auth.address}</h4>
         </MainContent>
+        <div>
+
+        </div>
       </DefaultLayout>
     )
   }

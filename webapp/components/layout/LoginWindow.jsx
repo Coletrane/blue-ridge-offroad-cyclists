@@ -87,31 +87,31 @@ class LoginWindow extends React.Component {
     }
   }
 
-  validateInputCallback = () => {
+  validateInputCallback = (state) => {
     if (
-      this.props.registering &&
-      this.state.emailValid &&
-      this.state.phoneValid &&
-      this.state.passwordValid &&
-      this.state.nameValid &&
-      this.state.addressValid &&
-      this.state.zipCodeValid
+      this.props.view.loginWindow.registering &&
+      state.emailValid &&
+      state.phoneValid &&
+      state.passwordValid &&
+      state.nameValid &&
+      state.addressValid &&
+      state.zipCodeValid
     ) {
       this.props.register({
-        email: this.state.email,
-        password: this.state.password,
-        name: this.state.name,
-        address: `${this.state.address} ${this.state.city} ${
-          this.state.state.abbreviation
-          } ${this.state.zipCode}`,
-        phone: this.state.phone
+        email: state.email,
+        password: state.password,
+        name: state.name,
+        address: `${state.address} ${state.city} ${
+          state.state.abbreviation
+          } ${state.zipCode}`,
+        phone: state.phone
       })
     } else if (
-      !this.props.registering &&
-      this.state.emailValid &&
-      this.state.passwordValid
+      !this.props.view.loginWindow.registering &&
+      state.emailValid &&
+      state.passwordValid
     ) {
-      this.props.login(this.state.email, this.state.password)
+      this.props.login(state.email, state.password)
     }
   }
 
@@ -158,10 +158,11 @@ class LoginWindow extends React.Component {
                 />
               )}
               <UserInfoForm
-                registering={this.props.view.loginWindow.registering}
+                onValidate={this.validateInputCallback}
                 email={this.props.email}
                 name={this.props.name}
-                onValidate={this.validateInputCallback}
+                registering={this.props.view.loginWindow.registering}
+                forgotPassword={this.state.forgotPassword}
               />
             </DialogContent>
             <DialogActions>
