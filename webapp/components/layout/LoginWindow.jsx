@@ -1,15 +1,13 @@
 import React from "react"
 import Button from "@material-ui/core/Button"
-import TextField from "@material-ui/core/TextField"
 import Dialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import CircularProgress from "@material-ui/core/CircularProgress"
-import NativeSelect from "@material-ui/core/NativeSelect"
-import InputAdornment from "@material-ui/core/InputAdornment"
 import FacebookLogin from "react-facebook-login"
+import UserInfoForm from "../UserInfoForm"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -23,11 +21,7 @@ import {
 } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
-import usStates from "../../util/state-codes.json"
-
-import isEmail from "validator/lib/isEmail"
-import isPostalCode from "validator/lib/isPostalCode"
-import isMobilePhone from "validator/lib/isMobilePhone"
+import {userInfoFormSubmit} from "../../util/event-types"
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -70,23 +64,8 @@ class LoginWindow extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      email: this.props.email,
-      emailValid: false,
-      password: "",
-      passwordValid: false,
-      phone: "",
-      phoneValid: false,
-      name: this.props.name,
-      nameValid: false,
-      address: "",
-      addressValid: false,
-      city: "",
-      cityValid: false,
-      state: usStates.find(state => state.abbreviation === "VA"),
-      zipCode: "",
-      zipCodeValid: false,
-      formSubmitted: false,
-      forgotPassword: false
+      forgotPassword: false,
+
     }
   }
 
@@ -103,53 +82,37 @@ class LoginWindow extends React.Component {
   submit = event => {
     event.preventDefault()
     event.stopPropagation()
-    this.validateInput(() => {
-      if (
-        this.props.view.loginWindow.registering &&
-        this.state.emailValid &&
-        this.state.phoneValid &&
-        this.state.passwordValid &&
-        this.state.nameValid &&
-        this.state.addressValid &&
-        this.state.zipCodeValid
-      ) {
-        this.props.register({
-          email: this.state.email,
-          password: this.state.password,
-          name: this.state.name,
-          address: `${this.state.address} ${this.state.city} ${
-            this.state.state.abbreviation
-          } ${this.state.zipCode}`,
-          phone: this.state.phone
-        })
-      } else if (
-        !this.props.view.loginWindow.registering &&
-        this.state.emailValid &&
-        this.state.passwordValid
-      ) {
-        this.props.login(this.state.email, this.state.password)
-      }
-    })
+    if (process.browser) {
+      document.dispatchEvent(new Event(userInfoFormSubmit))
+    }
   }
 
-  // TODO: refactor these into pure functions
-  validateInput(callback) {
-    const specialCharacters = /[ !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
-    const newState = {
-      emailValid: isEmail(this.state.email || " "),
-      passwordValid:
-        this.state.password.length >= 8 &&
-        specialCharacters.test(this.state.password),
-      phoneValid: isMobilePhone(this.state.phone || " ", "en-US"),
-      nameValid: this.state.name.split(" ").length > 1,
-      addressValid: this.state.address,
-      cityValid: this.state.city,
-      zipCodeValid: isPostalCode(this.state.zipCode || " ", "US")
+  validateInputCallback = () => {
+    if (
+      this.props.registering &&
+      this.state.emailValid &&
+      this.state.phoneValid &&
+      this.state.passwordValid &&
+      this.state.nameValid &&
+      this.state.addressValid &&
+      this.state.zipCodeValid
+    ) {
+      this.props.register({
+        email: this.state.email,
+        password: this.state.password,
+        name: this.state.name,
+        address: `${this.state.address} ${this.state.city} ${
+          this.state.state.abbreviation
+          } ${this.state.zipCode}`,
+        phone: this.state.phone
+      })
+    } else if (
+      !this.props.registering &&
+      this.state.emailValid &&
+      this.state.passwordValid
+    ) {
+      this.props.login(this.state.email, this.state.password)
     }
-
-    newState.formSubmitted = true
-
-    this.setState(newState, callback)
   }
 
   get title() {
@@ -162,34 +125,10 @@ class LoginWindow extends React.Component {
     }
   }
 
-  handleBasicInput = event => {
-    this.setState({
-      [event.target.id]: event.target.value
-    })
-  }
-
-  handlePhoneInput = event => {
-    this.setState({
-      phone: `+1${event.target.value}`
-    })
-  }
-
   forgotPassword = () => {
     this.setState({
       forgotPassword: true
     })
-  }
-
-  componentDidUpdate() {
-    if (
-      this.props.email !== this.state.email &&
-      this.props.name !== this.state.name
-    ) {
-      this.setState({
-        email: this.props.email,
-        name: this.props.name
-      })
-    }
   }
 
   render() {
@@ -218,105 +157,12 @@ class LoginWindow extends React.Component {
                   textButton="Register with Facebook"
                 />
               )}
-              <TextField
-                autoFocus
-                margin="dense"
-                id="email"
-                label="Email Address"
-                type="email"
-                fullWidth
-                error={this.state.formSubmitted && !this.state.emailValid}
-                value={this.state.email}
-                onChange={this.handleBasicInput}
+              <UserInfoForm
+                registering={this.props.view.loginWindow.registering}
+                email={this.props.email}
+                name={this.props.name}
+                onValidate={this.validateInputCallback}
               />
-              {this.props.view.loginWindow.registering && (
-                <div>
-                  <TextField
-                    margin="dense"
-                    id="phone"
-                    label="Phone"
-                    type="text"
-                    fullWidth
-                    error={this.state.formSubmitted && !this.state.phoneValid}
-                    onChange={this.handlePhoneInput}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">+1</InputAdornment>
-                      )
-                    }}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="name"
-                    label="Name"
-                    type="text"
-                    fullWidth
-                    error={this.state.formSubmitted && !this.state.nameValid}
-                    value={this.state.name}
-                    onChange={this.handleBasicInput}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="address"
-                    label="Address"
-                    type="text"
-                    fullWidth
-                    error={this.state.formSubmitted && !this.state.addressValid}
-                    value={this.state.address}
-                    onChange={this.handleBasicInput}
-                  />
-                  <TextField
-                    margin="dense"
-                    id="city"
-                    label="City"
-                    type="text"
-                    error={this.state.formSubmitted && !this.state.cityValid}
-                    value={this.state.city}
-                    onChange={this.handleBasicInput}
-                  />
-                  <StateSelect>
-                    <NativeSelect
-                      margin="dense"
-                      value={this.state.state.name}
-                      id="state"
-                      label="State"
-                      onChange={this.handleBasicInput}
-                    >
-                      {usStates.map((state, i) => {
-                        return (
-                          <option key={i} value={state.name}>
-                            {state.name}
-                          </option>
-                        )
-                      })}
-                    </NativeSelect>
-                  </StateSelect>
-                  <TextField
-                    margin="dense"
-                    id="zipCode"
-                    label="Zip Code"
-                    type="text"
-                    error={this.state.formSubmitted && !this.state.zipCodeValid}
-                    value={this.state.zipCode}
-                    onChange={this.handleBasicInput}
-                  />
-                </div>
-              )}
-              {!this.props.view.loginWindow.registering &&
-                !this.state.forgotPassword && (
-                  <TextField
-                    margin="dense"
-                    id="password"
-                    label="Password"
-                    type="password"
-                    fullWidth
-                    error={
-                      this.state.formSubmitted && !this.state.passwordValid
-                    }
-                    value={this.state.password}
-                    onChange={this.handleBasicInput}
-                  />
-                )}
             </DialogContent>
             <DialogActions>
               {!this.props.view.loginWindow.registering && (
@@ -347,14 +193,6 @@ const Loader = styled.div`
 `
 const DialogContentWrapper = styled.div`
   visibility: ${props => (props.loading ? "hidden" : "")};
-`
-const StateSelect = styled.span`
-  div {
-    width: 8.75rem;
-  }
-  select {
-    padding-bottom: 6px;
-  }
 `
 const LeftLinkButton = styled.div`
   margin-right: auto !important;
