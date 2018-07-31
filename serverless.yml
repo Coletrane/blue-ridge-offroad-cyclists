@@ -23,44 +23,12 @@ provider:
     DONATIONS_TABLE: ${self:service}-${opt:stage, self:provider.stage}-donations
     
 functions:
-  create:
-    handler: lambda/users/create
+  server:
+    handler: server
     events:
       - http:
-          path: lambda/users
-          method: post
-          cors: true
-
-  list:
-    handler: lambda/users/list
-    events:
-      - http:
-          path: lambda/users
-          method: get
-          cors: true
-
-  get:
-    handler: lambda/users/get
-    events:
-      - http:
-          path: lambda/users/{id}
-          method: get
-          cors: true
-
-  update:
-    handler: lambda/users/update
-    events:
-      - http:
-          path: lambda/users/{id}
-          method: put
-          cors: true
-
-  delete:
-    handler: lambda/users/delete
-    events:
-      - http:
-          path: lambda/users/{id}
-          method: delete
+          path: /
+          method: get, post, put, delete, options
           cors: true
 
 resources:

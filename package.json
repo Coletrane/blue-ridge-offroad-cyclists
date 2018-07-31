@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "webapp": "cd ./webapp && NODE_ENV=production node ./server.js",
-    "build": "next build ./webapp && next export ./webapp",
-    "dev": "next ./webapp"
+    "webapp": "NODE_ENV=production node ./server.js",
+    "build": "next build",
+    "dev": "next",
+    "analyze": "BUNDLE_ANALYZE=both next build"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   },
   "homepage": "https://github.com/Coletrane/rimba-member-manager#readme",
   "dependencies": {
+    "@aws-amplify/auth": "^1.0.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.1",
     "@fortawesome/free-brands-svg-icons": "^5.1.1",
     "@fortawesome/free-solid-svg-icons": "^5.1.1",
@@ -36,7 +38,6 @@
     "@zeit/next-css": "^0.2.0",
     "amazon-cognito-auth-js": "^1.2.4",
     "amazon-cognito-identity-js": "^2.0.14",
-    "aws-amplify": "^0.4.8",
     "aws-sdk": "^2.274.1",
     "aws-serverless-express": "^3.2.0",
     "axios": "^0.18.0",
@@ -62,6 +63,7 @@
     "validator": "^10.4.0"
   },
   "devDependencies": {
+    "@zeit/next-bundle-analyzer": "^0.1.1",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
     "babel-plugin-styled-components": "^1.5.1",
