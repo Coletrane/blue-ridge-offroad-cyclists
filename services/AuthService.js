@@ -1,19 +1,14 @@
 import Auth from "@aws-amplify/auth"
+import {authConfig} from "../constants"
 
-Auth.configure({
-  userPoolId: process.env.COGNITO_POOL_ID,
-  userPoolWebClientId: process.env.COGNITO_CLIENT_ID,
-  region: "us-east-1"
-})
+Auth.configure(authConfig)
 
 const register = async user => {
   const attributes = {
     name: user.name,
     address: user.address,
-    email: user.email
-  }
-  if (user.phone) {
-    attributes["phone_number"] = user.phone
+    email: user.email,
+    phone_number: user.phone_number
   }
 
   try {

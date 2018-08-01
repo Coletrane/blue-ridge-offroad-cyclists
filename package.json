@@ -8,7 +8,8 @@
     "webapp": "NODE_ENV=production node ./server.js",
     "build": "next build",
     "dev": "next",
-    "analyze": "BUNDLE_ANALYZE=both next build"
+    "analyze": "BUNDLE_ANALYZE=both next build",
+    "clean": "rm -rf .next bundles out"
   },
   "repository": {
     "type": "git",

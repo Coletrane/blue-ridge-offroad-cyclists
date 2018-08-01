@@ -6,21 +6,23 @@ import styled from "styled-components"
 import { theme, fonts } from "../../util/styles"
 import { githubUrl } from "../../constants"
 
-const RIMBAFooter = () => {
-  return (
-    <RIMBAFooterWrapper
-      style={{
-        backgroundColor: theme.palette.primary.main
-      }}
-    >
-      <div>Copyright 2018 Cole Inman</div>
-      <div>
-        <Link href={githubUrl}>
-          <a>GitHub</a>
-        </Link>
-      </div>
-    </RIMBAFooterWrapper>
-  )
+class RIMBAFooter extends React.Component {
+  render() {
+    return (
+      <RIMBAFooterWrapper
+        style={{
+          backgroundColor: theme.palette.primary.main
+        }}
+      >
+        <div>Copyright 2018 Cole Inman</div>
+        <div>
+          <Link href={githubUrl}>
+            <a>GitHub</a>
+          </Link>
+        </div>
+      </RIMBAFooterWrapper>
+    )
+  }
 }
 
 const RIMBAFooterWrapper = styled.footer`

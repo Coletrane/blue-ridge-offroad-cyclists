@@ -2,12 +2,14 @@ import React from "react"
 import TextField from "@material-ui/core/TextField"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
+import PasswordPopover from "./PasswordPopover"
 
 import styled from "styled-components"
 import PropTypes from "prop-types"
 
-import usStates from "../util/state-codes.json"
-import { userInfoFormSubmit } from "../util/event-types"
+import usStates from "../../util/state-codes.json"
+import { userInfoFormSubmit } from "../../util/event-types"
+import { splitAddress } from "../../util/functions"
 
 import isEmail from "validator/lib/isEmail"
 import isPostalCode from "validator/lib/isPostalCode"
@@ -19,11 +21,9 @@ class UserInfoForm extends React.Component {
     email: PropTypes.string,
     name: PropTypes.string,
     phone: PropTypes.number,
-    address: PropTypes.string,
-    city: PropTypes.string,
-    state: PropTypes.string,
-    zipCode: PropTypes.string,
+    fullAddress: PropTypes.string,
     registering: PropTypes.bool,
+    editing: PropTypes.bool,
     forgotPassword: PropTypes.bool
   }
 
@@ -34,19 +34,45 @@ class UserInfoForm extends React.Component {
       emailValid: false,
       password: "",
       passwordValid: false,
-      phone: this.props.phone,
+      phone: (() => {
+        if (
+          this.props.phone &&
+          this.props.phone.length === 10 &&
+          this.props.phone.startsWith(1)
+        ) {
+          return this.props.phone.slice(1)
+        } else {
+          return this.props.phone
+        }
+      })(),
       phoneValid: false,
       name: this.props.name,
       nameValid: false,
-      address: this.props.address,
+      address: this.props.fullAddress
+        ? splitAddress(this.props.fullAddress).address
+        : "",
       addressValid: false,
-      city: this.props.city,
+      city: this.props.fullAddress
+        ? splitAddress(this.props.fullAddress).city
+        : "",
       cityValid: false,
-      state: usStates.find(state => state.abbreviation === "VA"),
-      zipCode: this.props.zipCode,
+      state: usStates.find(state => {
+        let searchAbbrev
+        if (this.props.fullAddress) {
+          searchAbbrev = splitAddress(this.props.fullAddress).state
+        } else {
+          searchAbbrev = "VA"
+        }
+        return state.abbreviation === searchAbbrev
+      }),
+      zipCode: this.props.fullAddress
+        ? splitAddress(this.props.fullAddress).zipCode
+        : "",
       zipCodeValid: false,
-      formSubmitted: false
+      formSubmitted: false,
+      passwordFocused: false,
     }
+    this.passwordRef = React.createRef()
     this.validateInput = this.validateInput.bind(this)
   }
 
@@ -62,13 +88,15 @@ class UserInfoForm extends React.Component {
     }
   }
 
-  validateInput = () => {
+  static validPassword = password => {
     const specialCharacters = /[ !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
+    return password.length >= 8 && specialCharacters.test(password)
+  }
+
+  validateInput = () => {
     const newState = {
       emailValid: isEmail(this.state.email || " "),
-      passwordValid:
-        this.state.password.length >= 8 &&
-        specialCharacters.test(this.state.password),
+      passwordValid: UserInfoForm.validPassword(this.state.password),
       phoneValid: isMobilePhone(this.state.phone || " ", "en-US"),
       nameValid: this.state.name.split(" ").length > 1,
       addressValid: this.state.address,
@@ -96,6 +124,17 @@ class UserInfoForm extends React.Component {
   handlePhoneInput = event => {
     this.setState({
       phone: `+1${event.target.value}`
+    })
+  }
+
+  passwordFocused = () => {
+    this.setState({
+      passwordFocused: true
+    })
+  }
+  passwordBlur = () => {
+    this.setState({
+      passwordFocused: false
     })
   }
 
@@ -200,18 +239,27 @@ class UserInfoForm extends React.Component {
             />
           </div>
         )}
-        {!this.props.forgotPassword && (
-          <TextField
-            margin="dense"
-            id="password"
-            label="Password"
-            type="password"
-            fullWidth
-            error={this.state.formSubmitted && !this.state.passwordValid}
-            value={this.state.password}
-            onChange={this.handleBasicInput}
-          />
-        )}
+        {!this.props.forgotPassword &&
+          !this.props.editing && (
+            <div ref={this.passwordRef}>
+              <TextField
+                margin="dense"
+                id="password"
+                label="Password"
+                type="password"
+                fullWidth
+                error={this.state.formSubmitted && !this.state.passwordValid}
+                value={this.state.password}
+                onChange={this.handleBasicInput}
+                onFocus={this.passwordFocused}
+                onBlur={this.passwordBlur}
+              />
+              <PasswordPopover
+                focused={this.state.passwordFocused}
+                anchorEl={this.passwordRef.current}
+              />
+            </div>
+          )}
       </UserInfoFormWrapper>
     )
   }

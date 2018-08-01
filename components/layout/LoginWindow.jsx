@@ -7,7 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import FacebookLogin from "react-facebook-login"
-import UserInfoForm from "../UserInfoForm"
+import UserInfoForm from "../input/UserInfoForm"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -21,7 +21,7 @@ import {
 } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
-import {userInfoFormSubmit} from "../../util/event-types"
+import {submitEvent, userProfileInputValid } from "../../util/functions"
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -79,24 +79,12 @@ class LoginWindow extends React.Component {
     }
   }
 
-  submit = event => {
-    event.preventDefault()
-    event.stopPropagation()
-    if (process.browser) {
-      document.dispatchEvent(new Event(userInfoFormSubmit))
-    }
-  }
+  submit = event => { submitEvent(event) }
 
-  validateInputCallback = (state) => {
-    console.log(state)
+  validateInputCallback = state => {
     if (
       this.props.view.loginWindow.registering &&
-      state.emailValid &&
-      state.phoneValid &&
-      state.passwordValid &&
-      state.nameValid &&
-      state.addressValid &&
-      state.zipCodeValid
+      userProfileInputValid(state)
     ) {
       this.props.register({
         email: state.email,

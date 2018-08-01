@@ -1,27 +1,11 @@
 import AuthService from "../services/AuthService"
 import { viewActionTypes } from "./view"
 import { variants, plsContact } from "../components/layout/Notifications"
+import {userActionTypes} from "./user"
 
 export const authState = {
   loading: false,
   loggedIn: false,
-  // Maps to what we have in Cognito
-  user: {
-    email: "",
-    email_verified: false,
-    phone: "",
-    phone_verified: false,
-    name: "",
-    address: "",
-    // facebook login specific properties
-    accessToken: "",
-    expiresIn: -1,
-    id: "",
-    reauthorize_required_in: -1,
-    signedRequest: "",
-    userID: ""
-  }
-  // role: ""
 }
 
 export const authActionTypes = {
@@ -183,7 +167,12 @@ export const checkLoggedIn = () => async dispatch => {
     dispatch({
       type: _authActionTypes.LOGIN_SUCCESS,
       payload: {
-        loggedIn: true,
+        loggedIn: true
+      }
+    })
+    dispatch({
+      type: userActionTypes.LOGGED_IN,
+      payload: {
         user: user
       }
     })
@@ -197,6 +186,9 @@ export const checkLoggedIn = () => async dispatch => {
 export const logout = () => async dispatch => {
   dispatch({
     type: authActionTypes.LOGOUT
+  })
+  dispatch({
+    type: userActionTypes.LOGGED_OUT
   })
   dispatch({
     type: viewActionTypes.OPEN_NOTIFICATION,
@@ -219,8 +211,7 @@ export const authReducer = (state = authState, action) => {
       return {
         ...state,
         loading: false,
-        loggedIn: true,
-        user: action.payload.user
+        loggedIn: true
       }
     case _authActionTypes.LOGIN_FAIL:
       return {
@@ -237,8 +228,7 @@ export const authReducer = (state = authState, action) => {
       return {
         ...state,
         loading: false,
-        loggedIn: false,
-        user: action.payload.user
+        loggedIn: false
       }
     case _authActionTypes.REGISTER_FAIL:
       return {
@@ -266,10 +256,7 @@ export const authReducer = (state = authState, action) => {
     case authActionTypes.LOGOUT:
       return {
         ...state,
-        loggedIn: false,
-        user: {
-          ...authState.user
-        }
+        loggedIn: false
       }
     case authActionTypes.CHECK_LOGGED_IN:
       return {

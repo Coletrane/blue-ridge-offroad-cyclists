@@ -23,6 +23,7 @@ import { fonts, cssFont } from "../../util/styles"
 
 const mapStateToProps = state => ({
   auth: state.auth,
+  user: state.user,
   view: state.view
 })
 
@@ -76,8 +77,8 @@ class DefaultLayout extends React.Component {
                     <span>
                       <FontAwesomeIcon icon={faUserEdit} />
                       <Username>
-                        <div>{this.props.auth.user.name}</div>
-                        <div>{this.props.auth.user.email}</div>
+                        <div>{this.props.user.name}</div>
+                        <div>{this.props.user.email}</div>
                       </Username>
                     </span>
                   </Link>

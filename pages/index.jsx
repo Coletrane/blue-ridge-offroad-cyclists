@@ -1,6 +1,7 @@
 import React from "react"
 import DefaultLayout from "../components/layout/DefaultLayout"
 import RIMBAHeader from "../components/layout/RIMBAHeader"
+import withLoginCheck from "../components/WithLoginCheck"
 
 import styled from "styled-components"
 
@@ -20,4 +21,4 @@ const Index = () => {
 const MainContent = styled.div`
   padding: 2rem;
 `
-export default Index
+export default withLoginCheck(Index)
