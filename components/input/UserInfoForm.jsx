@@ -7,13 +7,30 @@ import PasswordPopover from "./PasswordPopover"
 import styled from "styled-components"
 import PropTypes from "prop-types"
 
+import { connect } from "react-redux"
+import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
+
 import usStates from "../../util/state-codes.json"
 import { userInfoFormSubmit } from "../../util/event-types"
 import { splitAddress } from "../../util/functions"
-
 import isEmail from "validator/lib/isEmail"
 import isPostalCode from "validator/lib/isPostalCode"
 import isMobilePhone from "validator/lib/isMobilePhone"
+
+const mapStateToProps = state => ({
+  view: state.view
+})
+
+const mapDispatchToProps = dispatch => ({
+  openPasswordPopover: () => {
+    dispatch({
+      type: viewActionTypes.OPEN_PASSWORD_POPOVER,
+      payload: {
+        message: passwordPopoverMessages.requirements
+      }
+    })
+  }
+})
 
 class UserInfoForm extends React.Component {
   static propTypes = {
@@ -70,7 +87,7 @@ class UserInfoForm extends React.Component {
         : "",
       zipCodeValid: false,
       formSubmitted: false,
-      passwordFocused: false,
+      passwordFocused: false
     }
     this.passwordRef = React.createRef()
     this.validateInput = this.validateInput.bind(this)
@@ -104,37 +121,24 @@ class UserInfoForm extends React.Component {
       zipCodeValid: isPostalCode(this.state.zipCode || " ", "US")
     }
 
+    // This is so we can pass +1 in front of the phone number
+    // without upsetting react about a controlled input
+    const onValidateState = {
+      ...this.state,
+      ...newState
+    }
+    if (!this.state.phone.startsWith("+1")) {
+      onValidateState.phone = `+1${this.state.phone}`
+    }
+
     newState.formSubmitted = true
 
-    this.setState(
-      newState,
-      this.props.onValidate({
-        ...this.state,
-        ...newState
-      })
-    )
+    this.setState(newState, this.props.onValidate(onValidateState))
   }
 
   handleBasicInput = event => {
     this.setState({
       [event.target.id]: event.target.value
-    })
-  }
-
-  handlePhoneInput = event => {
-    this.setState({
-      phone: `+1${event.target.value}`
-    })
-  }
-
-  passwordFocused = () => {
-    this.setState({
-      passwordFocused: true
-    })
-  }
-  passwordBlur = () => {
-    this.setState({
-      passwordFocused: false
     })
   }
 
@@ -174,8 +178,7 @@ class UserInfoForm extends React.Component {
               type="text"
               fullWidth
               error={this.state.formSubmitted && !this.state.phoneValid}
-              value={this.state.phone}
-              onChange={this.handlePhoneInput}
+              onChange={this.handleBasicInput}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">+1</InputAdornment>
@@ -251,13 +254,11 @@ class UserInfoForm extends React.Component {
                 error={this.state.formSubmitted && !this.state.passwordValid}
                 value={this.state.password}
                 onChange={this.handleBasicInput}
-                onFocus={this.passwordFocused}
-                onBlur={this.passwordBlur}
+                onFocus={this.props.openPasswordPopover}
               />
-              <PasswordPopover
-                focused={this.state.passwordFocused}
-                anchorEl={this.passwordRef.current}
-              />
+              {this.props.registering && (
+                <PasswordPopover anchorEl={this.passwordRef.current} />
+              )}
             </div>
           )}
       </UserInfoFormWrapper>
@@ -277,4 +278,7 @@ const StateSelect = styled.span`
   }
 `
 
-export default UserInfoForm
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserInfoForm)
