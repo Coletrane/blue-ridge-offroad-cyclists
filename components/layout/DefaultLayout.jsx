@@ -60,6 +60,10 @@ class DefaultLayout extends React.Component {
     Router.push("/")
   }
 
+  goToProfile = () => {
+    Router.push("/profile")
+  }
+
   render() {
     return (
       <div>
@@ -68,21 +72,40 @@ class DefaultLayout extends React.Component {
         </Head>
         <AppBar position="static">
           <Toolbar>
-            <RIMBALogo src={`${img}/roanoke-chapter-white.png`} />
-            <RIMBATitle className="rimba-title">Roanoke IMBA</RIMBATitle>
+            <Link href="/">
+              <a>
+                <RIMBALogo src={`${img}/roanoke-chapter-white.png`} />
+              </a>
+            </Link>
+            <RIMBATitle>
+              <Link href="/">
+                <a>
+                  <h1>Roanoke IMBA</h1>
+                </a>
+              </Link>
+            </RIMBATitle>
+            <AuthToolbar>
             {!this.props.auth.loading &&
               this.props.auth.loggedIn && (
                 <div>
-                  <Link href="/profile">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={this.goToProfile}
+                  >
                     <span>
-                      <FontAwesomeIcon icon={faUserEdit} />
                       <Username>
                         <div>{this.props.user.name}</div>
                         <div>{this.props.user.email}</div>
                       </Username>
+                      <FontAwesomeIcon icon={faUserEdit} />
                     </span>
-                  </Link>
-                  <Button color="inherit" onClick={this.logout}>
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={this.logout}
+                  >
                     <h3>Logout</h3>
                   </Button>
                 </div>
@@ -90,14 +113,23 @@ class DefaultLayout extends React.Component {
             {!this.props.auth.loading &&
               !this.props.auth.loggedIn && (
                 <div>
-                  <Button color="inherit" onClick={this.openLoginWindow(true)}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={this.openLoginWindow(true)}
+                  >
                     <h3>Register</h3>
                   </Button>
-                  <Button color="inherit" onClick={this.openLoginWindow(false)}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={this.openLoginWindow(false)}
+                  >
                     <h3>Login</h3>
                   </Button>
                 </div>
               )}
+            </AuthToolbar>
           </Toolbar>
         </AppBar>
         {this.props.view.notification.open && <Notifications />}
@@ -118,8 +150,23 @@ const RIMBALogo = styled.img`
   width: 6rem;
   padding: 0.25rem;
 `
-const RIMBATitle = styled.h1`
+const RIMBATitle = styled.div`
   flex: 1;
+  a {
+    text-decoration: none;
+    color: white;
+  }
+`
+const AuthToolbar = styled.span`
+  button {
+    height: 4rem;
+  }
+  button:first-child {
+    margin-right: .5rem;
+  }
+  button:last-child {
+    margin-left: .5rem;
+  }
 `
 const Username = styled.span`
   font-family: ${cssFont(fonts.IBMPlexMono)};

@@ -2,7 +2,7 @@ import React from "react"
 import TextField from "@material-ui/core/TextField"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
-import PasswordPopover from "./PasswordPopover"
+import RIMBAPopover from "../layout/RIMBAPopover"
 
 import styled from "styled-components"
 import PropTypes from "prop-types"
@@ -12,7 +12,11 @@ import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
 
 import usStates from "../../util/state-codes.json"
 import { userInfoFormSubmit } from "../../util/event-types"
-import { splitAddress } from "../../util/functions"
+import {
+  validPassword,
+  getFormFieldsState,
+  splitAddress
+} from "../../util/functions"
 import isEmail from "validator/lib/isEmail"
 import isPostalCode from "validator/lib/isPostalCode"
 import isMobilePhone from "validator/lib/isMobilePhone"
@@ -22,9 +26,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  openPasswordPopover: () => {
+  openPopover: () => {
     dispatch({
-      type: viewActionTypes.OPEN_PASSWORD_POPOVER,
+      type: viewActionTypes.OPEN_POPOVER,
       payload: {
         message: passwordPopoverMessages.requirements
       }
@@ -47,50 +51,44 @@ class UserInfoForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      email: this.props.email,
-      emailValid: false,
-      password: "",
-      passwordValid: false,
-      phone: (() => {
-        if (
-          this.props.phone &&
-          this.props.phone.length === 10 &&
-          this.props.phone.startsWith(1)
-        ) {
-          return this.props.phone.slice(1)
-        } else {
-          return this.props.phone
-        }
-      })(),
-      phoneValid: false,
-      name: this.props.name,
-      nameValid: false,
-      address: this.props.fullAddress
-        ? splitAddress(this.props.fullAddress).address
-        : "",
-      addressValid: false,
-      city: this.props.fullAddress
-        ? splitAddress(this.props.fullAddress).city
-        : "",
-      cityValid: false,
-      state: usStates.find(state => {
-        let searchAbbrev
-        if (this.props.fullAddress) {
-          searchAbbrev = splitAddress(this.props.fullAddress).state
-        } else {
-          searchAbbrev = "VA"
-        }
-        return state.abbreviation === searchAbbrev
+      ...getFormFieldsState({
+        email: this.props.email,
+        password: "",
+        phone: (() => {
+          if (
+            this.props.phone &&
+            this.props.phone.length === 10 &&
+            this.props.phone.startsWith(1)
+          ) {
+            return this.props.phone.slice(1)
+          } else {
+            return this.props.phone
+          }
+        })(),
+        name: this.props.name,
+        address: this.props.fullAddress
+          ? splitAddress(this.props.fullAddress).address
+          : "",
+        city: this.props.fullAddress
+          ? splitAddress(this.props.fullAddress).city
+          : "",
+        state: usStates.find(state => {
+          let searchAbbrev
+          if (this.props.fullAddress) {
+            searchAbbrev = splitAddress(this.props.fullAddress).state
+          } else {
+            searchAbbrev = "VA"
+          }
+          return state.abbreviation === searchAbbrev
+        }),
+        zipCode: this.props.fullAddress
+          ? splitAddress(this.props.fullAddress).zipCode
+          : ""
       }),
-      zipCode: this.props.fullAddress
-        ? splitAddress(this.props.fullAddress).zipCode
-        : "",
-      zipCodeValid: false,
       formSubmitted: false,
       passwordFocused: false
     }
     this.passwordRef = React.createRef()
-    this.validateInput = this.validateInput.bind(this)
   }
 
   componentDidMount() {
@@ -105,20 +103,35 @@ class UserInfoForm extends React.Component {
     }
   }
 
-  static validPassword = password => {
-    const specialCharacters = /[ !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
-    return password.length >= 8 && specialCharacters.test(password)
+  handleBasicInput = event => {
+    this.setState({
+      [event.target.id]: event.target.value
+    })
   }
 
   validateInput = () => {
     const newState = {
-      emailValid: isEmail(this.state.email || " "),
-      passwordValid: UserInfoForm.validPassword(this.state.password),
-      phoneValid: isMobilePhone(this.state.phone || " ", "en-US"),
-      nameValid: this.state.name.split(" ").length > 1,
-      addressValid: this.state.address,
-      cityValid: this.state.city,
-      zipCodeValid: isPostalCode(this.state.zipCode || " ", "US")
+      email: {
+        valid: isEmail(this.state.email || " ")
+      },
+      password: {
+        valid: UserInfoForm.validPassword(this.state.password)
+      },
+      phone: {
+        valid: isMobilePhone(this.state.phone || " ", "en-US")
+      },
+      name: {
+        valid: this.state.name.split(" ").length > 1
+      },
+      address: {
+        valid: this.state.address
+      },
+      city: {
+        valid: this.state.city
+      },
+      zipCode: {
+        valid: isPostalCode(this.state.zipCode || " ", "US")
+      }
     }
 
     // This is so we can pass +1 in front of the phone number
@@ -127,7 +140,7 @@ class UserInfoForm extends React.Component {
       ...this.state,
       ...newState
     }
-    if (!this.state.phone.startsWith("+1")) {
+    if (this.state.phone && !this.state.phone.startsWith("+1")) {
       onValidateState.phone = `+1${this.state.phone}`
     }
 
@@ -136,19 +149,13 @@ class UserInfoForm extends React.Component {
     this.setState(newState, this.props.onValidate(onValidateState))
   }
 
-  handleBasicInput = event => {
-    this.setState({
-      [event.target.id]: event.target.value
-    })
-  }
-
   componentDidUpdate() {
     const newState = {}
-    if (this.props.email && this.props.email !== this.state.email) {
-      newState.email = this.props.email
+    if (this.props.email && this.props.email !== this.state.email.value) {
+      newState.email = { value: this.props.email }
     }
-    if (this.props.name && this.props.name !== this.state.name) {
-      newState.name = this.props.name
+    if (this.props.name && this.props.name !== this.state.name.value) {
+      newState.name = { value: this.props.name }
     }
     if (newState.email || newState.name) {
       this.setState(newState)
@@ -165,11 +172,11 @@ class UserInfoForm extends React.Component {
           label="Email Address"
           type="email"
           fullWidth
-          error={this.state.formSubmitted && !this.state.emailValid}
-          value={this.state.email}
+          error={this.state.formSubmitted && !this.state.email.valid}
+          value={this.state.email.value}
           onChange={this.handleBasicInput}
         />
-        {this.props.registering && (
+        {(this.props.registering || this.props.editing) && (
           <div>
             <TextField
               margin="dense"
@@ -177,7 +184,7 @@ class UserInfoForm extends React.Component {
               label="Phone"
               type="text"
               fullWidth
-              error={this.state.formSubmitted && !this.state.phoneValid}
+              error={this.state.formSubmitted && !this.state.phone.valid}
               onChange={this.handleBasicInput}
               InputProps={{
                 startAdornment: (
@@ -191,8 +198,8 @@ class UserInfoForm extends React.Component {
               label="Name"
               type="text"
               fullWidth
-              error={this.state.formSubmitted && !this.state.nameValid}
-              value={this.state.name}
+              error={this.state.formSubmitted && !this.state.name.valid}
+              value={this.state.name.value}
               onChange={this.handleBasicInput}
             />
             <TextField
@@ -201,8 +208,8 @@ class UserInfoForm extends React.Component {
               label="Address"
               type="text"
               fullWidth
-              error={this.state.formSubmitted && !this.state.addressValid}
-              value={this.state.address}
+              error={this.state.formSubmitted && !this.state.address.valid}
+              value={this.state.address.value}
               onChange={this.handleBasicInput}
             />
             <TextField
@@ -210,14 +217,14 @@ class UserInfoForm extends React.Component {
               id="city"
               label="City"
               type="text"
-              error={this.state.formSubmitted && !this.state.cityValid}
-              value={this.state.city}
+              error={this.state.formSubmitted && !this.state.city.valid}
+              value={this.state.city.value}
               onChange={this.handleBasicInput}
             />
             <StateSelect>
               <NativeSelect
                 margin="dense"
-                value={this.state.state.name}
+                value={this.state.state.value.name}
                 id="state"
                 label="State"
                 onChange={this.handleBasicInput}
@@ -236,8 +243,8 @@ class UserInfoForm extends React.Component {
               id="zipCode"
               label="Zip Code"
               type="text"
-              error={this.state.formSubmitted && !this.state.zipCodeValid}
-              value={this.state.zipCode}
+              error={this.state.formSubmitted && !this.state.zipCode.valid}
+              value={this.state.zipCode.value}
               onChange={this.handleBasicInput}
             />
           </div>
@@ -251,13 +258,13 @@ class UserInfoForm extends React.Component {
                 label="Password"
                 type="password"
                 fullWidth
-                error={this.state.formSubmitted && !this.state.passwordValid}
-                value={this.state.password}
+                error={this.state.formSubmitted && !this.state.password.valid}
+                value={this.state.password.value}
                 onChange={this.handleBasicInput}
-                onFocus={this.props.openPasswordPopover}
+                onFocus={this.props.openPopover}
               />
               {this.props.registering && (
-                <PasswordPopover anchorEl={this.passwordRef.current} />
+                <RIMBAPopover anchorEl={this.passwordRef.current} />
               )}
             </div>
           )}

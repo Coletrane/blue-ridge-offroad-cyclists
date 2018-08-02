@@ -4,6 +4,7 @@ import Paper from "@material-ui/core/Paper"
 import Grid from "@material-ui/core/Grid"
 import Button from "@material-ui/core/Button"
 import UserInfoForm from "../components/input/UserInfoForm"
+import PasswordChangeForm from "../components/input/PasswordChangeForm"
 import withLoginCheck from "../components/WithLoginCheck"
 
 import styled from "styled-components"
@@ -33,16 +34,24 @@ class Profile extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      infoFormOpen: false
+      infoFormOpen: false,
+      passwordFormOpen: false
     }
+  }
+
+  closeForm = () => {
+    this.setState({
+      infoFormOpen: false,
+      passwordFormOpen: false
+    })
   }
 
   openUserInfoForm = () => {
     this.setState({
-      infoFormOpen: true
+      infoFormOpen: true,
+      passwordFormOpen: false
     })
   }
-
   saveUserInfo = event => {
     submitEvent(event)
   }
@@ -50,6 +59,13 @@ class Profile extends React.Component {
   validateInputCallback = state => {
     if (userProfileInputValid(state)) {
     }
+  }
+
+  openPassowrdChangeForm = () => {
+    this.setState({
+      passwordFormOpen: true,
+      infoFormOpen: false
+    })
   }
 
   render() {
@@ -60,13 +76,19 @@ class Profile extends React.Component {
             <Grid item xs={12} sm={6}>
               <Paper>
                 <PaperContent>
-                  {!this.state.infoFormOpen && (
+                  {(!this.state.infoFormOpen &&
+                    !this.state.passwordFormOpen) && (
                     <div>
                       <h2>{this.props.user.name}</h2>
                       <h4>{this.props.user.email}</h4>
                       <h4>{this.props.user.phone_number}</h4>
                       <h4>{this.props.user.address}</h4>
-                      <Button onClick={this.openUserInfoForm}>Edit</Button>
+                      <ActionButtons>
+                        <Button onClick={this.openPassowrdChangeForm}>
+                          Change Password
+                        </Button>
+                        <Button onClick={this.openUserInfoForm}>Edit</Button>
+                      </ActionButtons>
                     </div>
                   )}
                   {this.state.infoFormOpen && (
@@ -79,9 +101,13 @@ class Profile extends React.Component {
                         fullAddress={this.props.user.address}
                         editing
                       />
-                      <Button type="submit" variant="contained" color="primary">
-                        Save
-                      </Button>
+                      <SubmitAndCancelButtons onCancel={this.closeForm} />
+                    </form>
+                  )}
+                  {this.state.passwordFormOpen && (
+                    <form onSubmit={this.updatePassword}>
+                      <PasswordChangeForm />
+                      <SubmitAndCancelButtons onCancel={this.closeForm} />
                     </form>
                   )}
                 </PaperContent>
@@ -102,6 +128,17 @@ class Profile extends React.Component {
   }
 }
 
+const SubmitAndCancelButtons = props => {
+  return (
+    <ActionButtons>
+      <Button onClick={props.onCancel}>Cancel</Button>
+      <Button type="submit" variant="contained" color="primary">
+        Save
+      </Button>
+    </ActionButtons>
+  )
+}
+
 const MainContent = styled.div`
   padding: 2rem;
   flex-grow: 1;
@@ -111,6 +148,12 @@ const MainContent = styled.div`
 `
 const PaperContent = styled.div`
   padding: 0.5rem 1rem 1rem 1rem;
+`
+const ActionButtons = styled.div`
+  padding-top: 1rem;
+  button:last-child {
+    float: right;
+  }
 `
 
 export default withLoginCheck(

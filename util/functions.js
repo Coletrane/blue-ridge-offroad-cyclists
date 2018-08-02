@@ -46,3 +46,19 @@ export const splitAddress = address => {
     zipCode: zipCode
   }
 }
+
+export const validPassword = password => {
+  const specialCharacters = /[ !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
+  return password.length >= 8 && specialCharacters.test(password)
+}
+
+export const getFormFieldsState = formFields => {
+  const state = {}
+  Object.keys(formFields).forEach(key => {
+    state[key] = {
+      value: formFields[key],
+      valid: false
+    }
+  })
+  return state
+}

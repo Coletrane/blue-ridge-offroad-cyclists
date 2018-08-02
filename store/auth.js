@@ -135,10 +135,13 @@ export const login = (email, password) => async dispatch => {
   const user = await AuthService.login(email, password)
   if (user) {
     dispatch({
-      type: _authActionTypes.LOGIN_SUCCESS,
+      type: userActionTypes.LOGGED_IN,
       payload: {
         user: user
       }
+    })
+    dispatch({
+      type: _authActionTypes.LOGIN_SUCCESS
     })
     dispatch({
       type: viewActionTypes.CLOSE_LOGIN_WINDOW
@@ -165,16 +168,13 @@ export const checkLoggedIn = () => async dispatch => {
   const user = await AuthService.getLoggedInUser()
   if (user && user.email) {
     dispatch({
-      type: _authActionTypes.LOGIN_SUCCESS,
-      payload: {
-        loggedIn: true
-      }
-    })
-    dispatch({
       type: userActionTypes.LOGGED_IN,
       payload: {
         user: user
       }
+    })
+    dispatch({
+      type: _authActionTypes.LOGIN_SUCCESS
     })
   } else {
     dispatch({

@@ -1,7 +1,8 @@
 import { variants } from "../components/layout/Notifications"
 
 export const passwordPopoverMessages = {
-  requirements: "Must contain at least 8 characters and a special character."
+  requirements: "Must contain at least 8 characters and a special character.",
+  noMatch: "Your new passwords must match."
 }
 
 export const viewState = {
@@ -16,7 +17,7 @@ export const viewState = {
     message: "",
     variant: ""
   },
-  passwordPopover: {
+  popover: {
     open: false,
     message: ""
   }
@@ -27,8 +28,8 @@ export const viewActionTypes = {
   CLOSE_LOGIN_WINDOW: "CLOSE_LOGIN_WINDOW",
   OPEN_NOTIFICATION: "OPEN_NOTIFICATION",
   CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION",
-  OPEN_PASSWORD_POPOVER: "OPEN_PASSWORD_POPOVER",
-  CLOSE_PASSWORD_POPOVER: "CLOSE_PASSWORD_POPOVER"
+  OPEN_POPOVER: "OPEN_POPOVER",
+  CLOSE_POPOVER: "CLOSE_POPOVER"
 }
 
 export const viewReducer = (state = viewState, action) => {
@@ -80,11 +81,11 @@ export const viewReducer = (state = viewState, action) => {
       } else {
         return state
       }
-    case viewActionTypes.OPEN_PASSWORD_POPOVER:
-      if (!state.passwordPopover.open) {
+    case viewActionTypes.OPEN_POPOVER:
+      if (!state.popover.open) {
         return {
           ...state,
-          passwordPopover: {
+          popover: {
             open: true,
             message: action.payload.message
           }
@@ -92,11 +93,11 @@ export const viewReducer = (state = viewState, action) => {
       } else {
         return state
       }
-    case viewActionTypes.CLOSE_PASSWORD_POPOVER:
-      if (state.passwordPopover.open) {
+    case viewActionTypes.CLOSE_POPOVER:
+      if (state.popover.open) {
         return {
           ...state,
-          passwordPopover: {
+          popover: {
             open: false,
             message: ""
           }

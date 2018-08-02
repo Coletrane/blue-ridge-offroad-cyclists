@@ -15,27 +15,23 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   closePasswordPopover: () => {
     dispatch({
-      type: viewActionTypes.CLOSE_PASSWORD_POPOVER
+      type: viewActionTypes.CLOSE_POPOVER
     })
   }
 })
 
-class PasswordPopover extends React.Component {
+class RIMBAPopover extends React.Component {
   static propTypes = {
     anchorEl: PropTypes.object,
     onClose: PropTypes.func
   }
-
-  // shouldComponentUpdate(nextProps) {
-  //   if (this.props.view)
-  // }
 
   render() {
     return (
       <Popover
         disableAutoFocus={true}
         disableRestoreFocus={true}
-        open={this.props.view.passwordPopover.open}
+        open={this.props.view.popover.open}
         anchorEl={this.props.anchorEl}
         onClose={this.props.closePasswordPopover}
         anchorOrigin={{
@@ -49,7 +45,7 @@ class PasswordPopover extends React.Component {
       >
         <PopoverText>
           <Typography>
-            {this.props.view.passwordPopover.message}
+            {this.props.view.popover.message}
           </Typography>
         </PopoverText>
       </Popover>
@@ -64,4 +60,4 @@ const PopoverText = styled.div`
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PasswordPopover)
+)(RIMBAPopover)

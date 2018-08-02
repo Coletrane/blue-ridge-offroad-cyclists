@@ -1,77 +1,124 @@
 import React from "react"
 import TextField from "@material-ui/core/TextField"
-import PasswordPopover from "./PasswordPopover"
+import RIMBAPopover from "../layout/RIMBAPopover"
 
-import styled from "styled-components"
-import PropTypes from "prop-types"
-import UserInfoForm from "./UserInfoForm"
+import { connect } from "react-redux"
+import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
+import { userInfoFormSubmit } from "../../util/event-types"
+
+import { validPassword, getFormFieldsState } from "../../util/functions"
+// TODO: make an abstract component for this and USERInfoForm?
+const mapStateToProps = state => ({
+  view: state.view
+})
+
+const mapDispatchToProps = dispatch => ({
+  openPopover: () => {
+    dispatch({
+      type: viewActionTypes.OPEN_POPOVER,
+      payload: {
+        message: passwordPopoverMessages.noMatch
+      }
+    })
+  }
+})
 
 class PasswordChangeForm extends React.Component {
-
   constructor(props) {
     super(props)
     this.state = {
-      oldPassword: "",
-      oldPasswordValid: false,
-      newPassword: "",
-      newPasswordValid: false,
+      ...getFormFieldsState({
+        oldPassword: "",
+        newPassword: "",
+        newPasswordConfirm: ""
+      }),
       newPasswordFocused: false,
-      newPasswordConfirm: "",
-      newPasswordConfirmValid: false,
       newPasswordsMatch: false
     }
+    this.passwordRef = React.createRef()
+  }
+
+  componentDidMount() {
+    if (process.browser) {
+      document.addEventListener(userInfoFormSubmit, this.validateInput)
+    }
+  }
+
+  componentWillUnmount() {
+    if (process.browser) {
+      document.removeEventListener(userInfoFormSubmit, this.validateInput)
+    }
+  }
+
+  handleBasicInput = event => {
+    this.setState({
+      [event.target.id]: event.target.value
+    })
   }
 
   validateInput = () => {
     const newState = {
-      oldPasswordValid: UserInfoForm.validPassword(this.state.password),
-      newPasswordValid: UserInfoForm.validPassword(this.state.newPassword),
-      newPasswordConfirmValid: UserInfoForm.validPassword(
-        this.state.newPasswordConfirm
-      ),
+      oldPassword: {
+        valid: validPassword(this.state.password)
+      },
+      newPassword: {
+        valid: validPassword(this.state.newPassword)
+      },
+      newPasswordConfirm: {
+        valid: validPassword(this.state.newPasswordConfirm)
+      },
       newPasswordsMatch:
-      this.state.newPassword === this.state.newPasswordConfirm,
+        this.state.newPassword === this.state.newPasswordConfirm
     }
-  }
+    if (!newState.newPasswordsMatch) {
+      this.openPopover()
+    }
 
-  newPasswordFocused = () => {
-    this.setState({
-      newPasswordFocused: true
-    })
-  }
-  newPasswordBlur = () => {
-    this.setState({
-      newPasswordFocused: false
-    })
+    this.setState(newState)
   }
 
   render() {
     return (
-      <div>
+      <div ref={this.passwordRef}>
         <TextField
           margin="dense"
-          id="old-password"
+          id="oldPassword"
           label="Old Password"
           type="password"
           fullWidth
-          error={this.state.formSubmitted && !this.state.passwordValid}
-          value={this.state.oldPassword}
+          error={this.state.formSubmitted && !this.state.oldPassword.valid}
+          value={this.state.oldPassword.value}
           onChange={this.handleBasicInput}
         />
-        <PasswordPopover focused={}/>
         <TextField
           margin="dense"
-          id="old-password"
-          label="Old Password"
+          id="newPassword"
+          label="New Password"
           type="password"
           fullWidth
-          error={this.state.formSubmitted && !this.state.passwordValid}
-          value={this.state.oldPassword}
+          error={this.state.formSubmitted && !this.state.newPassword.valid}
+          value={this.state.newPassword.value}
           onChange={this.handleBasicInput}
-          onFocus={this.newPasswordFocused}
-          onBlur={this.newPasswordBlur}
         />
+        <TextField
+          margin="dense"
+          id="newPasswordConfirm"
+          label="Confirm New Password"
+          type="password"
+          fullWidth
+          error={
+            this.state.formSubmitted && !this.state.newPasswordConfirm.valid
+          }
+          value={this.state.newPasswordConfirm.value}
+          onChange={this.handleBasicInput}
+        />
+        <RIMBAPopover anchorEl={this.passwordRef} />
       </div>
     )
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PasswordChangeForm)
