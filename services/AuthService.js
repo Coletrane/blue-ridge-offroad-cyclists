@@ -52,7 +52,6 @@ const login = async (email, password) => {
 const getLoggedInUser = async () => {
   try {
     const user = await Auth.currentAuthenticatedUser()
-    // Logged in without facebook
     if (user.attributes) {
       return user.attributes
     }

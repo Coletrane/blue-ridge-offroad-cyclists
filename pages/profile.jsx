@@ -35,10 +35,7 @@ const mapDispatchToProps = dispatch => ({
     ),
   openVerificationCodeWindow: () => {
     dispatch({
-      type: viewActionTypes.OPEN_VERIFICATION_CODE_WINDOW,
-      payload: {
-        cancellable: true
-      }
+      type: viewActionTypes.OPEN_VERIFICATION_CODE_WINDOW
     })
   }
 })
@@ -53,36 +50,37 @@ class Profile extends React.Component {
     }
   }
 
-  closeForm = () => {
-    this.setState({
-      infoFormOpen: false,
-      passwordFormOpen: false
-    })
-  }
-
   openUserInfoForm = () => {
     this.setState({
       infoFormOpen: true,
       passwordFormOpen: false
     })
   }
-  saveUserInfo = event => {
-    submitEvent(event)
-  }
-  saveUserInfoCallback = state => {
-    if (userProfileInputValid(state)) {
-      this.props.updateUser(state)
-    }
-  }
-
   openPassowrdChangeForm = () => {
     this.setState({
       passwordFormOpen: true,
       infoFormOpen: false
     })
   }
+  closeForms = () => {
+    this.setState({
+      infoFormOpen: false,
+      passwordFormOpen: false
+    })
+  }
+
+  saveUserInfo = event => {
+    submitEvent(event)
+  }
+  saveUserInfoCallback = state => {
+    if (userProfileInputValid(state)) {
+      this.props.updateUser(state)
+      this.closeForms()
+    }
+  }
 
   updatePassword = () => {}
+  updatePasswordCallback = state => {}
 
   render() {
     return (
@@ -103,16 +101,14 @@ class Profile extends React.Component {
                             Click here to verify email
                           </Button>
                         )}
-                        <Grid container spacing={24}>
-                          <Grid item xs={6}>
-                            <h4>{this.props.user.email}</h4>
-                          </Grid>
-                          <Grid item xs={6}>
-                            {!this.props.user.email_verified && (
-                              <AlertText>*Not verified</AlertText>
-                            )}
-                          </Grid>
-                        </Grid>
+                        <EmailText>
+                          <h4 verified={this.props.user.email_verified}>
+                            {this.props.user.email}
+                          </h4>
+                          {!this.props.user.email_verified && (
+                            <h6>*Not verified</h6>
+                          )}
+                        </EmailText>
                         <h4>{this.props.user.phone_number}</h4>
                         <h4>{this.props.user.address}</h4>
                         <ActionButtons>
@@ -133,13 +129,13 @@ class Profile extends React.Component {
                         fullAddress={this.props.user.address}
                         editing
                       />
-                      <SubmitAndCancelButtons onCancel={this.closeForm} />
+                      <SubmitAndCancelButtons onCancel={this.closeForms} />
                     </form>
                   )}
                   {this.state.passwordFormOpen && (
                     <form onSubmit={this.updatePassword}>
                       <PasswordChangeForm />
-                      <SubmitAndCancelButtons onCancel={this.closeForm} />
+                      <SubmitAndCancelButtons onCancel={this.closeForms} />
                     </form>
                   )}
                 </PaperContent>
@@ -181,9 +177,15 @@ const MainContent = styled.div`
 const PaperContent = styled.div`
   padding: 0.5rem 1rem 1rem 1rem;
 `
-const AlertText = styled.h6`
-  color: red;
-  float: right;
+const EmailText = styled.div`
+  height: 2.6rem;
+  h4 {
+    float: ${props => props.verified ? '' : 'left'};
+  }
+  h6 {
+    float: right;
+    color: red;
+  }
 `
 const ActionButtons = styled.div`
   padding-top: 1rem;

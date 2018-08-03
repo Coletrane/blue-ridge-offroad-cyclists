@@ -63,7 +63,7 @@ export const viewReducer = (state = viewState, action) => {
         ...state,
         verificationCodeWindow: {
           open: true,
-          cancellable: action.payload.cancellable
+          cancellable: action.payload ? action.payload.cancellable : true
         }
       }
     case viewActionTypes.CLOSE_VERIFICATION_CODE_WIDNOW:

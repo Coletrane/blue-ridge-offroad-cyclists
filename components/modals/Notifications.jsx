@@ -76,10 +76,10 @@ class Notifications extends React.Component {
           open={this.props.store.view.notification.open}
           onClose={this.props.closeNotification}
           anchorOrigin={{
-            vertical: "center",
+            vertical: "bottom",
             horizontal: "center"
           }}
-          autoHideDuration={10000}
+          autoHideDuration={20000}
         >
           <SnackbarContent
             id="notification-snackbar"
@@ -118,6 +118,7 @@ const SnackbarWrapper = styled.div`
   }
   #notification-snackbar {
     background-color: ${props => props.color};
+    flex-wrap: nowrap;
   }
 `
 

@@ -1,12 +1,18 @@
 import Auth from "@aws-amplify/auth"
-import {authConfig} from "../constants"
+import { authConfig } from "../constants"
+import AuthService from "./AuthService"
 
 Auth.configure(authConfig)
 
 const updateUser = async user => {
   try {
-    Auth.updateUserAttributes(await Auth.currentAuthenticatedUser(), user)
-    return user
+    const res = await Auth.updateUserAttributes(
+      await Auth.currentAuthenticatedUser(),
+      user
+    )
+    if (res === "SUCCESS") {
+      return await AuthService.getLoggedInUser()
+    }
   } catch (err) {
     return null
   }
@@ -14,13 +20,26 @@ const updateUser = async user => {
 
 const verifyNewEmail = async (email, code) => {
   try {
-    Auth.verifyCurrentUserAttributeSubmit({email: email}, code)
-    return email
+    const res =  await Auth.verifyCurrentUserAttributeSubmit("email", code)
+    if (res === "SUCCESS") {
+      return await AuthService.getLoggedInUser()
+    }
+  }catch (err) {
+    return null
+  }
+}
+
+const resendVerificationCode = async email => {
+  try {
+    const res = await Auth.verifyCurrentUserAttribute("email")
+    return res
   } catch (err) {
     return null
   }
 }
 
 export default {
-  updateUser
+  updateUser,
+  verifyNewEmail,
+  resendVerificationCode
 }

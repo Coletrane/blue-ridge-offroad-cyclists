@@ -13,6 +13,7 @@ import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { viewActionTypes } from "../../store/view"
+import { resendCode, verifyCode } from "../../store/user"
 
 const mapStateToProps = state => ({
   view: state.view,
@@ -23,7 +24,11 @@ const mapDispatchToProps = dispatch => ({
   closeVerificationCodeWindow: () =>
     dispatch({
       type: viewActionTypes.CLOSE_VERIFICATION_CODE_WIDNOW
-    })
+    }),
+  resendCode: () => dispatch(resendCode()),
+  verifyCode: code => dispatch(verifyCode({
+    code: code
+  }))
 })
 
 class VerificationCodeWindow extends React.Component {
@@ -47,55 +52,56 @@ class VerificationCodeWindow extends React.Component {
   submit = event => {
     event.preventDefault()
     event.stopPropagation()
-
+    this.props.verifyCode(this.state.verificationCode)
   }
 
   render() {
     return (
-      <Dialog
-        open={this.props.view.verificationCodeWindow.open}
-        aria-labelledby="verification-code-dialog-title"
-      >
-        <DialogTitle id="verification-code-dialog-title">
-          Enter Verification Code
-        </DialogTitle>
-        <ModalLoader loading={this.props.user.loading} />
-        <form onSubmit={this.submit}>
-          <DialogContentWrapper loading={this.props.user.loading}>
-            <DialogContent>
-              <TextField
-                margin="dense"
-                id="verificationCode"
-                label="Verification Code"
-                onChange={this.handleBasicInput}
-                value={this.state.verificationCode}
-              />
-            </DialogContent>
-            <DialogActions>
-              {this.props.view.verificationCodeWindow.cancellable && (
-                <LeftLinkButton>
-                  <Button onClick={this.props.closeVerificationCodeWindow}>
-                    Cancel
-                  </Button>
-                </LeftLinkButton>
-              )}
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
-            </DialogActions>
-          </DialogContentWrapper>
-        </form>
-      </Dialog>
+        <Dialog
+          open={this.props.view.verificationCodeWindow.open}
+          aria-labelledby="verification-code-dialog-title"
+        >
+          <DialogTitle id="verification-code-dialog-title">
+            Enter Verification Code
+          </DialogTitle>
+          <ModalLoader loading={this.props.user.loading} />
+          <form onSubmit={this.submit}>
+            <DialogContentWrapper loading={this.props.user.loading}>
+              <DialogContent>
+                <TextField
+                  margin="dense"
+                  id="verificationCode"
+                  label="Verification Code"
+                  onChange={this.handleBasicInput}
+                  value={this.state.verificationCode}
+                />
+              </DialogContent>
+              <DialogActions>
+                {this.props.view.verificationCodeWindow.cancellable && (
+                  <LeftLinkButton>
+                    <Button onClick={this.props.closeVerificationCodeWindow}>
+                      Cancel
+                    </Button>
+                  </LeftLinkButton>
+                )}
+                <Button onClick={this.props.resendCode}>Resend code</Button>
+                <Button type="submit" variant="contained" color="primary">
+                  Submit
+                </Button>
+              </DialogActions>
+            </DialogContentWrapper>
+          </form>
+        </Dialog>
     )
   }
 }
+
 
 const LeftLinkButton = styled.div`
   margin-right: auto !important;
 `
 
-export default
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withMobileDialog()(VerificationCodeWindow))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withMobileDialog()(VerificationCodeWindow))
