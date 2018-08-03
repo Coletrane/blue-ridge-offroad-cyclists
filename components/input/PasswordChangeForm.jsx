@@ -1,12 +1,16 @@
 import React from "react"
 import TextField from "@material-ui/core/TextField"
 import RIMBAPopover from "../layout/RIMBAPopover"
+import UserInfoForm from "./UserInfoForm"
+
+import styled from "styled-components"
+import PropTypes from "prop-types"
 
 import { connect } from "react-redux"
 import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
 import { userInfoFormSubmit } from "../../util/event-types"
 
-import { validPassword, getFormFieldsState } from "../../util/functions"
+import { validPassword } from "../../util/functions"
 // TODO: make an abstract component for this and USERInfoForm?
 const mapStateToProps = state => ({
   view: state.view
@@ -27,11 +31,12 @@ class PasswordChangeForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      ...getFormFieldsState({
-        oldPassword: "",
-        newPassword: "",
-        newPasswordConfirm: ""
-      }),
+      oldPassword: "",
+      oldPasswordValid: false,
+      newPassword: "",
+      newPasswordValid: false,
+      newPasswordConfirm: "",
+      newPasswordConfirmValid: false,
       newPasswordFocused: false,
       newPasswordsMatch: false
     }
@@ -58,15 +63,9 @@ class PasswordChangeForm extends React.Component {
 
   validateInput = () => {
     const newState = {
-      oldPassword: {
-        valid: validPassword(this.state.password)
-      },
-      newPassword: {
-        valid: validPassword(this.state.newPassword)
-      },
-      newPasswordConfirm: {
-        valid: validPassword(this.state.newPasswordConfirm)
-      },
+      oldPasswordValid: validPassword(this.state.password),
+      newPasswordValid: validPassword(this.state.newPassword),
+      newPasswordConfirmValid: validPassword(this.state.newPasswordConfirm),
       newPasswordsMatch:
         this.state.newPassword === this.state.newPasswordConfirm
     }
@@ -86,8 +85,8 @@ class PasswordChangeForm extends React.Component {
           label="Old Password"
           type="password"
           fullWidth
-          error={this.state.formSubmitted && !this.state.oldPassword.valid}
-          value={this.state.oldPassword.value}
+          error={this.state.formSubmitted && !this.state.passwordValid}
+          value={this.state.oldPassword}
           onChange={this.handleBasicInput}
         />
         <TextField
@@ -96,8 +95,8 @@ class PasswordChangeForm extends React.Component {
           label="New Password"
           type="password"
           fullWidth
-          error={this.state.formSubmitted && !this.state.newPassword.valid}
-          value={this.state.newPassword.value}
+          error={this.state.formSubmitted && !this.state.passwordValid}
+          value={this.state.newPassword}
           onChange={this.handleBasicInput}
         />
         <TextField
@@ -106,10 +105,8 @@ class PasswordChangeForm extends React.Component {
           label="Confirm New Password"
           type="password"
           fullWidth
-          error={
-            this.state.formSubmitted && !this.state.newPasswordConfirm.valid
-          }
-          value={this.state.newPasswordConfirm.value}
+          error={this.state.formSubmitted && !this.state.passwordValid}
+          value={this.state.newPasswordConfirm}
           onChange={this.handleBasicInput}
         />
         <RIMBAPopover anchorEl={this.passwordRef} />

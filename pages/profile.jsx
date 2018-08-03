@@ -11,7 +11,7 @@ import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { viewActionTypes } from "../store/view"
-
+import { updateUser } from "../store/user"
 import { submitEvent, userProfileInputValid } from "../util/functions"
 
 const mapStateToProps = state => ({
@@ -26,7 +26,13 @@ const mapDispatchToProps = dispatch => ({
       payload: {
         ...payload
       }
-    })
+    }),
+  updateUser: user =>
+    dispatch(
+      updateUser({
+        user: user
+      })
+    )
 })
 
 // const mapDispatchToProps = dispatch
@@ -55,9 +61,9 @@ class Profile extends React.Component {
   saveUserInfo = event => {
     submitEvent(event)
   }
-
-  validateInputCallback = state => {
+  saveUserInfoCallback = state => {
     if (userProfileInputValid(state)) {
+      this.props.updateUser(state)
     }
   }
 
@@ -68,6 +74,8 @@ class Profile extends React.Component {
     })
   }
 
+  updatePassword = () => {}
+
   render() {
     return (
       <DefaultLayout>
@@ -76,27 +84,27 @@ class Profile extends React.Component {
             <Grid item xs={12} sm={6}>
               <Paper>
                 <PaperContent>
-                  {(!this.state.infoFormOpen &&
-                    !this.state.passwordFormOpen) && (
-                    <div>
-                      <h2>{this.props.user.name}</h2>
-                      <h4>{this.props.user.email}</h4>
-                      <h4>{this.props.user.phone_number}</h4>
-                      <h4>{this.props.user.address}</h4>
-                      <ActionButtons>
-                        <Button onClick={this.openPassowrdChangeForm}>
-                          Change Password
-                        </Button>
-                        <Button onClick={this.openUserInfoForm}>Edit</Button>
-                      </ActionButtons>
-                    </div>
-                  )}
+                  {!this.state.infoFormOpen &&
+                    !this.state.passwordFormOpen && (
+                      <div>
+                        <h2>{this.props.user.name}</h2>
+                        <h4>{this.props.user.email}</h4>
+                        <h4>{this.props.user.phone_number}</h4>
+                        <h4>{this.props.user.address}</h4>
+                        <ActionButtons>
+                          <Button onClick={this.openPassowrdChangeForm}>
+                            Change Password
+                          </Button>
+                          <Button onClick={this.openUserInfoForm}>Edit</Button>
+                        </ActionButtons>
+                      </div>
+                    )}
                   {this.state.infoFormOpen && (
                     <form onSubmit={this.saveUserInfo}>
                       <UserInfoForm
-                        onValidate={this.validateInputCallback}
+                        onValidate={this.saveUserInfoCallback}
                         email={this.props.user.email}
-                        phone={parseInt(this.props.user.phone_number)}
+                        phone={this.props.user.phone_number}
                         name={this.props.user.name}
                         fullAddress={this.props.user.address}
                         editing

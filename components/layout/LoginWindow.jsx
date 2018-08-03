@@ -84,7 +84,8 @@ class LoginWindow extends React.Component {
   validateInputCallback = state => {
     if (
       this.props.view.loginWindow.registering &&
-      userProfileInputValid(state)
+      userProfileInputValid(state) &&
+      state.passwordValid
     ) {
       this.props.register({
         email: state.email,

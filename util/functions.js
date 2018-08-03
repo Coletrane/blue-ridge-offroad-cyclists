@@ -1,4 +1,5 @@
 import { userInfoFormSubmit } from "./event-types"
+import { userState } from "../store/user"
 
 export const submitEvent = event => {
   event.preventDefault()
@@ -12,7 +13,6 @@ export const userProfileInputValid = state => {
   return (
     state.emailValid &&
     state.phoneValid &&
-    state.passwordValid &&
     state.nameValid &&
     state.addressValid &&
     state.zipCodeValid
@@ -23,7 +23,7 @@ export const splitAddress = address => {
   const addressSplit = address.split(" ")
   let zipCode = addressSplit[addressSplit.length - 1]
   try {
-    zipCode = parseInt(zipCode)
+    zipCode = parseInt(zipCode).toString()
   } catch (err) {
     throw new Error(`zip code is invalid: ${zipCode}`)
   }
@@ -52,13 +52,3 @@ export const validPassword = password => {
   return password.length >= 8 && specialCharacters.test(password)
 }
 
-export const getFormFieldsState = formFields => {
-  const state = {}
-  Object.keys(formFields).forEach(key => {
-    state[key] = {
-      value: formFields[key],
-      valid: false
-    }
-  })
-  return state
-}

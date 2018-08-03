@@ -12,11 +12,7 @@ import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
 
 import usStates from "../../util/state-codes.json"
 import { userInfoFormSubmit } from "../../util/event-types"
-import {
-  validPassword,
-  getFormFieldsState,
-  splitAddress
-} from "../../util/functions"
+import { validPassword, splitAddress } from "../../util/functions"
 import isEmail from "validator/lib/isEmail"
 import isPostalCode from "validator/lib/isPostalCode"
 import isMobilePhone from "validator/lib/isMobilePhone"
@@ -41,7 +37,7 @@ class UserInfoForm extends React.Component {
     onValidate: PropTypes.func,
     email: PropTypes.string,
     name: PropTypes.string,
-    phone: PropTypes.number,
+    phone: PropTypes.string,
     fullAddress: PropTypes.string,
     registering: PropTypes.bool,
     editing: PropTypes.bool,
@@ -51,40 +47,36 @@ class UserInfoForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      ...getFormFieldsState({
-        email: this.props.email,
-        password: "",
-        phone: (() => {
-          if (
-            this.props.phone &&
-            this.props.phone.length === 10 &&
-            this.props.phone.startsWith(1)
-          ) {
-            return this.props.phone.slice(1)
-          } else {
-            return this.props.phone
-          }
-        })(),
-        name: this.props.name,
-        address: this.props.fullAddress
-          ? splitAddress(this.props.fullAddress).address
-          : "",
-        city: this.props.fullAddress
-          ? splitAddress(this.props.fullAddress).city
-          : "",
-        state: usStates.find(state => {
-          let searchAbbrev
-          if (this.props.fullAddress) {
-            searchAbbrev = splitAddress(this.props.fullAddress).state
-          } else {
-            searchAbbrev = "VA"
-          }
-          return state.abbreviation === searchAbbrev
-        }),
-        zipCode: this.props.fullAddress
-          ? splitAddress(this.props.fullAddress).zipCode
-          : ""
+      email: this.props.email,
+      emailValid: false,
+      password: "",
+      passwordValid: false,
+      phone: this.props.phone ? this.props.phone.replace("+1", "") : "",
+      phoneValid: false,
+      name: this.props.name,
+      nameValid: false,
+      address: this.props.fullAddress
+        ? splitAddress(this.props.fullAddress).address
+        : "",
+      addressValid: false,
+      city: this.props.fullAddress
+        ? splitAddress(this.props.fullAddress).city
+        : "",
+      cityValid: false,
+      state: usStates.find(state => {
+        let searchAbbrev
+        if (this.props.fullAddress) {
+          searchAbbrev = splitAddress(this.props.fullAddress).state
+        } else {
+          searchAbbrev = "VA"
+        }
+        return state.abbreviation === searchAbbrev
       }),
+      stateValid: false,
+      zipCode: this.props.fullAddress
+        ? splitAddress(this.props.fullAddress).zipCode
+        : "",
+      zipCodeValid: false,
       formSubmitted: false,
       passwordFocused: false
     }
@@ -111,27 +103,13 @@ class UserInfoForm extends React.Component {
 
   validateInput = () => {
     const newState = {
-      email: {
-        valid: isEmail(this.state.email || " ")
-      },
-      password: {
-        valid: UserInfoForm.validPassword(this.state.password)
-      },
-      phone: {
-        valid: isMobilePhone(this.state.phone || " ", "en-US")
-      },
-      name: {
-        valid: this.state.name.split(" ").length > 1
-      },
-      address: {
-        valid: this.state.address
-      },
-      city: {
-        valid: this.state.city
-      },
-      zipCode: {
-        valid: isPostalCode(this.state.zipCode || " ", "US")
-      }
+      emailValid: isEmail(this.state.email || " "),
+      passwordValid: validPassword(this.state.password),
+      phoneValid: isMobilePhone(this.state.phone || " ", "en-US"),
+      nameValid: this.state.name.split(" ").length > 1,
+      addressValid: this.state.address ? true : false,
+      cityValid: this.state.city ? true : false,
+      zipCodeValid: isPostalCode(this.state.zipCode || " ", "US")
     }
 
     // This is so we can pass +1 in front of the phone number
@@ -146,21 +124,25 @@ class UserInfoForm extends React.Component {
 
     newState.formSubmitted = true
 
-    this.setState(newState, this.props.onValidate(onValidateState))
+    this.setState(newState, () => {
+      if (this.props.onValidate) {
+        this.props.onValidate(onValidateState)
+      }
+    })
   }
 
-  componentDidUpdate() {
-    const newState = {}
-    if (this.props.email && this.props.email !== this.state.email.value) {
-      newState.email = { value: this.props.email }
-    }
-    if (this.props.name && this.props.name !== this.state.name.value) {
-      newState.name = { value: this.props.name }
-    }
-    if (newState.email || newState.name) {
-      this.setState(newState)
-    }
-  }
+  // componentDidUpdate() {
+  //   const newState = {}
+  //   if (this.props.email && this.props.email !== this.state.email) {
+  //     newState.email = this.props.email
+  //   }
+  //   if (this.props.name && this.props.name !== this.state.name) {
+  //     newState.name = this.props.name
+  //   }
+  //   if (newState.email || newState.name) {
+  //     this.setState(newState)
+  //   }
+  // }
 
   render() {
     return (
@@ -172,8 +154,8 @@ class UserInfoForm extends React.Component {
           label="Email Address"
           type="email"
           fullWidth
-          error={this.state.formSubmitted && !this.state.email.valid}
-          value={this.state.email.value}
+          error={this.state.formSubmitted && !this.state.emailValid}
+          value={this.state.email}
           onChange={this.handleBasicInput}
         />
         {(this.props.registering || this.props.editing) && (
@@ -184,7 +166,8 @@ class UserInfoForm extends React.Component {
               label="Phone"
               type="text"
               fullWidth
-              error={this.state.formSubmitted && !this.state.phone.valid}
+              error={this.state.formSubmitted && !this.state.phoneValid}
+              value={this.state.phone}
               onChange={this.handleBasicInput}
               InputProps={{
                 startAdornment: (
@@ -198,8 +181,8 @@ class UserInfoForm extends React.Component {
               label="Name"
               type="text"
               fullWidth
-              error={this.state.formSubmitted && !this.state.name.valid}
-              value={this.state.name.value}
+              error={this.state.formSubmitted && !this.state.nameValid}
+              value={this.state.name}
               onChange={this.handleBasicInput}
             />
             <TextField
@@ -208,8 +191,8 @@ class UserInfoForm extends React.Component {
               label="Address"
               type="text"
               fullWidth
-              error={this.state.formSubmitted && !this.state.address.valid}
-              value={this.state.address.value}
+              error={this.state.formSubmitted && !this.state.addressValid}
+              value={this.state.address}
               onChange={this.handleBasicInput}
             />
             <TextField
@@ -217,14 +200,14 @@ class UserInfoForm extends React.Component {
               id="city"
               label="City"
               type="text"
-              error={this.state.formSubmitted && !this.state.city.valid}
-              value={this.state.city.value}
+              error={this.state.formSubmitted && !this.state.cityValid}
+              value={this.state.city}
               onChange={this.handleBasicInput}
             />
             <StateSelect>
               <NativeSelect
                 margin="dense"
-                value={this.state.state.value.name}
+                value={this.state.state.name}
                 id="state"
                 label="State"
                 onChange={this.handleBasicInput}
@@ -243,8 +226,8 @@ class UserInfoForm extends React.Component {
               id="zipCode"
               label="Zip Code"
               type="text"
-              error={this.state.formSubmitted && !this.state.zipCode.valid}
-              value={this.state.zipCode.value}
+              error={this.state.formSubmitted && !this.state.zipCodeValid}
+              value={this.state.zipCode}
               onChange={this.handleBasicInput}
             />
           </div>
@@ -258,8 +241,8 @@ class UserInfoForm extends React.Component {
                 label="Password"
                 type="password"
                 fullWidth
-                error={this.state.formSubmitted && !this.state.password.valid}
-                value={this.state.password.value}
+                error={this.state.formSubmitted && !this.state.passwordValid}
+                value={this.state.password}
                 onChange={this.handleBasicInput}
                 onFocus={this.props.openPopover}
               />
