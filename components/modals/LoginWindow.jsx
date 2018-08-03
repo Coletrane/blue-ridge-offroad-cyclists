@@ -7,7 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import FacebookLogin from "react-facebook-login"
 import UserInfoForm from "../input/UserInfoForm"
-import ModalLoader, {DialogContentWrapper} from "./ModalLoader"
+import ModalLoader, { DialogContentWrapper } from "./ModalLoader"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -129,7 +129,7 @@ class LoginWindow extends React.Component {
         aria-labelledby="login-dialog-title"
       >
         <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
-        <ModalLoader loading={this.props.auth.loading}/>
+        <ModalLoader loading={this.props.auth.loading} />
         <form onSubmit={this.submit}>
           <DialogContentWrapper loading={this.props.auth.loading}>
             <DialogContent>
@@ -174,9 +174,7 @@ const LeftLinkButton = styled.div`
   margin-right: auto !important;
 `
 
-export default withMobileDialog(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LoginWindow)
-)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withMobileDialog()(LoginWindow))
