@@ -2,7 +2,7 @@ import React from "react"
 import TextField from "@material-ui/core/TextField"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
-import RIMBAPopover from "../layout/RIMBAPopover"
+import RIMBAPopover from "../modals/RIMBAPopover"
 
 import styled from "styled-components"
 import PropTypes from "prop-types"

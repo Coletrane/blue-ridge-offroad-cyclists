@@ -5,8 +5,9 @@ import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Button from "@material-ui/core/Button"
 import Link from "next/link"
-import LoginWindow from "./LoginWindow"
-import Notifications from "./Notifications"
+import LoginWindow from "../modals/LoginWindow"
+import VerificationCodeWindow from "../modals/VerificationCodeWindow"
+import Notifications from "../modals/Notifications"
 import RIMBAFooter from "./RIMBAFooter"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUserEdit } from "@fortawesome/free-solid-svg-icons/faUserEdit"
@@ -20,6 +21,7 @@ import { logout } from "../../store/auth"
 
 import { img } from "../../util/routes"
 import { fonts, cssFont } from "../../util/styles"
+import withMobileDialog from "@material-ui/core/withMobileDialog/index"
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -85,50 +87,50 @@ class DefaultLayout extends React.Component {
               </Link>
             </RIMBATitle>
             <AuthToolbar>
-            {!this.props.auth.loading &&
-              this.props.auth.loggedIn && (
-                <div>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={this.goToProfile}
-                  >
-                    <span>
-                      <Username>
-                        <div>{this.props.user.name}</div>
-                        <div>{this.props.user.email}</div>
-                      </Username>
-                      <FontAwesomeIcon icon={faUserEdit} />
-                    </span>
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={this.logout}
-                  >
-                    <h3>Logout</h3>
-                  </Button>
-                </div>
-              )}
-            {!this.props.auth.loading &&
-              !this.props.auth.loggedIn && (
-                <div>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={this.openLoginWindow(true)}
-                  >
-                    <h3>Register</h3>
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={this.openLoginWindow(false)}
-                  >
-                    <h3>Login</h3>
-                  </Button>
-                </div>
-              )}
+              {!this.props.auth.loading &&
+                this.props.auth.loggedIn && (
+                  <div>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={this.goToProfile}
+                    >
+                      <span>
+                        <Username>
+                          <div>{this.props.user.name}</div>
+                          <div>{this.props.user.email}</div>
+                        </Username>
+                        <FontAwesomeIcon icon={faUserEdit} />
+                      </span>
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={this.logout}
+                    >
+                      <h3>Logout</h3>
+                    </Button>
+                  </div>
+                )}
+              {!this.props.auth.loading &&
+                !this.props.auth.loggedIn && (
+                  <div>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={this.openLoginWindow(true)}
+                    >
+                      <h3>Register</h3>
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={this.openLoginWindow(false)}
+                    >
+                      <h3>Login</h3>
+                    </Button>
+                  </div>
+                )}
             </AuthToolbar>
           </Toolbar>
         </AppBar>
@@ -138,6 +140,9 @@ class DefaultLayout extends React.Component {
             email={this.props.view.loginWindow.email}
             name={this.props.view.loginWindow.name}
           />
+        )}
+        {this.props.view.verificationCodeWindow.open && (
+          <VerificationCodeWindow/>
         )}
         {this.props.children}
         <RIMBAFooter />
@@ -162,10 +167,10 @@ const AuthToolbar = styled.span`
     height: 4rem;
   }
   button:first-child {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
   }
   button:last-child {
-    margin-left: .5rem;
+    margin-left: 0.5rem;
   }
 `
 const Username = styled.span`
@@ -179,4 +184,4 @@ const Username = styled.span`
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DefaultLayout)
+)(withMobileDialog()(DefaultLayout))

@@ -1,7 +1,7 @@
 import _ from "lodash"
 import UserService from "../services/UserService"
 import { viewActionTypes } from "./view"
-import { variants, plsContact } from "../components/layout/Notifications"
+import { variants, plsContact } from "../components/modals/Notifications"
 
 // Maps to what we have in Cognito
 export const userState = {

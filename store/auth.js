@@ -1,6 +1,6 @@
 import AuthService from "../services/AuthService"
 import { viewActionTypes } from "./view"
-import { variants, plsContact } from "../components/layout/Notifications"
+import { variants, plsContact } from "../components/modals/Notifications"
 import {userActionTypes} from "./user"
 
 export const authState = {

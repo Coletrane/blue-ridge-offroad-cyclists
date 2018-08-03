@@ -5,9 +5,9 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
-import CircularProgress from "@material-ui/core/CircularProgress"
 import FacebookLogin from "react-facebook-login"
 import UserInfoForm from "../input/UserInfoForm"
+import ModalLoader, {DialogContentWrapper} from "./ModalLoader"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -21,7 +21,7 @@ import {
 } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
-import {submitEvent, userProfileInputValid } from "../../util/functions"
+import { submitEvent, userProfileInputValid } from "../../util/functions"
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -64,8 +64,7 @@ class LoginWindow extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      forgotPassword: false,
-
+      forgotPassword: false
     }
   }
 
@@ -79,7 +78,9 @@ class LoginWindow extends React.Component {
     }
   }
 
-  submit = event => { submitEvent(event) }
+  submit = event => {
+    submitEvent(event)
+  }
 
   validateInputCallback = state => {
     if (
@@ -91,9 +92,9 @@ class LoginWindow extends React.Component {
         email: state.email,
         password: state.password,
         name: state.name,
-        address: `${state.address} ${state.city} ${
-          state.state.abbreviation
-          } ${state.zipCode}`,
+        address: `${state.address} ${state.city} ${state.state.abbreviation} ${
+          state.zipCode
+        }`,
         phone: state.phone
       })
     } else if (
@@ -128,13 +129,7 @@ class LoginWindow extends React.Component {
         aria-labelledby="login-dialog-title"
       >
         <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
-        <Loader loading={this.props.auth.loading}>
-          <CircularProgress
-            className="login-window-loading"
-            size={60}
-            thickness={4.6}
-          />
-        </Loader>
+        <ModalLoader loading={this.props.auth.loading}/>
         <form onSubmit={this.submit}>
           <DialogContentWrapper loading={this.props.auth.loading}>
             <DialogContent>
@@ -175,21 +170,13 @@ class LoginWindow extends React.Component {
   }
 }
 
-const Loader = styled.div`
-  margin: auto;
-  display: ${props => (props.loading ? "block" : "none")};
-  position: absolute;
-  left: 45%;
-  top: 37%;
-`
-const DialogContentWrapper = styled.div`
-  visibility: ${props => (props.loading ? "hidden" : "")};
-`
 const LeftLinkButton = styled.div`
   margin-right: auto !important;
 `
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withMobileDialog()(LoginWindow))
+export default withMobileDialog(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LoginWindow)
+)

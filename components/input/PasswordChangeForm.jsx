@@ -1,6 +1,6 @@
 import React from "react"
 import TextField from "@material-ui/core/TextField"
-import RIMBAPopover from "../layout/RIMBAPopover"
+import RIMBAPopover from "../modals/RIMBAPopover"
 import UserInfoForm from "./UserInfoForm"
 
 import styled from "styled-components"

@@ -32,7 +32,15 @@ const mapDispatchToProps = dispatch => ({
       updateUser({
         user: user
       })
-    )
+    ),
+  openVerificationCodeWindow: () => {
+    dispatch({
+      type: viewActionTypes.OPEN_VERIFICATION_CODE_WINDOW,
+      payload: {
+        cancellable: true
+      }
+    })
+  }
 })
 
 // const mapDispatchToProps = dispatch
@@ -88,7 +96,23 @@ class Profile extends React.Component {
                     !this.state.passwordFormOpen && (
                       <div>
                         <h2>{this.props.user.name}</h2>
-                        <h4>{this.props.user.email}</h4>
+                        {!this.props.user.email_verified && (
+                          <Button
+                            onClick={this.props.openVerificationCodeWindow}
+                          >
+                            Click here to verify email
+                          </Button>
+                        )}
+                        <Grid container spacing={24}>
+                          <Grid item xs={6}>
+                            <h4>{this.props.user.email}</h4>
+                          </Grid>
+                          <Grid item xs={6}>
+                            {!this.props.user.email_verified && (
+                              <AlertText>*Not verified</AlertText>
+                            )}
+                          </Grid>
+                        </Grid>
                         <h4>{this.props.user.phone_number}</h4>
                         <h4>{this.props.user.address}</h4>
                         <ActionButtons>
@@ -156,6 +180,10 @@ const MainContent = styled.div`
 `
 const PaperContent = styled.div`
   padding: 0.5rem 1rem 1rem 1rem;
+`
+const AlertText = styled.h6`
+  color: red;
+  float: right;
 `
 const ActionButtons = styled.div`
   padding-top: 1rem;
