@@ -21,6 +21,7 @@ import { logout } from "../../store/auth"
 
 import { img } from "../../util/routes"
 import { fonts, cssFont } from "../../util/styles"
+import { prefix } from "../../constants"
 import withMobileDialog from "@material-ui/core/withMobileDialog/index"
 
 const mapStateToProps = state => ({
@@ -75,13 +76,13 @@ class DefaultLayout extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <Link href="/">
-              <a>
+              <a id={`${prefix}-logo`}>
                 <RIMBALogo src={`${img}/roanoke-chapter-white.png`} />
               </a>
             </Link>
             <RIMBATitle>
               <Link href="/">
-                <a>
+                <a id={`${prefix}-title`}>
                   <h1>Roanoke IMBA</h1>
                 </a>
               </Link>
@@ -142,7 +143,7 @@ class DefaultLayout extends React.Component {
           />
         )}
         {this.props.view.verificationCodeWindow.open && (
-          <VerificationCodeWindow/>
+          <VerificationCodeWindow />
         )}
         {this.props.children}
         <RIMBAFooter />
