@@ -6,10 +6,10 @@ import styled from "styled-components"
 import { theme, fonts } from "../../util/styles"
 import { githubUrl } from "../../constants"
 
-class RIMBAFooter extends React.Component {
+class BROCFooter extends React.Component {
   render() {
     return (
-      <RIMBAFooterWrapper
+      <BROCFooterWrapper
         style={{
           backgroundColor: theme.palette.primary.main
         }}
@@ -20,16 +20,16 @@ class RIMBAFooter extends React.Component {
             <a>GitHub</a>
           </Link>
         </div>
-      </RIMBAFooterWrapper>
+      </BROCFooterWrapper>
     )
   }
 }
 
-const RIMBAFooterWrapper = styled.footer`
+const BROCFooterWrapper = styled.footer`
   text-align: center;
   box-shadow: 0px -9px 25px 1px rgba(0, 0, 0, 0.75);
   font-family: ${fonts.IBMPlexMono.name}, ${fonts.IBMPlexMono.style};
   color: white;
 `
 
-export default RIMBAFooter
+export default BROCFooter

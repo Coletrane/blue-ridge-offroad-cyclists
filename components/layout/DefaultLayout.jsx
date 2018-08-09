@@ -8,7 +8,7 @@ import Link from "next/link"
 import LoginWindow from "../modals/LoginWindow"
 import VerificationCodeWindow from "../modals/VerificationCodeWindow"
 import Notifications from "../modals/Notifications"
-import RIMBAFooter from "./RIMBAFooter"
+import BROCFooter from "./BROCFooter"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUserEdit } from "@fortawesome/free-solid-svg-icons/faUserEdit"
 
@@ -21,7 +21,6 @@ import { logout } from "../../store/auth"
 
 import { img } from "../../util/routes"
 import { fonts, cssFont } from "../../util/styles"
-import { prefix } from "../../constants"
 import withMobileDialog from "@material-ui/core/withMobileDialog/index"
 
 const mapStateToProps = state => ({
@@ -76,22 +75,23 @@ class DefaultLayout extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <Link href="/">
-              <a id={`${prefix}-logo`}>
-                <RIMBALogo src={`${img}/roanoke-chapter-white.png`} />
+              <a id="broc-logo">
+                <BROCLogo src={`${img}/roanoke-chapter-white.png`} />
               </a>
             </Link>
-            <RIMBATitle>
+            <BROCTitle>
               <Link href="/">
-                <a id={`${prefix}-title`}>
-                  <h1>Roanoke IMBA</h1>
+                <a id="broc-title">
+                  <h1>Blue Ridge Offroad Cyclists</h1>
                 </a>
               </Link>
-            </RIMBATitle>
+            </BROCTitle>
             <AuthToolbar>
               {!this.props.auth.loading &&
                 this.props.auth.loggedIn && (
                   <div>
                     <Button
+                      id="profile-button"
                       variant="contained"
                       color="secondary"
                       onClick={this.goToProfile}
@@ -105,6 +105,7 @@ class DefaultLayout extends React.Component {
                       </span>
                     </Button>
                     <Button
+                      id="logout-button"
                       variant="contained"
                       color="secondary"
                       onClick={this.logout}
@@ -117,6 +118,7 @@ class DefaultLayout extends React.Component {
                 !this.props.auth.loggedIn && (
                   <div>
                     <Button
+                      id="register-button"
                       variant="contained"
                       color="secondary"
                       onClick={this.openLoginWindow(true)}
@@ -124,6 +126,7 @@ class DefaultLayout extends React.Component {
                       <h3>Register</h3>
                     </Button>
                     <Button
+                      id="login-button"
                       variant="contained"
                       color="secondary"
                       onClick={this.openLoginWindow(false)}
@@ -146,17 +149,17 @@ class DefaultLayout extends React.Component {
           <VerificationCodeWindow />
         )}
         {this.props.children}
-        <RIMBAFooter />
+        <BROCFooter />
       </div>
     )
   }
 }
 
-const RIMBALogo = styled.img`
+const BROCLogo = styled.img`
   width: 6rem;
   padding: 0.25rem;
 `
-const RIMBATitle = styled.div`
+const BROCTitle = styled.div`
   flex: 1;
   a {
     text-decoration: none;

@@ -1,5 +1,5 @@
 {
-  "name": "rimba-member-manager",
+  "name": "blue-ridge-offroad-cyclists",
   "version": "0.1.0",
   "description": "Database, and UI for managing memberships for Roanoke IMBA ",
   "main": "index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Coletrane/rimba-member-manager.git"
+    "url": "git+https://github.com/Coletrane/blue-ridge-offroad-cyclists.git"
   },
   "keywords": [
     "react",
@@ -25,9 +25,9 @@
   "author": "Cole Inman",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Coletrane/rimba-member-manager/issues"
+    "url": "https://github.com/Coletrane/blue-ridge-offroad-cyclists/issues"
   },
-  "homepage": "https://github.com/Coletrane/rimba-member-manager#readme",
+  "homepage": "https://github.com/Coletrane/blue-ridge-offroad-cyclists#readme",
   "dependencies": {
     "@aws-amplify/auth": "^1.0.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.1",

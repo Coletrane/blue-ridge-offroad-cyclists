@@ -2,7 +2,7 @@ import React from "react"
 import TextField from "@material-ui/core/TextField"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
-import RIMBAPopover from "../modals/RIMBAPopover"
+import BROCPopover from "../modals/BROCPopover"
 
 import styled from "styled-components"
 import PropTypes from "prop-types"
@@ -247,7 +247,7 @@ class UserInfoForm extends React.Component {
                 onFocus={this.props.openPopover}
               />
               {this.props.registering && (
-                <RIMBAPopover anchorEl={this.passwordRef.current} />
+                <BROCPopover anchorEl={this.passwordRef.current} />
               )}
             </div>
           )}

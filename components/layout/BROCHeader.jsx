@@ -8,35 +8,35 @@ import styled from "styled-components"
 import { img } from "../../util/routes"
 import { theme } from "../../util/styles"
 
-class RIMBAHeader extends React.Component {
+class BROCHeader extends React.Component {
   static propTypes = {
     image: PropTypes.string
   }
 
   render() {
     return (
-      <RIMBAHeaderWrapper>
+      <BROCHeaderWrapper>
         {this.props.image && (
           <HeaderImage backgroundImage={`${img}/${this.props.image}`} />
         )}
         {!this.props.image && (
-          <RIMBACarousel>
+          <BROCCarousel>
             <Carousel>
               <div>
                 <img src={`${img}/cove-social.jpg`} />
               </div>
             </Carousel>
-          </RIMBACarousel>
+          </BROCCarousel>
         )}
-      </RIMBAHeaderWrapper>
+      </BROCHeaderWrapper>
     )
   }
 }
 
-const RIMBAHeaderWrapper = styled.header`
+const BROCHeaderWrapper = styled.header`
   box-shadow: 0px 9px 25px 1px rgba(0, 0, 0, 0.75);
 `
-const RIMBACarousel = styled.div`
+const BROCCarousel = styled.div`
   background-color: ${theme.palette.primary.main};
 `
 const HeaderImage = styled.div`
@@ -44,4 +44,4 @@ const HeaderImage = styled.div`
   background-image: ${props => props.backgroundImage};
 `
 
-export default RIMBAHeader
+export default BROCHeader

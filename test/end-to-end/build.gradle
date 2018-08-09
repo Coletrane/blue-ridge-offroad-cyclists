@@ -5,7 +5,7 @@ plugins {
     id "com.energizedwork.idea-base" version "1.4"
 }
 
-group 'roanoke-imba-test'
+group 'com.rimba'
 version '1.0-SNAPSHOT'
 
 ext {

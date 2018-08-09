@@ -41,7 +41,7 @@ const getPageContext = () => {
   return global.__INIT_MATERIAL_UI__
 }
 
-class RIMBApp extends App {
+class BROCpp extends App {
   constructor(props) {
     super(props)
     this.pageContext = getPageContext()
@@ -90,4 +90,4 @@ class RIMBApp extends App {
   }
 }
 
-export default withReduxStore(RIMBApp)
+export default withReduxStore(BROCpp)

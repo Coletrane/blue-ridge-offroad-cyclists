@@ -4,7 +4,7 @@ import Document, { Head, Main, NextScript } from "next/document"
 import styled, { ServerStyleSheet } from "styled-components"
 import { checkLoggedIn } from "../store/auth"
 
-class RIMBADocument extends Document {
+class BROCDocument extends Document {
   static getInitialProps({ renderPage }) {
     const sheet = new ServerStyleSheet()
     const page = renderPage(App => props =>
@@ -35,17 +35,17 @@ class RIMBADocument extends Document {
           <link rel="stylesheet" href="/_next/static/style.css" />
           {this.props.styleTags}
         </Head>
-        <RIMBABody>
+        <BROCBody>
           <div id="fb-root" />
           <Main />
           <NextScript />
-        </RIMBABody>
+        </BROCBody>
       </html>
     )
   }
 }
 
-const RIMBABody = styled.body`
+const BROCBody = styled.body`
   margin: 0;
 
   h1,
@@ -64,4 +64,4 @@ const RIMBABody = styled.body`
   //}
 `
 
-export default RIMBADocument
+export default BROCDocument

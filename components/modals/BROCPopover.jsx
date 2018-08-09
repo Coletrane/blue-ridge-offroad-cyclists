@@ -20,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
   }
 })
 
-class RIMBAPopover extends React.Component {
+class BROCPopover extends React.Component {
   static propTypes = {
     anchorEl: PropTypes.object,
     onClose: PropTypes.func
@@ -60,4 +60,4 @@ const PopoverText = styled.div`
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(RIMBAPopover)
+)(BROCPopover)

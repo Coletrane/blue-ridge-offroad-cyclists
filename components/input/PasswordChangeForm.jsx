@@ -1,6 +1,6 @@
 import React from "react"
 import TextField from "@material-ui/core/TextField"
-import RIMBAPopover from "../modals/RIMBAPopover"
+import BROCPopover from "../modals/BROCPopover"
 import UserInfoForm from "./UserInfoForm"
 
 import styled from "styled-components"
@@ -109,7 +109,7 @@ class PasswordChangeForm extends React.Component {
           value={this.state.newPasswordConfirm}
           onChange={this.handleBasicInput}
         />
-        <RIMBAPopover anchorEl={this.passwordRef} />
+        <BROCPopover anchorEl={this.passwordRef} />
       </div>
     )
   }
