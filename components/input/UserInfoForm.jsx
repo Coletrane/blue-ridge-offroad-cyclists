@@ -47,13 +47,13 @@ class UserInfoForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      email: this.props.email,
+      email: this.props.email || "",
       emailValid: false,
       password: "",
       passwordValid: false,
       phone: this.props.phone ? this.props.phone.replace("+1", "") : "",
       phoneValid: false,
-      name: this.props.name,
+      name: this.props.name || "",
       nameValid: false,
       address: this.props.fullAddress
         ? splitAddress(this.props.fullAddress).address

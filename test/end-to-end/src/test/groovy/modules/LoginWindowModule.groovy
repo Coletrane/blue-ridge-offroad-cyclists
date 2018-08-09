@@ -1,4 +1,0 @@
-package modules
-
-class LoginWindowModule {
-}
