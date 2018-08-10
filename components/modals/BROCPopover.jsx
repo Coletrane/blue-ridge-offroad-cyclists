@@ -29,6 +29,9 @@ class BROCPopover extends React.Component {
   render() {
     return (
       <Popover
+        BackdropProps={{
+          invisible: true
+        }}
         disableAutoFocus={true}
         disableRestoreFocus={true}
         open={this.props.view.popover.open}

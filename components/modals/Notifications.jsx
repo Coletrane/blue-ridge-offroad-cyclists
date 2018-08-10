@@ -47,24 +47,24 @@ class Notifications extends React.Component {
       case variants.error:
         return {
           color: red[600],
-          icon: <ErrorIcon />
+          icon: <ErrorIcon id="notification-error-icon"/>
         }
       case variants.success:
         return {
           color: green[600],
-          icon: <CheckCircleIcon />
+          icon: <CheckCircleIcon id="notification-success-icon" />
         }
 
       case variants.warning:
         return {
           color: amber[600],
-          icon: <WarningIcon />
+          icon: <WarningIcon id="notification-warning-icon" />
         }
 
       case variants.info:
         return {
           color: blue[600],
-          icon: <InfoIcon />
+          icon: <InfoIcon id="notification-info-icon"/>
         }
     }
   }
@@ -79,7 +79,7 @@ class Notifications extends React.Component {
             vertical: "bottom",
             horizontal: "center"
           }}
-          autoHideDuration={20000}
+          // autoHideDuration={20000}
         >
           <SnackbarContent
             id="notification-snackbar"

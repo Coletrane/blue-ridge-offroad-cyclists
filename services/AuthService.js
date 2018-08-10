@@ -8,7 +8,7 @@ const register = async user => {
     name: user.name,
     address: user.address,
     email: user.email,
-    phone_number: user.phone_number
+    phone_number: user.phone
   }
 
   try {

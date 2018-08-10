@@ -125,6 +125,7 @@ class LoginWindow extends React.Component {
   render() {
     return (
       <Dialog
+        id="login-window"
         open={this.props.view.loginWindow.open}
         aria-labelledby="login-dialog-title"
       >
@@ -158,8 +159,15 @@ class LoginWindow extends React.Component {
                   </Button>
                 </LeftLinkButton>
               )}
-              <Button onClick={this.cancel}>Cancel</Button>
-              <Button type="submit" variant="contained" color="primary">
+              <Button id="login-window-cancel" onClick={this.cancel}>
+                Cancel
+              </Button>
+              <Button
+                id="login-window-submit"
+                type="submit"
+                variant="contained"
+                color="primary"
+              >
                 Submit
               </Button>
             </DialogActions>
