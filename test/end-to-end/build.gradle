@@ -42,9 +42,11 @@ dependencies {
     testCompile "org.seleniumhq.selenium:selenium-safari-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
 
-    // AWS Cognito direct access
     compile group: 'com.amazonaws', name: 'aws-java-sdk-cognitoidp', version: '1.11.383'
     compile 'io.github.cdimascio:java-dotenv:3.1.1'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
+    compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
+
 
 }
 

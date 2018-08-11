@@ -3,10 +3,9 @@ package specs
 import geb.error.RequiredPageContentNotPresent
 import geb.spock.GebSpec
 import pages.IndexPage
-import util.CognitoClient
+import util.UserService
 import util.NotificationVariants
 import util.TestUser
-import util.Constants.*
 
 class IndexSpec extends GebSpec {
     // Tests
@@ -88,9 +87,13 @@ class IndexSpec extends GebSpec {
 
     }
 
+//    def "Login modal should log user in"() {
+//
+//    }
+
     // Spock hooks
     def cleanupSpec() {
-        CognitoClient.deleteTestUser()
+        UserService.deleteTestUser()
     }
 
     // Helpers
