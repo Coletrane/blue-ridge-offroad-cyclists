@@ -1,11 +1,14 @@
 package modules
 
 import geb.Module
-import static util.Constants.*
+import util.NotificationVariants
 
 class NotificationModule extends Module {
-    static base = {$("#notification-snackbar")}
+    static base = { $("#notification-snackbar") }
     static content = {
-        notificationContent {$("#notification-content")}
+        notificationContent { $("#notification-content") }
+        notificationIcon { NotificationVariants variant ->
+            return $("#notification-${variant.name()}-icon")
+        }
     }
 }

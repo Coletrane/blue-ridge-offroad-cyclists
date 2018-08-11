@@ -11,7 +11,7 @@ import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.safari.SafariDriver
 
 waiting {
-    timeout = 2
+    timeout = 10
 }
 
 environments {

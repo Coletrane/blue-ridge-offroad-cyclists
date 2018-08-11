@@ -70,7 +70,7 @@ class Notifications extends React.Component {
             vertical: "bottom",
             horizontal: "center"
           }}
-          autoHideDuration={20000}
+          // autoHideDuration={20000}
         >
           <SnackbarContent
             id="notification-snackbar"

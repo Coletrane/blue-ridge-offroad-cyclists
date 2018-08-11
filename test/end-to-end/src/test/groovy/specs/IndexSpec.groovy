@@ -4,6 +4,7 @@ import geb.error.RequiredPageContentNotPresent
 import geb.spock.GebSpec
 import pages.IndexPage
 import util.CognitoClient
+import util.NotificationVariants
 import util.TestUser
 import util.Constants.*
 
@@ -74,15 +75,16 @@ class IndexSpec extends GebSpec {
         registerModal.userInfoForm.zipCode.text == TestUser.zipCode
         registerModal.userInfoForm.password.value() == TestUser.password
 
-//        when:
-//        // We have to execute javascript here because of the popover's backdrop making
-//        // submti button not clickable
-//        js.exec("document.getElementById('login-window-submit').click();")
-//        registerModal.submitButton.click()
+        when:
+        // We have to execute javascript here because of the popover's backdrop making
+        // submit button not clickable
+        js.exec("document.getElementById('login-window-submit').click();")
+        // waitFor does not use implicit assertions like the when: and then: blocks
+        waitFor { notification.isPresent() == true }
 
-//        then:
-//        notification.isDisplayed()
-//        notification.notificationContent.findElement($("notification-$notificationVariants.success-icon")).isDisplayed()
+        then:
+        notification.isPresent()
+        notification.notificationIcon(NotificationVariants.info).isPresent()
 
     }
 
