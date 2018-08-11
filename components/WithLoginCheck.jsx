@@ -2,20 +2,9 @@ import React from "react"
 import Router from "next/router"
 
 import { connect } from "react-redux"
+import { mapStateToProps } from "../store/helpers"
 import { checkLoggedIn } from "../store/auth"
 import { viewActionTypes } from "../store/view"
-
-const mapStateToProps = state => ({
-  auth: state.auth
-})
-
-const mapDispatchToProps = dispatch => ({
-  checkLoggedIn: () => dispatch(checkLoggedIn()),
-  openLoginWindow: () =>
-    dispatch({
-      type: viewActionTypes.OPEN_LOGIN_WINDOW
-    })
-})
 
 const withLoginCheck = (WrappedComponent, isProtectedRoute) => {
   class WithLoginCheck extends React.Component {
@@ -28,19 +17,19 @@ const withLoginCheck = (WrappedComponent, isProtectedRoute) => {
     }
 
     componentDidMount() {
-      this.props.checkLoggedIn()
+      this.props.dispatch(checkLoggedIn())
     }
 
     componentDidUpdate() {
-      if (!this.state.checkUserCalled && this.props.auth.loading) {
+      if (!this.state.checkUserCalled && this.props.store.auth.loading) {
         this.setState({
           checkUserCalled: true
         })
       }
       if (
         this.state.checkUserCalled &&
-        !this.props.auth.loading &&
-        !this.props.auth.loggedIn &&
+        !this.props.store.auth.loading &&
+        !this.props.store.auth.loggedIn &&
         isProtectedRoute &&
         !this.state.protectedRouteCalled
       ) {
@@ -49,7 +38,9 @@ const withLoginCheck = (WrappedComponent, isProtectedRoute) => {
             protectedRouteCalled: true
           },
           () => {
-            this.props.openLoginWindow()
+            this.props.dispatch({
+              type: viewActionTypes.OPEN_LOGIN_WINDOW
+            })
             Router.push("/")
           }
         )
@@ -60,10 +51,7 @@ const withLoginCheck = (WrappedComponent, isProtectedRoute) => {
     }
   }
 
-  return connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(WithLoginCheck)
+  return connect(mapStateToProps)(WithLoginCheck)
 }
 
 export default withLoginCheck

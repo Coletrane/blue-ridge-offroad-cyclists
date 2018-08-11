@@ -8,29 +8,15 @@ import styled from "styled-components"
 import PropTypes from "prop-types"
 
 import { connect } from "react-redux"
+import { mapStateToProps } from "../../store/helpers"
 import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
 
 import usStates from "../../util/state-codes.json"
 import { userInfoFormSubmit } from "../../util/event-types"
-import { validPassword, splitAddress } from "../../util/functions"
+import { validPassword, splitAddress } from "../../util/user-info-helpers"
 import isEmail from "validator/lib/isEmail"
 import isPostalCode from "validator/lib/isPostalCode"
 import isMobilePhone from "validator/lib/isMobilePhone"
-
-const mapStateToProps = state => ({
-  view: state.view
-})
-
-const mapDispatchToProps = dispatch => ({
-  openPopover: () => {
-    dispatch({
-      type: viewActionTypes.OPEN_POPOVER,
-      payload: {
-        message: passwordPopoverMessages.requirements
-      }
-    })
-  }
-})
 
 class UserInfoForm extends React.Component {
   static propTypes = {
@@ -98,6 +84,15 @@ class UserInfoForm extends React.Component {
   handleBasicInput = event => {
     this.setState({
       [event.target.id]: event.target.value
+    })
+  }
+
+  openPopover = () => {
+    this.props.dispatch({
+      type: viewActionTypes.OPEN_POPOVER,
+      payload: {
+        message: passwordPopoverMessages.requirements
+      }
     })
   }
 
@@ -244,7 +239,7 @@ class UserInfoForm extends React.Component {
                 error={this.state.formSubmitted && !this.state.passwordValid}
                 value={this.state.password}
                 onChange={this.handleBasicInput}
-                onFocus={this.props.openPopover}
+                onFocus={this.openPopover}
               />
               {this.props.registering && (
                 <BROCPopover anchorEl={this.passwordRef.current} />
@@ -268,7 +263,4 @@ const StateSelect = styled.span`
   }
 `
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserInfoForm)
+export default connect(mapStateToProps)(UserInfoForm)

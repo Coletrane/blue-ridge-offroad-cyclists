@@ -41,13 +41,23 @@ const getPageContext = () => {
   return global.__INIT_MATERIAL_UI__
 }
 
-class BROCpp extends App {
+class BROCApp extends App {
+  static async getInitialProps({ Component, context }) {
+    let pageProps = {}
+
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(context)
+    }
+
+    return { pageProps }
+  }
+
   constructor(props) {
     super(props)
     this.pageContext = getPageContext()
   }
 
-  pageContext = null
+  // pageContext = null
 
   componentDidMount() {
     // Remove the server-side injected CSS.
@@ -56,16 +66,6 @@ class BROCpp extends App {
       jssStyles.parentNode.removeChild(jssStyles)
     }
   }
-
-  // static async getInitialProps({ Component, context }) {
-  //   let pageProps = {}
-  //
-  //   if (Component.getInitialProps) {
-  //     pageProps = await Component.getInitialProps(context)
-  //   }
-  //
-  //   return { pageProps }
-  // }
 
   render() {
     const { Component, pageProps, reduxStore } = this.props
@@ -90,4 +90,4 @@ class BROCpp extends App {
   }
 }
 
-export default withReduxStore(BROCpp)
+export default withReduxStore(BROCApp)

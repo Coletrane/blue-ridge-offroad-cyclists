@@ -7,7 +7,6 @@ import InfoIcon from "@material-ui/icons/Info"
 import CloseIcon from "@material-ui/icons/Close"
 import WarningIcon from "@material-ui/icons/Warning"
 import IconButton from "@material-ui/core/IconButton"
-import Slide from "@material-ui/core/Slide"
 import green from "@material-ui/core/colors/green"
 import amber from "@material-ui/core/colors/amber"
 import red from "@material-ui/core/colors/red"
@@ -16,6 +15,7 @@ import blue from "@material-ui/core/colors/blue"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
+import { mapStateToProps } from "../../store/helpers"
 import { viewActionTypes } from "../../store/view"
 
 export const variants = {
@@ -26,28 +26,13 @@ export const variants = {
 }
 export const plsContact = "Please contact Cole Inman at eloc49@gmail.com"
 
-const mapStateToProps = state => ({
-  store: {
-    view: state.view
-  }
-})
-
-const mapDispatchToProps = dispatch => ({
-  closeNotification: () => {
-    dispatch({
-      type: viewActionTypes.CLOSE_NOTIFICATION
-    })
-  }
-})
-
 class Notifications extends React.Component {
-
   variant = () => {
     switch (this.props.store.view.notification.variant) {
       case variants.error:
         return {
           color: red[600],
-          icon: <ErrorIcon id="notification-error-icon"/>
+          icon: <ErrorIcon id="notification-error-icon" />
         }
       case variants.success:
         return {
@@ -64,9 +49,15 @@ class Notifications extends React.Component {
       case variants.info:
         return {
           color: blue[600],
-          icon: <InfoIcon id="notification-info-icon"/>
+          icon: <InfoIcon id="notification-info-icon" />
         }
     }
+  }
+
+  closeNotification = () => {
+    this.props.dispatch({
+      type: viewActionTypes.CLOSE_NOTIFICATION
+    })
   }
 
   render() {
@@ -74,12 +65,12 @@ class Notifications extends React.Component {
       <SnackbarWrapper color={this.variant().color}>
         <Snackbar
           open={this.props.store.view.notification.open}
-          onClose={this.props.closeNotification}
+          onClose={this.closeNotification}
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "center"
           }}
-          // autoHideDuration={20000}
+          autoHideDuration={20000}
         >
           <SnackbarContent
             id="notification-snackbar"
@@ -122,7 +113,4 @@ const SnackbarWrapper = styled.div`
   }
 `
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Notifications)
+export default connect(mapStateToProps)(Notifications)

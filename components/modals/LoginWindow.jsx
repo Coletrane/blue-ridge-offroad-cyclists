@@ -13,6 +13,7 @@ import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
+import { mapStateToProps } from "../../store/helpers"
 import {
   register,
   login,
@@ -21,39 +22,7 @@ import {
 } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
-import { submitEvent, userProfileInputValid } from "../../util/functions"
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  view: state.view
-})
-
-const mapDispatchToProps = dispatch => ({
-  register: user => {
-    dispatch(register(user))
-  },
-  login: (email, password) => {
-    dispatch(login(email, password))
-  },
-  closeLoginWindow: () => {
-    dispatch({
-      type: viewActionTypes.CLOSE_LOGIN_WINDOW,
-      payload: {
-        name: "",
-        email: "",
-        registering: false
-      }
-    })
-  },
-  registerWithFacebook: () => {
-    dispatch({
-      type: authActionTypes.REGISTER
-    })
-  },
-  registerWithFacebookCallback: fbRes => {
-    dispatch(registerWithFacebookCallback(fbRes))
-  }
-})
+import { submitEvent, userProfileInputValid } from "../../util/user-info-helpers"
 
 class LoginWindow extends React.Component {
   static propTypes = {
@@ -74,7 +43,14 @@ class LoginWindow extends React.Component {
         forgotPassword: false
       })
     } else {
-      this.props.closeLoginWindow()
+      this.props.dispatch({
+        type: viewActionTypes.CLOSE_LOGIN_WINDOW,
+        payload: {
+          name: "",
+          email: "",
+          registering: false
+        }
+      })
     }
   }
 
@@ -84,32 +60,34 @@ class LoginWindow extends React.Component {
 
   validateInputCallback = state => {
     if (
-      this.props.view.loginWindow.registering &&
+      this.props.store.view.loginWindow.registering &&
       userProfileInputValid(state) &&
       state.passwordValid
     ) {
-      this.props.register({
-        email: state.email,
-        password: state.password,
-        name: state.name,
-        address: `${state.address} ${state.city} ${state.state.abbreviation} ${
-          state.zipCode
-        }`,
-        phone: state.phone
-      })
+      this.props.dispatch(
+        register({
+          email: state.email,
+          password: state.password,
+          name: state.name,
+          address: `${state.address} ${state.city} ${
+            state.state.abbreviation
+          } ${state.zipCode}`,
+          phone: state.phone
+        })
+      )
     } else if (
-      !this.props.view.loginWindow.registering &&
+      !this.props.store.view.loginWindow.registering &&
       state.emailValid &&
       state.passwordValid
     ) {
-      this.props.login(state.email, state.password)
+      this.props.dispatch(login(state.email, state.password))
     }
   }
 
   get title() {
     if (this.state.forgotPassword) {
       return "Recover Password"
-    } else if (this.props.view.loginWindow.registering) {
+    } else if (this.props.store.view.loginWindow.registering) {
       return "Register"
     } else {
       return "Login"
@@ -122,19 +100,29 @@ class LoginWindow extends React.Component {
     })
   }
 
+  registerWithFacebook = () => {
+    this.props.dispatch({
+      type: authActionTypes.REGISTER
+    })
+  }
+
+  registerWithFacebookCallback = fbRes => {
+    this.props.dispatch(registerWithFacebookCallback(fbRes))
+  }
+
   render() {
     return (
       <Dialog
         id="login-window"
-        open={this.props.view.loginWindow.open}
+        open={this.props.store.view.loginWindow.open}
         aria-labelledby="login-dialog-title"
       >
         <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
-        <ModalLoader loading={this.props.auth.loading} />
+        <ModalLoader loading={this.props.store.auth.loading} />
         <form onSubmit={this.submit}>
-          <DialogContentWrapper loading={this.props.auth.loading}>
+          <DialogContentWrapper loading={this.props.store.auth.loading}>
             <DialogContent>
-              {this.props.view.loginWindow.registering && (
+              {this.props.store.view.loginWindow.registering && (
                 <FacebookLogin
                   appId="434306560403731"
                   fields="name,email"
@@ -147,12 +135,12 @@ class LoginWindow extends React.Component {
                 onValidate={this.validateInputCallback}
                 email={this.props.email}
                 name={this.props.name}
-                registering={this.props.view.loginWindow.registering}
+                registering={this.props.store.view.loginWindow.registering}
                 forgotPassword={this.state.forgotPassword}
               />
             </DialogContent>
             <DialogActions>
-              {!this.props.view.loginWindow.registering && (
+              {!this.props.store.view.loginWindow.registering && (
                 <LeftLinkButton>
                   <Button onClick={this.forgotPassword}>
                     Forgot Password?
@@ -182,7 +170,4 @@ const LeftLinkButton = styled.div`
   margin-right: auto !important;
 `
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withMobileDialog()(LoginWindow))
+export default connect(mapStateToProps)(withMobileDialog()(LoginWindow))

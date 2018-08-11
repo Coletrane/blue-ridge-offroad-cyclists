@@ -10,37 +10,11 @@ import withLoginCheck from "../components/WithLoginCheck"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
+import { mapStateToProps } from "../store/helpers"
 import { viewActionTypes } from "../store/view"
 import { updateUser } from "../store/user"
-import { submitEvent, userProfileInputValid } from "../util/functions"
+import { submitEvent, userProfileInputValid } from "../util/user-info-helpers"
 
-const mapStateToProps = state => ({
-  user: state.user,
-  view: state.view
-})
-
-const mapDispatchToProps = dispatch => ({
-  openLoginWindow: payload =>
-    dispatch({
-      type: viewActionTypes.OPEN_LOGIN_WINDOW,
-      payload: {
-        ...payload
-      }
-    }),
-  updateUser: user =>
-    dispatch(
-      updateUser({
-        user: user
-      })
-    ),
-  openVerificationCodeWindow: () => {
-    dispatch({
-      type: viewActionTypes.OPEN_VERIFICATION_CODE_WINDOW
-    })
-  }
-})
-
-// const mapDispatchToProps = dispatch
 class Profile extends React.Component {
   constructor(props) {
     super(props)
@@ -56,12 +30,20 @@ class Profile extends React.Component {
       passwordFormOpen: false
     })
   }
+
   openPassowrdChangeForm = () => {
     this.setState({
       passwordFormOpen: true,
       infoFormOpen: false
     })
   }
+
+  openVerificationCodeWindow = () => {
+    this.props.dispatch({
+      type: viewActionTypes.OPEN_VERIFICATION_CODE_WINDOW
+    })
+  }
+
   closeForms = () => {
     this.setState({
       infoFormOpen: false,
@@ -74,7 +56,11 @@ class Profile extends React.Component {
   }
   saveUserInfoCallback = state => {
     if (userProfileInputValid(state)) {
-      this.props.updateUser(state)
+      this.props.dispatch(
+        updateUser({
+          user: state
+        })
+      )
       this.closeForms()
     }
   }
@@ -93,24 +79,22 @@ class Profile extends React.Component {
                   {!this.state.infoFormOpen &&
                     !this.state.passwordFormOpen && (
                       <div>
-                        <h2>{this.props.user.name}</h2>
-                        {!this.props.user.email_verified && (
-                          <Button
-                            onClick={this.props.openVerificationCodeWindow}
-                          >
+                        <h2>{this.props.store.user.name}</h2>
+                        {!this.props.store.user.email_verified && (
+                          <Button onClick={this.openVerificationCodeWindow}>
                             Click here to verify email
                           </Button>
                         )}
                         <EmailText>
-                          <h4 verified={this.props.user.email_verified}>
-                            {this.props.user.email}
+                          <h4 verified={this.props.store.user.email_verified}>
+                            {this.props.store.user.email}
                           </h4>
-                          {!this.props.user.email_verified && (
+                          {!this.props.store.user.email_verified && (
                             <h6>*Not verified</h6>
                           )}
                         </EmailText>
-                        <h4>{this.props.user.phone_number}</h4>
-                        <h4>{this.props.user.address}</h4>
+                        <h4>{this.props.store.user.phone_number}</h4>
+                        <h4>{this.props.store.user.address}</h4>
                         <ActionButtons>
                           <Button onClick={this.openPassowrdChangeForm}>
                             Change Password
@@ -123,10 +107,10 @@ class Profile extends React.Component {
                     <form onSubmit={this.saveUserInfo}>
                       <UserInfoForm
                         onValidate={this.saveUserInfoCallback}
-                        email={this.props.user.email}
-                        phone={this.props.user.phone_number}
-                        name={this.props.user.name}
-                        fullAddress={this.props.user.address}
+                        email={this.props.store.user.email}
+                        phone={this.props.store.user.phone_number}
+                        name={this.props.store.user.name}
+                        fullAddress={this.props.store.user.address}
                         editing
                       />
                       <SubmitAndCancelButtons onCancel={this.closeForms} />
@@ -180,7 +164,7 @@ const PaperContent = styled.div`
 const EmailText = styled.div`
   height: 2.6rem;
   h4 {
-    float: ${props => props.verified ? '' : 'left'};
+    float: ${props => (props.verified ? "" : "left")};
   }
   h6 {
     float: right;
@@ -194,10 +178,4 @@ const ActionButtons = styled.div`
   }
 `
 
-export default withLoginCheck(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Profile),
-  true
-)
+export default withLoginCheck(connect(mapStateToProps)(Profile), true)

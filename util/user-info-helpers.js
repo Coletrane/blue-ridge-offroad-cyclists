@@ -1,5 +1,4 @@
 import { userInfoFormSubmit } from "./event-types"
-import { userState } from "../store/user"
 
 export const submitEvent = event => {
   event.preventDefault()
@@ -51,4 +50,3 @@ export const validPassword = password => {
   const specialCharacters = /[ !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
   return password.length >= 8 && specialCharacters.test(password)
 }
-

@@ -7,25 +7,12 @@ import styled from "styled-components"
 import PropTypes from "prop-types"
 
 import { connect } from "react-redux"
+import { mapStateToProps } from "../../store/helpers"
 import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
 import { userInfoFormSubmit } from "../../util/event-types"
 
-import { validPassword } from "../../util/functions"
+import { validPassword } from "../../util/user-info-helpers"
 // TODO: make an abstract component for this and USERInfoForm?
-const mapStateToProps = state => ({
-  view: state.view
-})
-
-const mapDispatchToProps = dispatch => ({
-  openPopover: () => {
-    dispatch({
-      type: viewActionTypes.OPEN_POPOVER,
-      payload: {
-        message: passwordPopoverMessages.noMatch
-      }
-    })
-  }
-})
 
 class PasswordChangeForm extends React.Component {
   constructor(props) {
@@ -70,7 +57,12 @@ class PasswordChangeForm extends React.Component {
         this.state.newPassword === this.state.newPasswordConfirm
     }
     if (!newState.newPasswordsMatch) {
-      this.openPopover()
+      this.props.dispatch({
+        type: viewActionTypes.OPEN_POPOVER,
+        payload: {
+          message: passwordPopoverMessages.noMatch
+        }
+      })
     }
 
     this.setState(newState)
@@ -115,7 +107,4 @@ class PasswordChangeForm extends React.Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PasswordChangeForm)
+export default connect(mapStateToProps)(PasswordChangeForm)

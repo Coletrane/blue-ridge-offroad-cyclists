@@ -16,31 +16,13 @@ import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
+import { mapStateToProps } from "../../store/helpers"
 import { viewActionTypes } from "../../store/view"
 import { logout } from "../../store/auth"
 
 import { img } from "../../util/routes"
 import { fonts, cssFont } from "../../util/styles"
 import withMobileDialog from "@material-ui/core/withMobileDialog/index"
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  user: state.user,
-  view: state.view
-})
-
-const mapDispatchToProps = dispatch => ({
-  openLoginWindow: payload =>
-    dispatch({
-      type: viewActionTypes.OPEN_LOGIN_WINDOW,
-      payload: {
-        ...payload
-      }
-    }),
-  logout: () => {
-    return dispatch(logout())
-  }
-})
 
 class DefaultLayout extends React.Component {
   static propTypes = {
@@ -52,13 +34,16 @@ class DefaultLayout extends React.Component {
   }
 
   openLoginWindow = registering => () => {
-    this.props.openLoginWindow({
-      registering: registering
+    this.props.dispatch({
+      type: viewActionTypes.OPEN_LOGIN_WINDOW,
+      payload: {
+        registering: registering
+      }
     })
   }
 
   logout = async () => {
-    await this.props.logout()
+    await this.props.dispatch(logout())
     Router.push("/")
   }
 
@@ -87,8 +72,8 @@ class DefaultLayout extends React.Component {
               </Link>
             </BROCTitle>
             <AuthToolbar>
-              {!this.props.auth.loading &&
-                this.props.auth.loggedIn && (
+              {!this.props.store.auth.loading &&
+                this.props.store.auth.loggedIn && (
                   <div>
                     <Button
                       id="profile-button"
@@ -98,8 +83,8 @@ class DefaultLayout extends React.Component {
                     >
                       <span>
                         <Username>
-                          <div>{this.props.user.name}</div>
-                          <div>{this.props.user.email}</div>
+                          <div>{this.props.store.user.name}</div>
+                          <div>{this.props.store.user.email}</div>
                         </Username>
                         <FontAwesomeIcon icon={faUserEdit} />
                       </span>
@@ -114,8 +99,8 @@ class DefaultLayout extends React.Component {
                     </Button>
                   </div>
                 )}
-              {!this.props.auth.loading &&
-                !this.props.auth.loggedIn && (
+              {!this.props.store.auth.loading &&
+                !this.props.store.auth.loggedIn && (
                   <div>
                     <Button
                       id="register-button"
@@ -138,16 +123,14 @@ class DefaultLayout extends React.Component {
             </AuthToolbar>
           </Toolbar>
         </AppBar>
-        {this.props.view.notification.open && <Notifications />}
-        {this.props.view.loginWindow.open && (
+        {this.props.store.view.notification.open && <Notifications />}
+        {this.props.store.view.loginWindow.open && (
           <LoginWindow
-            email={this.props.view.loginWindow.email}
-            name={this.props.view.loginWindow.name}
+            email={this.props.store.view.loginWindow.email}
+            name={this.props.store.view.loginWindow.name}
           />
         )}
-        {this.props.view.verificationCodeWindow.open && (
-          <VerificationCodeWindow />
-        )}
+        {this.props.store.view.verificationCodeWindow.open && <VerificationCodeWindow />}
         {this.props.children}
         <BROCFooter />
       </div>
@@ -185,7 +168,4 @@ const Username = styled.span`
   cursor: pointer;
 `
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withMobileDialog()(DefaultLayout))
+export default connect(mapStateToProps)(withMobileDialog()(DefaultLayout))

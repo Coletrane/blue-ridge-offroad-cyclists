@@ -6,24 +6,19 @@ import PropTypes from "prop-types"
 import styled from "styled-components"
 
 import { connect } from "react-redux"
+import { mapStateToProps } from "../../store/helpers"
 import { viewActionTypes } from "../../store/view"
-
-const mapStateToProps = state => ({
-  view: state.view
-})
-
-const mapDispatchToProps = dispatch => ({
-  closePasswordPopover: () => {
-    dispatch({
-      type: viewActionTypes.CLOSE_POPOVER
-    })
-  }
-})
 
 class BROCPopover extends React.Component {
   static propTypes = {
     anchorEl: PropTypes.object,
     onClose: PropTypes.func
+  }
+
+  closePasswordPopover = () => {
+    this.props.dispatch({
+      type: viewActionTypes.CLOSE_POPOVER
+    })
   }
 
   render() {
@@ -34,9 +29,9 @@ class BROCPopover extends React.Component {
         }}
         disableAutoFocus={true}
         disableRestoreFocus={true}
-        open={this.props.view.popover.open}
+        open={this.props.store.view.popover.open}
         anchorEl={this.props.anchorEl}
-        onClose={this.props.closePasswordPopover}
+        onClose={this.closePasswordPopover}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left"
@@ -47,9 +42,7 @@ class BROCPopover extends React.Component {
         }}
       >
         <PopoverText>
-          <Typography>
-            {this.props.view.popover.message}
-          </Typography>
+          <Typography>{this.props.store.view.popover.message}</Typography>
         </PopoverText>
       </Popover>
     )
@@ -60,7 +53,4 @@ const PopoverText = styled.div`
   padding: 1rem;
   width: 14rem;
 `
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BROCPopover)
+export default connect(mapStateToProps)(BROCPopover)
