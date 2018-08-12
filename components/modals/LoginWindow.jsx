@@ -22,7 +22,10 @@ import {
 } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
-import { submitEvent, userProfileInputValid } from "../../util/user-info-helpers"
+import {
+  submitEvent,
+  userProfileInputValid
+} from "../../util/user-info-helpers"
 
 class LoginWindow extends React.Component {
   static propTypes = {
@@ -142,7 +145,10 @@ class LoginWindow extends React.Component {
             <DialogActions>
               {!this.props.store.view.loginWindow.registering && (
                 <LeftLinkButton>
-                  <Button onClick={this.forgotPassword}>
+                  <Button
+                    id="forgot-password-button"
+                    onClick={this.forgotPassword}
+                  >
                     Forgot Password?
                   </Button>
                 </LeftLinkButton>

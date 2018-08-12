@@ -3,9 +3,9 @@ package specs
 import geb.error.RequiredPageContentNotPresent
 import geb.spock.GebSpec
 import pages.IndexPage
-import util.UserService
 import util.NotificationVariants
 import util.TestUser
+import util.UserService
 
 class IndexSpec extends GebSpec {
     // Tests
@@ -54,25 +54,10 @@ class IndexSpec extends GebSpec {
         validateRegisterModal(registerModal)
 
         when:
-        registerModal.userInfoForm.email.text = TestUser.email
-        registerModal.userInfoForm.phone.text = TestUser.phone
-        registerModal.userInfoForm.name.text = TestUser.name
-        registerModal.userInfoForm.address.text = TestUser.address
-        registerModal.userInfoForm.city.text = TestUser.city
-        registerModal.userInfoForm.state.selected = TestUser.state
-        registerModal.userInfoForm.zipCode.text = TestUser.zipCode
-        registerModal.userInfoForm.password.value(TestUser.password)
+        registerModal.userInfoForm.fillOutUserInfoForm(registerModal.userInfoForm)
 
         then:
-        registerModal.userInfoForm.email.text == TestUser.email
-        registerModal.userInfoForm.email.text == TestUser.email
-        registerModal.userInfoForm.phone.text == TestUser.phone
-        registerModal.userInfoForm.name.text == TestUser.name
-        registerModal.userInfoForm.address.text == TestUser.address
-        registerModal.userInfoForm.city.text == TestUser.city
-        registerModal.userInfoForm.state.selected == TestUser.state
-        registerModal.userInfoForm.zipCode.text == TestUser.zipCode
-        registerModal.userInfoForm.password.value() == TestUser.password
+        validateUserInfoForm(registerModal.userInfoForm)
 
         when:
         // We have to execute javascript here because of the popover's backdrop making
@@ -87,19 +72,58 @@ class IndexSpec extends GebSpec {
 
     }
 
-//    def "Login modal should log user in"() {
-//
-//    }
+    def "Login modal should log user in"() {
+        when:
+        UserService.verifyTestUserEmail()
+        to IndexPage
+        topBar.loginButton.click()
+
+        then:
+        validateLoginModal(loginModal)
+
+        when:
+        loginModal.userInfoForm.email.text = TestUser.email
+        loginModal.userInfoForm.password.value(TestUser.password)
+        loginModal.submitButton.click()
+        waitFor { topBar.profileButton.isPresent() == true }
+
+        then:
+        topBar.profileButton.name.text().equalsIgnoreCase(TestUser.name)
+        topBar.profileButton.email.text().equalsIgnoreCase(TestUser.email)
+    }
 
     // Spock hooks
+    def setupSpec() {
+        UserService.deleteTestUser()
+        UserService.deleteTestUserEmails()
+    }
+
     def cleanupSpec() {
         UserService.deleteTestUser()
+        UserService.deleteTestUserEmails()
     }
 
     // Helpers
-    def validateRegisterModal(registerModal) {
+    static def validateRegisterModal(registerModal) {
         registerModal.isDisplayed()
         registerModal.title.isDisplayed()
         registerModal.title.text() == "Register"
+    }
+
+    static def validateLoginModal(loginModal) {
+        loginModal.isDisplayed()
+        loginModal.title.isDisplayed()
+        loginModal.title.text() == "Login"
+    }
+
+    static def validateUserInfoForm(userInfoForm) {
+        userInfoForm.email.text == TestUser.email
+        userInfoForm.phone.text == TestUser.phone
+        userInfoForm.name.text == TestUser.name
+        userInfoForm.address.text == TestUser.address
+        userInfoForm.city.text == TestUser.city
+        userInfoForm.state.selected == TestUser.state
+        userInfoForm.zipCode.text == TestUser.zipCode
+        userInfoForm.password.value() == TestUser.password
     }
 }

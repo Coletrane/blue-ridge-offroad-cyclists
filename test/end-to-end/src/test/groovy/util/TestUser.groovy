@@ -9,5 +9,5 @@ class TestUser {
     static final state = "Virginia"
     static final zipCode = "24719"
     static final password = "gebIsC00l!man#"
-    static final restmailUsername = {email.split("@")[0]}
+    static final restmailUsername = { email.split("@")[0] }
 }

@@ -83,8 +83,12 @@ class DefaultLayout extends React.Component {
                     >
                       <span>
                         <Username>
-                          <div>{this.props.store.user.name}</div>
-                          <div>{this.props.store.user.email}</div>
+                          <div id="profile-button-name">
+                            {this.props.store.user.name}
+                          </div>
+                          <div id="profile-button-email">
+                            {this.props.store.user.email}
+                          </div>
                         </Username>
                         <FontAwesomeIcon icon={faUserEdit} />
                       </span>
@@ -130,7 +134,9 @@ class DefaultLayout extends React.Component {
             name={this.props.store.view.loginWindow.name}
           />
         )}
-        {this.props.store.view.verificationCodeWindow.open && <VerificationCodeWindow />}
+        {this.props.store.view.verificationCodeWindow.open && (
+          <VerificationCodeWindow />
+        )}
         {this.props.children}
         <BROCFooter />
       </div>
