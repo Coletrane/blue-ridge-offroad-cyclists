@@ -20,11 +20,11 @@ const updateUser = async user => {
 
 const verifyNewEmail = async (email, code) => {
   try {
-    const res =  await Auth.verifyCurrentUserAttributeSubmit("email", code)
+    const res = await Auth.verifyCurrentUserAttributeSubmit("email", code)
     if (res === "SUCCESS") {
       return await AuthService.getLoggedInUser()
     }
-  }catch (err) {
+  } catch (err) {
     return null
   }
 }

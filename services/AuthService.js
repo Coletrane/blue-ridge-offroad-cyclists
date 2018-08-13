@@ -1,5 +1,5 @@
 import Auth from "@aws-amplify/auth"
-import {authConfig} from "../constants"
+import { authConfig } from "../constants"
 
 Auth.configure(authConfig)
 

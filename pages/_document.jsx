@@ -2,7 +2,6 @@ import React from "react"
 import Document, { Head, Main, NextScript } from "next/document"
 
 import styled, { ServerStyleSheet } from "styled-components"
-import { checkLoggedIn } from "../store/auth"
 
 class BROCDocument extends Document {
   static getInitialProps({ renderPage }) {

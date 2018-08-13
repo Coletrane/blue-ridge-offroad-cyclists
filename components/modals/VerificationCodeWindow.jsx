@@ -5,8 +5,9 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import TextField from "@material-ui/core/TextField"
-import ModalLoader, { DialogContentWrapper } from "./ModalLoader"
+import ModalLoader, { BROCDialogContent } from "./ModalLoader"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
+import LinkButtonLeft from "./LinkButtonLeft"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -65,39 +66,31 @@ class VerificationCodeWindow extends React.Component {
         </DialogTitle>
         <ModalLoader loading={this.props.store.user.loading} />
         <form onSubmit={this.submit}>
-          <DialogContentWrapper loading={this.props.store.user.loading}>
-            <DialogContent>
-              <TextField
-                margin="dense"
-                id="verificationCode"
-                label="Verification Code"
-                onChange={this.handleBasicInput}
-                value={this.state.verificationCode}
-              />
-            </DialogContent>
-            <DialogActions>
-              {this.props.store.view.verificationCodeWindow.cancellable && (
-                <LeftLinkButton>
-                  <Button onClick={this.closeVerificationCodeWindow}>
-                    Cancel
-                  </Button>
-                </LeftLinkButton>
-              )}
-              <Button onClick={this.resendCode}>Resend code</Button>
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
-            </DialogActions>
-          </DialogContentWrapper>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              id="verificationCode"
+              label="Verification Code"
+              onChange={this.handleBasicInput}
+              value={this.state.verificationCode}
+            />
+          </DialogContent>
+          <DialogActions>
+            {this.props.store.view.verificationCodeWindow.cancellable && (
+              <LinkButtonLeft onClick={this.closeVerificationCodeWindow}>
+                Cancel
+              </LinkButtonLeft>
+            )}
+            <Button onClick={this.resendCode}>Resend code</Button>
+            <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
+          </DialogActions>
         </form>
       </Dialog>
     )
   }
 }
-
-const LeftLinkButton = styled.div`
-  margin-right: auto !important;
-`
 
 export default connect(mapStateToProps)(
   withMobileDialog()(VerificationCodeWindow)

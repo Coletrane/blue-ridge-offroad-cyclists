@@ -1,23 +1,17 @@
 import React from "react"
 import { userInfoFormSubmit } from "../../util/event-types"
 
-const withFormHelpers = (WrappedComponent) => {
+const withFormHelpers = WrappedComponent => {
   class WithFormHelpers extends React.Component {
     constructor(props) {
       super(props)
       this.validateInput = this.validateInput.bind(this)
     }
 
-
-
-    static
-
-    validateInput = () => {}
-
-
+    static validateInput = () => {}
 
     render() {
-      return <WrappedComponent {...this.props}/>
+      return <WrappedComponent {...this.props} />
     }
   }
 

@@ -141,7 +141,7 @@ class UserInfoForm extends React.Component {
 
   render() {
     return (
-      <UserInfoFormWrapper fullWidth={this.props.forgotPassword}>
+      <BROCUserInfoForm fullWidth={this.props.forgotPassword}>
         <TextField
           autoFocus
           margin="dense"
@@ -246,12 +246,12 @@ class UserInfoForm extends React.Component {
               )}
             </div>
           )}
-      </UserInfoFormWrapper>
+      </BROCUserInfoForm>
     )
   }
 }
 
-const UserInfoFormWrapper = styled.div`
+const BROCUserInfoForm = styled.div`
   width: ${props => (props.fullWidth ? "26rem" : "")};
 `
 const StateSelect = styled.span`

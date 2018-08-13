@@ -7,7 +7,8 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import FacebookLogin from "react-facebook-login"
 import UserInfoForm from "../input/UserInfoForm"
-import ModalLoader, { DialogContentWrapper } from "./ModalLoader"
+import ModalLoader, { BROCDialogContent } from "./ModalLoader"
+import LinkButtonLeft from "./LinkButtonLeft"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
@@ -67,6 +68,9 @@ class LoginWindow extends React.Component {
       userProfileInputValid(state) &&
       state.passwordValid
     ) {
+      this.props.dispatch({
+        type: viewActionTypes.CLOSE_POPOVER
+      })
       this.props.dispatch(
         register({
           email: state.email,
@@ -123,7 +127,7 @@ class LoginWindow extends React.Component {
         <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
         <ModalLoader loading={this.props.store.auth.loading} />
         <form onSubmit={this.submit}>
-          <DialogContentWrapper loading={this.props.store.auth.loading}>
+          <BROCDialogContent loading={this.props.store.auth.loading}>
             <DialogContent>
               {this.props.store.view.loginWindow.registering && (
                 <FacebookLogin
@@ -144,14 +148,12 @@ class LoginWindow extends React.Component {
             </DialogContent>
             <DialogActions>
               {!this.props.store.view.loginWindow.registering && (
-                <LeftLinkButton>
-                  <Button
-                    id="forgot-password-button"
-                    onClick={this.forgotPassword}
-                  >
-                    Forgot Password?
-                  </Button>
-                </LeftLinkButton>
+                <LinkButtonLeft
+                  id="forgot-password-button"
+                  onClick={this.forgotPassword}
+                >
+                  Forgot Password?
+                </LinkButtonLeft>
               )}
               <Button id="login-window-cancel" onClick={this.cancel}>
                 Cancel
@@ -165,15 +167,11 @@ class LoginWindow extends React.Component {
                 Submit
               </Button>
             </DialogActions>
-          </DialogContentWrapper>
+          </BROCDialogContent>
         </form>
       </Dialog>
     )
   }
 }
-
-const LeftLinkButton = styled.div`
-  margin-right: auto !important;
-`
 
 export default connect(mapStateToProps)(withMobileDialog()(LoginWindow))

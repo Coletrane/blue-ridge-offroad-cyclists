@@ -1,11 +1,11 @@
 import AuthService from "../services/AuthService"
 import { viewActionTypes } from "./view"
 import { variants, plsContact } from "../components/modals/Notifications"
-import {userActionTypes} from "./user"
+import { userActionTypes } from "./user"
 
 export const authState = {
   loading: false,
-  loggedIn: false,
+  loggedIn: false
 }
 
 export const authActionTypes = {
@@ -86,7 +86,8 @@ export const registerWithFacebookCallback = fbRes => async dispatch => {
     dispatch({
       type: viewActionTypes.OPEN_NOTIFICATION,
       payload: {
-        message: "There was a problem registering with Facebook, please register manually",
+        message:
+          "There was a problem registering with Facebook, please register manually",
         variant: variants.warning
       }
     })
@@ -160,11 +161,25 @@ export const login = (email, password) => async dispatch => {
   }
 }
 
-export const checkLoggedIn = () => async dispatch => {
+export const checkLoggedIn = () => async (dispatch, getState) => {
+  // Avoid duplicated login checks. DefaultLayout/AuthToolbar needs to check login status
+  // and so does the route profile, but profile is an auth protected route
+  if (getState().auth.loading) {
+    return
+  }
   dispatch({
     type: authActionTypes.CHECK_LOGGED_IN
   })
-
+  // Avoid unecessary network calls
+  const stateUser = getState().user
+  if (
+    stateUser.email &&
+    stateUser.phone_number &&
+    stateUser.address &&
+    stateUser.name
+  ) {
+    return
+  }
   const user = await AuthService.getLoggedInUser()
   if (user && user.email) {
     dispatch({

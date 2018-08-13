@@ -4,25 +4,22 @@ import CircularProgress from "@material-ui/core/CircularProgress"
 import styled from "styled-components"
 import PropTypes from "prop-types"
 
-class ModalLoader extends React.Component {
-  static propTypes = {
-    loading: PropTypes.bool.isRequired
-  }
-
-  render() {
-    return (
-      <Loader loading={this.props.loading}>
-        <CircularProgress
-          className="login-window-loading"
-          size={60}
-          thickness={4.6}
-        />
-      </Loader>
-    )
-  }
+const ModalLoader = props => {
+  return (
+    <BROCCircularProgress loading={props.loading}>
+      <CircularProgress
+        className="login-window-loading"
+        size={60}
+        thickness={4.6}
+      />
+    </BROCCircularProgress>
+  )
+}
+ModalLoader.propTypes = {
+  loading: PropTypes.bool.isRequired
 }
 
-const Loader = styled.div`
+const BROCCircularProgress = styled.div`
   margin: auto;
   display: ${props => (props.loading ? "block" : "none")};
   position: absolute;
@@ -30,7 +27,7 @@ const Loader = styled.div`
   top: 37%;
 `
 
-export const DialogContentWrapper = styled.div`
+export const BROCDialogContent = styled.div`
   visibility: ${props => (props.loading ? "hidden" : "")};
 `
 

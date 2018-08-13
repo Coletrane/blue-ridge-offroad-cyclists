@@ -62,7 +62,7 @@ class Notifications extends React.Component {
 
   render() {
     return (
-      <SnackbarWrapper color={this.variant().color}>
+      <BROCSnackbar color={this.variant().color}>
         <Snackbar
           open={this.props.store.view.notification.open}
           onClose={this.closeNotification}
@@ -93,13 +93,12 @@ class Notifications extends React.Component {
             ]}
           />
         </Snackbar>
-      </SnackbarWrapper>
+      </BROCSnackbar>
     )
   }
 }
 
-const SnackbarWrapper = styled.div`
-  #notification-content {
+const BROCSnackbar = styled.div`
     display: flex;
     align-items: center;
   }

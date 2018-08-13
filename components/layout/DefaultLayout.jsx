@@ -9,14 +9,13 @@ import LoginWindow from "../modals/LoginWindow"
 import VerificationCodeWindow from "../modals/VerificationCodeWindow"
 import Notifications from "../modals/Notifications"
 import BROCFooter from "./BROCFooter"
+import withLoginCheck from "../WithLoginCheck"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUserEdit } from "@fortawesome/free-solid-svg-icons/faUserEdit"
 
 import PropTypes from "prop-types"
 import styled from "styled-components"
 
-import { connect } from "react-redux"
-import { mapStateToProps } from "../../store/helpers"
 import { viewActionTypes } from "../../store/view"
 import { logout } from "../../store/auth"
 
@@ -174,4 +173,5 @@ const Username = styled.span`
   cursor: pointer;
 `
 
-export default connect(mapStateToProps)(withMobileDialog()(DefaultLayout))
+// Don't need connect() since withLoginCheck has it
+export default withLoginCheck(withMobileDialog()(DefaultLayout), false)

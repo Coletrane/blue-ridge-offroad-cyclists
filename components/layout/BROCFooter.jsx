@@ -6,26 +6,24 @@ import styled from "styled-components"
 import { theme, fonts } from "../../util/styles"
 import { githubUrl } from "../../constants"
 
-class BROCFooter extends React.Component {
-  render() {
-    return (
-      <BROCFooterWrapper
-        style={{
-          backgroundColor: theme.palette.primary.main
-        }}
-      >
-        <div>Copyright 2018 Cole Inman</div>
-        <div>
-          <Link href={githubUrl}>
-            <a>GitHub</a>
-          </Link>
-        </div>
-      </BROCFooterWrapper>
-    )
-  }
+const BROCFooter = () => {
+  return (
+    <BROCFooterFooter
+      style={{
+        backgroundColor: theme.palette.primary.main
+      }}
+    >
+      <div>Copyright 2018 Cole Inman</div>
+      <div>
+        <Link href={githubUrl}>
+          <a>GitHub</a>
+        </Link>
+      </div>
+    </BROCFooterFooter>
+  )
 }
 
-const BROCFooterWrapper = styled.footer`
+const BROCFooterFooter = styled.footer`
   text-align: center;
   box-shadow: 0px -9px 25px 1px rgba(0, 0, 0, 0.75);
   font-family: ${fonts.IBMPlexMono.name}, ${fonts.IBMPlexMono.style};

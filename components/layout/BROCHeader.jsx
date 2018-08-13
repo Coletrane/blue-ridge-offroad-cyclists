@@ -8,35 +8,28 @@ import styled from "styled-components"
 import { img } from "../../util/routes"
 import { theme } from "../../util/styles"
 
-class BROCHeader extends React.Component {
-  static propTypes = {
-    image: PropTypes.string
-  }
-
-  render() {
-    return (
-      <BROCHeaderWrapper>
-        {this.props.image && (
-          <HeaderImage backgroundImage={`${img}/${this.props.image}`} />
-        )}
-        {!this.props.image && (
-          <BROCCarousel>
-            <Carousel>
-              <div>
-                <img src={`${img}/cove-social.jpg`} />
-              </div>
-            </Carousel>
-          </BROCCarousel>
-        )}
-      </BROCHeaderWrapper>
-    )
-  }
+const BROCHeader = props => {
+  return (
+    <BROCHeaderHeader>
+      {props.image && <HeaderImage backgroundImage={`${img}/${props.image}`} />}
+      {!props.image && (
+        <BROCCarousel>
+          <div>
+            <img src={`${img}/cove-social.jpg`} />
+          </div>
+        </BROCCarousel>
+      )}
+    </BROCHeaderHeader>
+  )
+}
+BROCHeader.propTypes = {
+  image: PropTypes.string
 }
 
-const BROCHeaderWrapper = styled.header`
+const BROCHeaderHeader = styled.header`
   box-shadow: 0px 9px 25px 1px rgba(0, 0, 0, 0.75);
 `
-const BROCCarousel = styled.div`
+const BROCCarousel = styled(Carousel)`
   background-color: ${theme.palette.primary.main};
 `
 const HeaderImage = styled.div`

@@ -9,8 +9,6 @@ import withLoginCheck from "../components/WithLoginCheck"
 
 import styled from "styled-components"
 
-import { connect } from "react-redux"
-import { mapStateToProps } from "../store/helpers"
 import { viewActionTypes } from "../store/view"
 import { updateUser } from "../store/user"
 import { submitEvent, userProfileInputValid } from "../util/user-info-helpers"
@@ -74,62 +72,60 @@ class Profile extends React.Component {
         <MainContent>
           <Grid container spacing={24}>
             <Grid item xs={12} sm={6}>
-              <Paper>
-                <PaperContent>
-                  {!this.state.infoFormOpen &&
-                    !this.state.passwordFormOpen && (
-                      <div>
-                        <h2>{this.props.store.user.name}</h2>
+              <BROCPaper>
+                {!this.state.infoFormOpen &&
+                  !this.state.passwordFormOpen && (
+                    <div>
+                      <h2>{this.props.store.user.name}</h2>
+                      {!this.props.store.user.email_verified && (
+                        <Button onClick={this.openVerificationCodeWindow}>
+                          Click here to verify email
+                        </Button>
+                      )}
+                      <EmailText
+                        verified={this.props.store.user.email_verified}
+                      >
+                        <h4>{this.props.store.user.email}</h4>
                         {!this.props.store.user.email_verified && (
-                          <Button onClick={this.openVerificationCodeWindow}>
-                            Click here to verify email
-                          </Button>
+                          <h6>*Not verified</h6>
                         )}
-                        <EmailText>
-                          <h4 verified={this.props.store.user.email_verified}>
-                            {this.props.store.user.email}
-                          </h4>
-                          {!this.props.store.user.email_verified && (
-                            <h6>*Not verified</h6>
-                          )}
-                        </EmailText>
-                        <h4>{this.props.store.user.phone_number}</h4>
-                        <h4>{this.props.store.user.address}</h4>
-                        <ActionButtons>
-                          <Button onClick={this.openPassowrdChangeForm}>
-                            Change Password
-                          </Button>
-                          <Button onClick={this.openUserInfoForm}>Edit</Button>
-                        </ActionButtons>
-                      </div>
-                    )}
-                  {this.state.infoFormOpen && (
-                    <form onSubmit={this.saveUserInfo}>
-                      <UserInfoForm
-                        onValidate={this.saveUserInfoCallback}
-                        email={this.props.store.user.email}
-                        phone={this.props.store.user.phone_number}
-                        name={this.props.store.user.name}
-                        fullAddress={this.props.store.user.address}
-                        editing
-                      />
-                      <SubmitAndCancelButtons onCancel={this.closeForms} />
-                    </form>
+                      </EmailText>
+                      <h4>{this.props.store.user.phone_number}</h4>
+                      <h4>{this.props.store.user.address}</h4>
+                      <ActionButtons>
+                        <Button onClick={this.openPassowrdChangeForm}>
+                          Change Password
+                        </Button>
+                        <Button onClick={this.openUserInfoForm}>Edit</Button>
+                      </ActionButtons>
+                    </div>
                   )}
-                  {this.state.passwordFormOpen && (
-                    <form onSubmit={this.updatePassword}>
-                      <PasswordChangeForm />
-                      <SubmitAndCancelButtons onCancel={this.closeForms} />
-                    </form>
-                  )}
-                </PaperContent>
-              </Paper>
+                {this.state.infoFormOpen && (
+                  <form onSubmit={this.saveUserInfo}>
+                    <UserInfoForm
+                      onValidate={this.saveUserInfoCallback}
+                      email={this.props.store.user.email}
+                      phone={this.props.store.user.phone_number}
+                      name={this.props.store.user.name}
+                      fullAddress={this.props.store.user.address}
+                      editing
+                    />
+                    <SubmitAndCancelButtons onCancel={this.closeForms} />
+                  </form>
+                )}
+                {this.state.passwordFormOpen && (
+                  <form onSubmit={this.updatePassword}>
+                    <PasswordChangeForm />
+                    <SubmitAndCancelButtons onCancel={this.closeForms} />
+                  </form>
+                )}
+              </BROCPaper>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Paper>
-                <PaperContent>
+                <BROCPaper>
                   <h2>Membership Status</h2>
-                </PaperContent>
+                </BROCPaper>
               </Paper>
             </Grid>
           </Grid>
@@ -143,8 +139,15 @@ class Profile extends React.Component {
 const SubmitAndCancelButtons = props => {
   return (
     <ActionButtons>
-      <Button onClick={props.onCancel}>Cancel</Button>
-      <Button type="submit" variant="contained" color="primary">
+      <Button id="profile-edit-cancel-button" onClick={props.onCancel}>
+        Cancel
+      </Button>
+      <Button
+        id="profile-edit-submit-button"
+        type="submit"
+        variant="contained"
+        color="primary"
+      >
         Save
       </Button>
     </ActionButtons>
@@ -158,7 +161,7 @@ const MainContent = styled.div`
     margin-top: 0;
   }
 `
-const PaperContent = styled.div`
+const BROCPaper = styled(Paper)`
   padding: 0.5rem 1rem 1rem 1rem;
 `
 const EmailText = styled.div`
@@ -178,4 +181,4 @@ const ActionButtons = styled.div`
   }
 `
 
-export default withLoginCheck(connect(mapStateToProps)(Profile), true)
+export default withLoginCheck(Profile, true)

@@ -79,7 +79,7 @@ export const updateUser = payload => async (dispatch, getState) => {
           user: user
         }
       })
-      if (userDiff === 'email') {
+      if (userDiff === "email") {
         dispatch({
           type: viewActionTypes.OPEN_NOTIFICATION,
           payload: {
@@ -221,7 +221,7 @@ export const userReducer = (state = userState, action) => {
       return {
         ...state,
         ...action.payload.user,
-        loading: false,
+        loading: false
       }
     case _userActionTypes.VERIFY_CODE_FAIL:
       return {
