@@ -60,10 +60,7 @@ class IndexSpec extends GebSpec {
         validateUserInfoForm(registerModal.userInfoForm)
 
         when:
-        // We have to execute javascript here because of the popover's backdrop making
-        // submit button not clickable
-        js.exec("document.getElementById('login-window-submit').click();")
-        // waitFor does not use implicit assertions like the when: and then: blocks
+        registerModal.submitButton.click()
         waitFor { notification.isPresent() == true }
 
         then:
