@@ -1,7 +1,6 @@
 import React from "react"
 import DefaultLayout from "../components/layout/DefaultLayout"
 import BROCHeader from "../components/layout/BROCHeader"
-import withLoginCheck from "../components/WithLoginCheck"
 
 import styled from "styled-components"
 
@@ -21,4 +20,4 @@ const Index = () => {
 const MainContent = styled.div`
   padding: 2rem;
 `
-export default withLoginCheck(Index)
+export default Index

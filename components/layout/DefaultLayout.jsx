@@ -174,4 +174,4 @@ const Username = styled.span`
 `
 
 // Don't need connect() since withLoginCheck has it
-export default withLoginCheck(withMobileDialog()(DefaultLayout), false)
+export default withLoginCheck(withMobileDialog()(DefaultLayout))

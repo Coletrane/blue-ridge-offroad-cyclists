@@ -20,7 +20,8 @@ export const viewState = {
     open: false,
     message: "",
     variant: ""
-  }
+  },
+  protectedRoute: false
 }
 
 export const viewActionTypes = {
@@ -29,7 +30,8 @@ export const viewActionTypes = {
   OPEN_VERIFICATION_CODE_WINDOW: "OPEN_VERIFICATION_CODE_WINDOW",
   CLOSE_VERIFICATION_CODE_WIDNOW: "CLOSE_VERIFICATION_CODE_WINDOW",
   OPEN_NOTIFICATION: "OPEN_NOTIFICATION",
-  CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION"
+  CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION",
+  SET_PROTECTED_ROUTE: "SET_PROTECTED_ROUTE"
 }
 
 export const viewReducer = (state = viewState, action) => {
@@ -96,6 +98,11 @@ export const viewReducer = (state = viewState, action) => {
         }
       } else {
         return state
+      }
+    case viewActionTypes.SET_PROTECTED_ROUTE:
+      return {
+        ...state,
+        protectedRoute: action.payload.protectedRoute
       }
     default:
       return state

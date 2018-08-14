@@ -5,10 +5,11 @@ import Grid from "@material-ui/core/Grid"
 import Button from "@material-ui/core/Button"
 import UserInfoForm from "../components/input/UserInfoForm"
 import PasswordChangeForm from "../components/input/PasswordChangeForm"
-import withLoginCheck from "../components/WithLoginCheck"
 
 import styled from "styled-components"
 
+import {connect} from "react-redux"
+import {mapStateToProps} from "../store/helpers"
 import { viewActionTypes } from "../store/view"
 import { updateUser, updatePassword } from "../store/user"
 import {
@@ -211,4 +212,4 @@ const ActionButtons = styled.div`
   }
 `
 
-export default withLoginCheck(Profile, true)
+export default connect(mapStateToProps)(Profile)
