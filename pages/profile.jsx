@@ -11,8 +11,16 @@ import styled from "styled-components"
 
 import { viewActionTypes } from "../store/view"
 import { updateUser, updatePassword } from "../store/user"
-import { userProfileInputValid, passwordInputValid } from "../util/user-info-helpers"
-import { userInfoFormSubmit, passwordInfoFormSubmit, emitEventType } from "../util/event-types"
+import {
+  userProfileInputValid,
+  passwordInputValid
+} from "../util/user-info-helpers"
+import {
+  userInfoFormSubmit,
+  passwordInfoFormSubmit,
+  emitEventType
+} from "../util/event-types"
+import { cssFont, fonts } from "../util/styles"
 
 class Profile extends React.Component {
   constructor(props) {
@@ -82,10 +90,11 @@ class Profile extends React.Component {
           <Grid container spacing={24}>
             <Grid item xs={12} sm={6}>
               <BROCPaper>
+                <h2>Profile</h2>
                 {!this.state.infoFormOpen &&
                   !this.state.passwordFormOpen && (
                     <div>
-                      <h2>{this.props.store.user.name}</h2>
+                      <UserInfoText>{this.props.store.user.name}</UserInfoText>
                       {!this.props.store.user.email_verified && (
                         <Button onClick={this.openVerificationCodeWindow}>
                           Click here to verify email
@@ -94,13 +103,18 @@ class Profile extends React.Component {
                       <EmailText
                         verified={this.props.store.user.email_verified}
                       >
-                        <h4>{this.props.store.user.email}</h4>
-                        {!this.props.store.user.email_verified && (
-                          <h6>*Not verified</h6>
-                        )}
+                        {this.props.store.user.email}
                       </EmailText>
-                      <h4>{this.props.store.user.phone_number}</h4>
-                      <h4>{this.props.store.user.address}</h4>
+
+                      {!this.props.store.user.email_verified && (
+                        <NotVerifiedText>*Not verified</NotVerifiedText>
+                      )}
+                      <UserInfoText>
+                        {this.props.store.user.phone_number}
+                      </UserInfoText>
+                      <UserInfoText>
+                        {this.props.store.user.address}
+                      </UserInfoText>
                       <ActionButtons>
                         <Button onClick={this.openPassowrdChangeForm}>
                           Change Password
@@ -124,7 +138,9 @@ class Profile extends React.Component {
                 )}
                 {this.state.passwordFormOpen && (
                   <form onSubmit={this.updatePassword}>
-                    <PasswordChangeForm onValidate={this.updatePasswordCallback}/>
+                    <PasswordChangeForm
+                      onValidate={this.updatePasswordCallback}
+                    />
                     <SubmitAndCancelButtons onCancel={this.closeForms} />
                   </form>
                 )}
@@ -166,23 +182,28 @@ const SubmitAndCancelButtons = props => {
 const MainContent = styled.div`
   padding: 2rem;
   flex-grow: 1;
-  h2 {
-    margin-top: 0;
-  }
 `
 const BROCPaper = styled(Paper)`
   padding: 0.5rem 1rem 1rem 1rem;
+  h2 {
+    margin-top: 0;
+    margin-bottom: .5rem;
+  }
 `
-const EmailText = styled.div`
+const UserInfoText = styled.div`
+  font-family: ${cssFont(fonts.IBMPlexMono)};
+  font-size: 1rem;
+  padding: 0.5rem 0;
+`
+const EmailText = styled(UserInfoText)`
   height: 2.6rem;
-  h4 {
-    float: ${props => (props.verified ? "" : "left")};
-  }
-  h6 {
-    float: right;
-    color: red;
-  }
+  float: ${props => (props.verified ? "" : "left")};
 `
+const NotVerifiedText = styled.span`
+  float: right;
+  color: red;
+`
+
 const ActionButtons = styled.div`
   padding-top: 1rem;
   button:last-child {

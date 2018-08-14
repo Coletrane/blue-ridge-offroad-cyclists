@@ -2,6 +2,7 @@ import React from "react"
 import TextField from "@material-ui/core/TextField"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
+import PasswordRequirements from "./PasswordRequirements"
 
 import styled from "styled-components"
 import PropTypes from "prop-types"
@@ -223,13 +224,14 @@ class UserInfoForm extends React.Component {
               <TextField
                 margin="dense"
                 id="password"
-                label={`Password ${passwordMessages.requirements}`}
+                label="Password"
                 type="password"
                 fullWidth
                 error={this.state.formSubmitted && !this.state.passwordValid}
                 value={this.state.password}
                 onChange={this.handleBasicInput}
               />
+              {this.props.registering && <PasswordRequirements />}
             </div>
           )}
       </BROCUserInfoForm>
