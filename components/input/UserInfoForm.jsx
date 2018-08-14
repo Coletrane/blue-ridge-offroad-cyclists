@@ -2,14 +2,12 @@ import React from "react"
 import TextField from "@material-ui/core/TextField"
 import NativeSelect from "@material-ui/core/NativeSelect"
 import InputAdornment from "@material-ui/core/InputAdornment"
-import BROCPopover from "../modals/BROCPopover"
 
 import styled from "styled-components"
 import PropTypes from "prop-types"
 
 import { connect } from "react-redux"
 import { mapStateToProps } from "../../store/helpers"
-import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
 
 import usStates from "../../util/state-codes.json"
 import { userInfoFormSubmit } from "../../util/event-types"
@@ -17,6 +15,7 @@ import { validPassword, splitAddress } from "../../util/user-info-helpers"
 import isEmail from "validator/lib/isEmail"
 import isPostalCode from "validator/lib/isPostalCode"
 import isMobilePhone from "validator/lib/isMobilePhone"
+import { passwordMessages } from "../../store/view"
 
 class UserInfoForm extends React.Component {
   static propTypes = {
@@ -66,7 +65,7 @@ class UserInfoForm extends React.Component {
       formSubmitted: false,
       passwordFocused: false
     }
-    this.passwordRef = React.createRef()
+    this.validateInput = this.validateInput.bind(this)
   }
 
   componentDidMount() {
@@ -84,15 +83,6 @@ class UserInfoForm extends React.Component {
   handleBasicInput = event => {
     this.setState({
       [event.target.id]: event.target.value
-    })
-  }
-
-  openPopover = () => {
-    this.props.dispatch({
-      type: viewActionTypes.OPEN_POPOVER,
-      payload: {
-        message: passwordPopoverMessages.requirements
-      }
     })
   }
 
@@ -229,21 +219,17 @@ class UserInfoForm extends React.Component {
         )}
         {!this.props.forgotPassword &&
           !this.props.editing && (
-            <div ref={this.passwordRef}>
+            <div>
               <TextField
                 margin="dense"
                 id="password"
-                label="Password"
+                label={`Password ${passwordMessages.requirements}`}
                 type="password"
                 fullWidth
                 error={this.state.formSubmitted && !this.state.passwordValid}
                 value={this.state.password}
                 onChange={this.handleBasicInput}
-                onFocus={this.openPopover}
               />
-              {this.props.registering && (
-                <BROCPopover anchorEl={this.passwordRef.current} />
-              )}
             </div>
           )}
       </BROCUserInfoForm>

@@ -2,6 +2,7 @@ import _ from "lodash"
 import UserService from "../services/UserService"
 import { viewActionTypes } from "./view"
 import { variants, plsContact } from "../components/modals/Notifications"
+import { validPassword } from "../util/user-info-helpers"
 
 // Maps to what we have in Cognito
 export const userState = {
@@ -22,17 +23,20 @@ export const userState = {
 }
 
 export const userActionTypes = {
-  UPDATE_PROFILE: "UPDATE_PROFILE",
-  VERIFY_CODE: "VERIFY_CODE",
-  RESEND_CODE: "RESEND_CODE",
   LOGGED_IN: "LOGGED_IN",
   LOGGED_OUT: "LOGGED_OUT"
 }
 const _userActionTypes = {
+  UPDATE_PROFILE: "UPDATE_PROFILE",
   UPDATE_PROFILE_SUCCESS: "UPDATE_PROFILE_SUCCESS",
   UPDATE_PROFILE_FAIL: "UPDATE_PROFILE_FAIL",
+  UPDATE_PASSWORD: "UPDATE_PASSWORD",
+  UPDATE_PASSWORD_SUCCESS: "UPDATE_PASSWORD_SUCCESS",
+  UPDATE_PASSWORD_FAIL: "UPDATE_PASSWORD_FAIL",
+  VERIFY_CODE: "VERIFY_CODE",
   VERIFY_CODE_SUCCESS: "VERIFY_CODE_SUCCESS",
   VERIFY_CODE_FAIL: "VERIFY_CODE_FAIL",
+  RESEND_CODE: "RESEND_CODE",
   RESEND_CODE_SUCCESS: "RESEND_CODE_SUCCESS",
   RESEND_CODE_FAIL: "RESEND_CODE_FAIL"
 }
@@ -69,7 +73,7 @@ export const updateUser = payload => async (dispatch, getState) => {
 
   if (userDiff) {
     dispatch({
-      type: userActionTypes.UPDATE_PROFILE
+      type: _userActionTypes.UPDATE_PROFILE
     })
     const user = await UserService.updateUser(sanitizedUser)
     if (user) {
@@ -122,7 +126,7 @@ export const updateUser = payload => async (dispatch, getState) => {
 export const verifyCode = payload => async (dispatch, getState) => {
   if (!getState().user.email_verified) {
     dispatch({
-      type: userActionTypes.VERIFY_CODE
+      type: _userActionTypes.VERIFY_CODE
     })
     const user = await UserService.verifyNewEmail(
       getState().user.email,
@@ -160,11 +164,11 @@ export const verifyCode = payload => async (dispatch, getState) => {
   }
 }
 
-export const resendCode = payload => async (dispatch, getState) => {
+export const resendCode = () => async (dispatch, getState) => {
   const email = getState().user.email
   if (email && !getState().user.email_verified) {
     dispatch({
-      type: userActionTypes.RESEND_CODE
+      type: _userActionTypes.RESEND_CODE
     })
     const res = UserService.resendVerificationCode(email)
     if (res) {
@@ -199,6 +203,48 @@ export const resendCode = payload => async (dispatch, getState) => {
   }
 }
 
+export const updatePassword = payload => async dispatch => {
+  if (
+    !payload.oldPassword ||
+    !payload.newPassword ||
+    !payload.newPasswordConfirm ||
+    payload.newPassword !== payload.newPasswordConfirm ||
+    !validPassword(payload.newPassword)
+  ) {
+    return
+  }
+  dispatch({
+    type: _userActionTypes.UPDATE_PASSWORD
+  })
+  const user = UserService.changePassword(
+    payload.oldPassword,
+    payload.newPassword
+  )
+  if (user) {
+    dispatch({
+      type: _userActionTypes.UPDATE_PASSWORD_SUCCESS
+    })
+    dispatch({
+      type: viewActionTypes.OPEN_NOTIFICATION,
+      payload: {
+        message: "Your password has been updated successfully.",
+        variant: variants.success
+      }
+    })
+  } else {
+    dispatch({
+      type: _userActionTypes.UPDATE_PASSWORD_FAIL
+    })
+    dispatch({
+      type: viewActionTypes.CLOSE_NOTIFICATION,
+      payload: {
+        message: `There was a problem updating your password ${plsContact}`,
+        variant: variants.error
+      }
+    })
+  }
+}
+
 export const userReducer = (state = userState, action) => {
   switch (action.type) {
     case userActionTypes.UPDATE_PROFILE:
@@ -217,6 +263,26 @@ export const userReducer = (state = userState, action) => {
         ...state,
         loading: false
       }
+    case _userActionTypes.UPDATE_PASSWORD:
+      return {
+        ...state,
+        loading: true
+      }
+    case _userActionTypes.UPDATE_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        loading: false
+      }
+    case _userActionTypes.UPDATE_PASSWORD_FAIL:
+      return {
+        ...state,
+        loading: false
+      }
+    case _userActionTypes.VERIFY_CODE:
+      return {
+        ...state,
+        loading: true
+      }
     case _userActionTypes.VERIFY_CODE_SUCCESS:
       return {
         ...state,
@@ -227,6 +293,11 @@ export const userReducer = (state = userState, action) => {
       return {
         ...state,
         loading: false
+      }
+    case _userActionTypes.RESEND_CODE:
+      return {
+        ...state,
+        loading: true
       }
     case _userActionTypes.RESEND_CODE_SUCCESS:
       return {

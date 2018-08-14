@@ -1,20 +1,26 @@
 import React from "react"
 import TextField from "@material-ui/core/TextField"
-import BROCPopover from "../modals/BROCPopover"
-import UserInfoForm from "./UserInfoForm"
+import PasswordRequirements from "./PasswordRequirements"
 
 import styled from "styled-components"
 import PropTypes from "prop-types"
 
 import { connect } from "react-redux"
 import { mapStateToProps } from "../../store/helpers"
-import { viewActionTypes, passwordPopoverMessages } from "../../store/view"
-import { userInfoFormSubmit } from "../../util/event-types"
-
-import { validPassword } from "../../util/user-info-helpers"
+import { passwordInfoFormSubmit } from "../../util/event-types"
+import { passwordMessages } from "../../store/view"
+import {
+  validPassword,
+  passwordInputValid,
+  openPasswordReqsNotification
+} from "../../util/user-info-helpers"
 // TODO: make an abstract component for this and USERInfoForm?
 
 class PasswordChangeForm extends React.Component {
+  static propTypes = {
+    onValidate: PropTypes.func
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -24,21 +30,20 @@ class PasswordChangeForm extends React.Component {
       newPasswordValid: false,
       newPasswordConfirm: "",
       newPasswordConfirmValid: false,
-      newPasswordFocused: false,
-      newPasswordsMatch: false
+      formSubmitted: false
     }
-    this.passwordRef = React.createRef()
+    this.validateInput = this.validateInput.bind(this)
   }
 
   componentDidMount() {
     if (process.browser) {
-      document.addEventListener(userInfoFormSubmit, this.validateInput)
+      document.addEventListener(passwordInfoFormSubmit, this.validateInput)
     }
   }
 
   componentWillUnmount() {
     if (process.browser) {
-      document.removeEventListener(userInfoFormSubmit, this.validateInput)
+      document.removeEventListener(passwordInfoFormSubmit, this.validateInput)
     }
   }
 
@@ -50,35 +55,37 @@ class PasswordChangeForm extends React.Component {
 
   validateInput = () => {
     const newState = {
-      oldPasswordValid: validPassword(this.state.password),
+      oldPasswordValid: validPassword(this.state.oldPassword),
       newPasswordValid: validPassword(this.state.newPassword),
       newPasswordConfirmValid: validPassword(this.state.newPasswordConfirm),
-      newPasswordsMatch:
-        this.state.newPassword === this.state.newPasswordConfirm
+      formSubmitted: true
     }
-    if (!newState.newPasswordsMatch) {
-      this.props.dispatch({
-        type: viewActionTypes.OPEN_POPOVER,
-        payload: {
-          message: passwordPopoverMessages.noMatch
-        }
-      })
+    if (this.state.newPassword !== this.state.newPasswordConfirm) {
+      openPasswordReqsNotification(this.props.dispatch)
+    }
+    if (!validPassword(this.state.newPassword)) {
+      openPasswordReqsNotification(this.props.dispatch)
     }
 
-    this.setState(newState)
+    this.setState(newState, () => {
+      if (passwordInputValid(newState)) {
+        this.props.onValidate(newState)
+      }
+    })
   }
 
   render() {
     return (
-      <div ref={this.passwordRef}>
+      <div>
         <TextField
           margin="dense"
           id="oldPassword"
           label="Old Password"
           type="password"
           fullWidth
-          error={this.state.formSubmitted && !this.state.passwordValid}
+          error={this.state.formSubmitted && !this.state.oldPasswordValid}
           value={this.state.oldPassword}
+          autoFocus={true}
           onChange={this.handleBasicInput}
         />
         <TextField
@@ -87,7 +94,7 @@ class PasswordChangeForm extends React.Component {
           label="New Password"
           type="password"
           fullWidth
-          error={this.state.formSubmitted && !this.state.passwordValid}
+          error={this.state.formSubmitted && !this.state.newPasswordValid}
           value={this.state.newPassword}
           onChange={this.handleBasicInput}
         />
@@ -97,11 +104,13 @@ class PasswordChangeForm extends React.Component {
           label="Confirm New Password"
           type="password"
           fullWidth
-          error={this.state.formSubmitted && !this.state.passwordValid}
+          error={
+            this.state.formSubmitted && !this.state.newPasswordConfirmValid
+          }
           value={this.state.newPasswordConfirm}
           onChange={this.handleBasicInput}
         />
-        <BROCPopover anchorEl={this.passwordRef} />
+        <PasswordRequirements/>
       </div>
     )
   }

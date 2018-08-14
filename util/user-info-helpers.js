@@ -1,12 +1,5 @@
-import { userInfoFormSubmit } from "./event-types"
-
-export const submitEvent = event => {
-  event.preventDefault()
-  event.stopPropagation()
-  if (process.browser) {
-    document.dispatchEvent(new Event(userInfoFormSubmit))
-  }
-}
+import { passwordMessages, viewActionTypes } from "../store/view"
+import { variants } from "../components/modals/Notifications"
 
 export const userProfileInputValid = state => {
   return (
@@ -15,6 +8,16 @@ export const userProfileInputValid = state => {
     state.nameValid &&
     state.addressValid &&
     state.zipCodeValid
+  )
+}
+
+export const passwordInputValid = state => {
+  return (
+    state.oldPasswordValid &&
+    state.newPasswordValid &&
+    state.newPasswordConfirmValid &&
+    state.newPasswordsMatch &&
+    state.newPassword === state.newPasswordConfirm
   )
 }
 
@@ -49,4 +52,24 @@ export const splitAddress = address => {
 export const validPassword = password => {
   const specialCharacters = /[ !@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/
   return password.length >= 8 && specialCharacters.test(password)
+}
+
+export const openPasswordReqsNotification = dispatch => {
+  dispatch({
+    type: viewActionTypes.OPEN_NOTIFICATION,
+    payload: {
+      message: passwordMessages.requirements,
+      variant: variants.warning
+    }
+  })
+}
+
+export const openPasswordNoMatchNotification = dispatch => {
+  dispatch({
+    type: viewActionTypes.OPEN_NOTIFICATION,
+    payload: {
+      message: passwordMessages.noMatch,
+      variant: variants.warning
+    }
+  })
 }

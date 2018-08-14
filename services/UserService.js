@@ -29,9 +29,22 @@ const verifyNewEmail = async (email, code) => {
   }
 }
 
-const resendVerificationCode = async email => {
+const resendVerificationCode = async () => {
   try {
     const res = await Auth.verifyCurrentUserAttribute("email")
+    return res
+  } catch (err) {
+    return null
+  }
+}
+
+const changePassword = async (oldPassword, newPassword) => {
+  try {
+    const res = await Auth.changePassword(
+      AuthService.getLoggedInUser(),
+      oldPassword,
+      newPassword
+    )
     return res
   } catch (err) {
     return null
@@ -41,5 +54,6 @@ const resendVerificationCode = async email => {
 export default {
   updateUser,
   verifyNewEmail,
-  resendVerificationCode
+  resendVerificationCode,
+  changePassword
 }

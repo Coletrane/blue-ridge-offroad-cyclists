@@ -10,8 +10,9 @@ import withLoginCheck from "../components/WithLoginCheck"
 import styled from "styled-components"
 
 import { viewActionTypes } from "../store/view"
-import { updateUser } from "../store/user"
-import { submitEvent, userProfileInputValid } from "../util/user-info-helpers"
+import { updateUser, updatePassword } from "../store/user"
+import { userProfileInputValid, passwordInputValid } from "../util/user-info-helpers"
+import { userInfoFormSubmit, passwordInfoFormSubmit, emitEventType } from "../util/event-types"
 
 class Profile extends React.Component {
   constructor(props) {
@@ -50,8 +51,9 @@ class Profile extends React.Component {
   }
 
   saveUserInfo = event => {
-    submitEvent(event)
+    emitEventType(event, userInfoFormSubmit)
   }
+
   saveUserInfoCallback = state => {
     if (userProfileInputValid(state)) {
       this.props.dispatch(
@@ -63,8 +65,15 @@ class Profile extends React.Component {
     }
   }
 
-  updatePassword = () => {}
-  updatePasswordCallback = state => {}
+  updatePassword = event => {
+    emitEventType(event, passwordInfoFormSubmit)
+  }
+
+  updatePasswordCallback = state => {
+    if (passwordInputValid(state)) {
+      this.props.dispatch(updatePassword(state))
+    }
+  }
 
   render() {
     return (
@@ -115,7 +124,7 @@ class Profile extends React.Component {
                 )}
                 {this.state.passwordFormOpen && (
                   <form onSubmit={this.updatePassword}>
-                    <PasswordChangeForm />
+                    <PasswordChangeForm onValidate={this.updatePasswordCallback}/>
                     <SubmitAndCancelButtons onCancel={this.closeForms} />
                   </form>
                 )}

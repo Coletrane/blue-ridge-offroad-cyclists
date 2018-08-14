@@ -11,7 +11,6 @@ import ModalLoader, { BROCDialogContent } from "./ModalLoader"
 import LinkButtonLeft from "./LinkButtonLeft"
 
 import PropTypes from "prop-types"
-import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { mapStateToProps } from "../../store/helpers"
@@ -24,9 +23,9 @@ import {
 import { viewActionTypes } from "../../store/view"
 
 import {
-  submitEvent,
   userProfileInputValid
 } from "../../util/user-info-helpers"
+import { userInfoFormSubmit, emitEventType } from "../../util/event-types"
 
 class LoginWindow extends React.Component {
   static propTypes = {
@@ -59,7 +58,7 @@ class LoginWindow extends React.Component {
   }
 
   submit = event => {
-    submitEvent(event)
+    emitEventType(event, userInfoFormSubmit)
   }
 
   validateInputCallback = state => {
@@ -68,9 +67,6 @@ class LoginWindow extends React.Component {
       userProfileInputValid(state) &&
       state.passwordValid
     ) {
-      this.props.dispatch({
-        type: viewActionTypes.CLOSE_POPOVER
-      })
       this.props.dispatch(
         register({
           email: state.email,

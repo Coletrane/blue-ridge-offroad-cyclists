@@ -1,6 +1,6 @@
 import { variants } from "../components/modals/Notifications"
 
-export const passwordPopoverMessages = {
+export const passwordMessages = {
   requirements: "Must contain at least 8 characters and a special character.",
   noMatch: "Your new passwords must match."
 }
@@ -20,10 +20,6 @@ export const viewState = {
     open: false,
     message: "",
     variant: ""
-  },
-  popover: {
-    open: false,
-    message: ""
   }
 }
 
@@ -33,9 +29,7 @@ export const viewActionTypes = {
   OPEN_VERIFICATION_CODE_WINDOW: "OPEN_VERIFICATION_CODE_WINDOW",
   CLOSE_VERIFICATION_CODE_WIDNOW: "CLOSE_VERIFICATION_CODE_WINDOW",
   OPEN_NOTIFICATION: "OPEN_NOTIFICATION",
-  CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION",
-  OPEN_POPOVER: "OPEN_POPOVER",
-  CLOSE_POPOVER: "CLOSE_POPOVER"
+  CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION"
 }
 
 export const viewReducer = (state = viewState, action) => {
@@ -99,30 +93,6 @@ export const viewReducer = (state = viewState, action) => {
         return {
           ...state,
           notification: viewState.notification
-        }
-      } else {
-        return state
-      }
-    case viewActionTypes.OPEN_POPOVER:
-      if (!state.popover.open) {
-        return {
-          ...state,
-          popover: {
-            open: true,
-            message: action.payload.message
-          }
-        }
-      } else {
-        return state
-      }
-    case viewActionTypes.CLOSE_POPOVER:
-      if (state.popover.open) {
-        return {
-          ...state,
-          popover: {
-            open: false,
-            message: ""
-          }
         }
       } else {
         return state

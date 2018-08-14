@@ -9,7 +9,8 @@
     "build": "next build",
     "dev": "next",
     "analyze": "BUNDLE_ANALYZE=both next build",
-    "clean": "rm -rf .next bundles out"
+    "clean": "rm -rf .next bundles out",
+    "lint": "eslint ./**/*.js --fix && eslint ./**/*.jsx"
   },
   "repository": {
     "type": "git",
