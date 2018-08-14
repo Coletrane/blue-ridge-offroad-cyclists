@@ -70,7 +70,7 @@ class Notifications extends React.Component {
             vertical: "bottom",
             horizontal: "center"
           }}
-          // autoHideDuration={20000}
+          autoHideDuration={20000}
         >
           <SnackbarContent
             id="notification-snackbar"
@@ -83,10 +83,11 @@ class Notifications extends React.Component {
             }
             action={[
               <IconButton
+                id="notification-close-button"
                 key="close"
                 aria-label="Close"
                 color="inherit"
-                onClick={this.props.closeNotification}
+                onClick={this.closeNotification}
               >
                 <CloseIcon />
               </IconButton>

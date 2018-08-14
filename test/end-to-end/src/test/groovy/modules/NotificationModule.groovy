@@ -10,5 +10,6 @@ class NotificationModule extends Module {
         notificationIcon { NotificationVariants variant ->
             return $("#notification-${variant.name()}-icon")
         }
+        closeButton { $("#notification-close-button") }
     }
 }

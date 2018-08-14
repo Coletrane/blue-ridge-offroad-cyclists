@@ -16,7 +16,6 @@ export const passwordInputValid = state => {
     state.oldPasswordValid &&
     state.newPasswordValid &&
     state.newPasswordConfirmValid &&
-    state.newPasswordsMatch &&
     state.newPassword === state.newPasswordConfirm
   )
 }
@@ -58,7 +57,9 @@ export const openPasswordReqsNotification = dispatch => {
   dispatch({
     type: viewActionTypes.OPEN_NOTIFICATION,
     payload: {
-      message: passwordMessages.requirements,
+      message: `Your password ${passwordMessages.requirements
+        .charAt(0)
+        .toLowerCase()}${passwordMessages.requirements.slice(1)}`,
       variant: variants.warning
     }
   })

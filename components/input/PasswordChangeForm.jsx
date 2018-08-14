@@ -8,11 +8,10 @@ import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import { mapStateToProps } from "../../store/helpers"
 import { passwordInfoFormSubmit } from "../../util/event-types"
-import { passwordMessages } from "../../store/view"
 import {
   validPassword,
   passwordInputValid,
-  openPasswordReqsNotification
+  openPasswordReqsNotification, openPasswordNoMatchNotification
 } from "../../util/user-info-helpers"
 // TODO: make an abstract component for this and USERInfoForm?
 
@@ -61,7 +60,7 @@ class PasswordChangeForm extends React.Component {
       formSubmitted: true
     }
     if (this.state.newPassword !== this.state.newPasswordConfirm) {
-      openPasswordReqsNotification(this.props.dispatch)
+      openPasswordNoMatchNotification(this.props.dispatch)
     }
     if (!validPassword(this.state.newPassword)) {
       openPasswordReqsNotification(this.props.dispatch)
@@ -69,7 +68,7 @@ class PasswordChangeForm extends React.Component {
 
     this.setState(newState, () => {
       if (passwordInputValid(newState)) {
-        this.props.onValidate(newState)
+        this.props.onValidate(this.state)
       }
     })
   }

@@ -67,7 +67,18 @@ class IndexSpec extends GebSpec {
         notification.isPresent()
         notification.notificationIcon(NotificationVariants.info).isPresent()
 
+        when:
+        notification.closeButton.click()
+
+        then:
+        try {
+            notification
+            false
+        } catch (RequiredPageContentNotPresent e) {
+            true
+        }
     }
+
 
     def "Login modal should log user in"() {
         when:

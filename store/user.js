@@ -204,6 +204,7 @@ export const resendCode = () => async (dispatch, getState) => {
 }
 
 export const updatePassword = payload => async dispatch => {
+  console.log(payload)
   if (
     !payload.oldPassword ||
     !payload.newPassword ||
@@ -247,7 +248,7 @@ export const updatePassword = payload => async dispatch => {
 
 export const userReducer = (state = userState, action) => {
   switch (action.type) {
-    case userActionTypes.UPDATE_PROFILE:
+    case _userActionTypes.UPDATE_PROFILE:
       return {
         ...state,
         loading: true

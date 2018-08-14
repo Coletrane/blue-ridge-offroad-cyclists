@@ -7,7 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import FacebookLogin from "react-facebook-login"
 import UserInfoForm from "../input/UserInfoForm"
-import ModalLoader, { BROCDialogContent } from "./ModalLoader"
+import Loader from "../Loader"
 import LinkButtonLeft from "./LinkButtonLeft"
 
 import PropTypes from "prop-types"
@@ -22,9 +22,7 @@ import {
 } from "../../store/auth"
 import { viewActionTypes } from "../../store/view"
 
-import {
-  userProfileInputValid
-} from "../../util/user-info-helpers"
+import { userProfileInputValid } from "../../util/user-info-helpers"
 import { userInfoFormSubmit, emitEventType } from "../../util/event-types"
 
 class LoginWindow extends React.Component {
@@ -121,9 +119,8 @@ class LoginWindow extends React.Component {
         aria-labelledby="login-dialog-title"
       >
         <DialogTitle id="login-dialog-title">{this.title}</DialogTitle>
-        <ModalLoader loading={this.props.store.auth.loading} />
-        <form onSubmit={this.submit}>
-          <BROCDialogContent loading={this.props.store.auth.loading}>
+        <Loader loading={this.props.store.auth.loading}>
+          <form onSubmit={this.submit}>
             <DialogContent>
               {this.props.store.view.loginWindow.registering && (
                 <FacebookLogin
@@ -163,8 +160,8 @@ class LoginWindow extends React.Component {
                 Submit
               </Button>
             </DialogActions>
-          </BROCDialogContent>
-        </form>
+          </form>
+        </Loader>
       </Dialog>
     )
   }

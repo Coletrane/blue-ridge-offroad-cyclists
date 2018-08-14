@@ -5,7 +5,7 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import TextField from "@material-ui/core/TextField"
-import ModalLoader, { BROCDialogContent } from "./ModalLoader"
+import Loader from "../Loader"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import LinkButtonLeft from "./LinkButtonLeft"
 
@@ -64,29 +64,30 @@ class VerificationCodeWindow extends React.Component {
         <DialogTitle id="verification-code-dialog-title">
           Enter Verification Code
         </DialogTitle>
-        <ModalLoader loading={this.props.store.user.loading} />
-        <form onSubmit={this.submit}>
-          <DialogContent>
-            <TextField
-              margin="dense"
-              id="verificationCode"
-              label="Verification Code"
-              onChange={this.handleBasicInput}
-              value={this.state.verificationCode}
-            />
-          </DialogContent>
-          <DialogActions>
-            {this.props.store.view.verificationCodeWindow.cancellable && (
-              <LinkButtonLeft onClick={this.closeVerificationCodeWindow}>
-                Cancel
-              </LinkButtonLeft>
-            )}
-            <Button onClick={this.resendCode}>Resend code</Button>
-            <Button type="submit" variant="contained" color="primary">
-              Submit
-            </Button>
-          </DialogActions>
-        </form>
+        <Loader loading={this.props.store.user.loading}>
+          <form onSubmit={this.submit}>
+            <DialogContent>
+              <TextField
+                margin="dense"
+                id="verificationCode"
+                label="Verification Code"
+                onChange={this.handleBasicInput}
+                value={this.state.verificationCode}
+              />
+            </DialogContent>
+            <DialogActions>
+              {this.props.store.view.verificationCodeWindow.cancellable && (
+                <LinkButtonLeft onClick={this.closeVerificationCodeWindow}>
+                  Cancel
+                </LinkButtonLeft>
+              )}
+              <Button onClick={this.resendCode}>Resend code</Button>
+              <Button type="submit" variant="contained" color="primary">
+                Submit
+              </Button>
+            </DialogActions>
+          </form>
+        </Loader>
       </Dialog>
     )
   }

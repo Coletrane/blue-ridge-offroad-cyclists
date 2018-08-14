@@ -5,11 +5,12 @@ import Grid from "@material-ui/core/Grid"
 import Button from "@material-ui/core/Button"
 import UserInfoForm from "../components/input/UserInfoForm"
 import PasswordChangeForm from "../components/input/PasswordChangeForm"
+import Loader from "../components/Loader"
 
 import styled from "styled-components"
 
-import {connect} from "react-redux"
-import {mapStateToProps} from "../store/helpers"
+import { connect } from "react-redux"
+import { mapStateToProps } from "../store/helpers"
 import { viewActionTypes } from "../store/view"
 import { updateUser, updatePassword } from "../store/user"
 import {
@@ -95,7 +96,6 @@ class Profile extends React.Component {
                 {!this.state.infoFormOpen &&
                   !this.state.passwordFormOpen && (
                     <div>
-                      <UserInfoText>{this.props.store.user.name}</UserInfoText>
                       {!this.props.store.user.email_verified && (
                         <Button onClick={this.openVerificationCodeWindow}>
                           Click here to verify email
@@ -113,6 +113,7 @@ class Profile extends React.Component {
                       <UserInfoText>
                         {this.props.store.user.phone_number}
                       </UserInfoText>
+                      <UserInfoText>{this.props.store.user.name}</UserInfoText>
                       <UserInfoText>
                         {this.props.store.user.address}
                       </UserInfoText>
@@ -124,27 +125,29 @@ class Profile extends React.Component {
                       </ActionButtons>
                     </div>
                   )}
-                {this.state.infoFormOpen && (
-                  <form onSubmit={this.saveUserInfo}>
-                    <UserInfoForm
-                      onValidate={this.saveUserInfoCallback}
-                      email={this.props.store.user.email}
-                      phone={this.props.store.user.phone_number}
-                      name={this.props.store.user.name}
-                      fullAddress={this.props.store.user.address}
-                      editing
-                    />
-                    <SubmitAndCancelButtons onCancel={this.closeForms} />
-                  </form>
-                )}
-                {this.state.passwordFormOpen && (
-                  <form onSubmit={this.updatePassword}>
-                    <PasswordChangeForm
-                      onValidate={this.updatePasswordCallback}
-                    />
-                    <SubmitAndCancelButtons onCancel={this.closeForms} />
-                  </form>
-                )}
+                <Loader loading={this.props.store.user.loading}>
+                  {this.state.infoFormOpen && (
+                    <form onSubmit={this.saveUserInfo}>
+                      <UserInfoForm
+                        onValidate={this.saveUserInfoCallback}
+                        email={this.props.store.user.email}
+                        phone={this.props.store.user.phone_number}
+                        name={this.props.store.user.name}
+                        fullAddress={this.props.store.user.address}
+                        editing
+                      />
+                      <SubmitAndCancelButtons onCancel={this.closeForms} />
+                    </form>
+                  )}
+                  {this.state.passwordFormOpen && (
+                    <form onSubmit={this.updatePassword}>
+                      <PasswordChangeForm
+                        onValidate={this.updatePasswordCallback}
+                      />
+                      <SubmitAndCancelButtons onCancel={this.closeForms} />
+                    </form>
+                  )}
+                </Loader>
               </BROCPaper>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -188,7 +191,7 @@ const BROCPaper = styled(Paper)`
   padding: 0.5rem 1rem 1rem 1rem;
   h2 {
     margin-top: 0;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
 `
 const UserInfoText = styled.div`
