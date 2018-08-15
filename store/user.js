@@ -204,7 +204,6 @@ export const resendCode = () => async (dispatch, getState) => {
 }
 
 export const updatePassword = payload => async dispatch => {
-  console.log(payload)
   if (
     !payload.oldPassword ||
     !payload.newPassword ||
@@ -217,7 +216,7 @@ export const updatePassword = payload => async dispatch => {
   dispatch({
     type: _userActionTypes.UPDATE_PASSWORD
   })
-  const user = UserService.changePassword(
+  const user = await UserService.changePassword(
     payload.oldPassword,
     payload.newPassword
   )

@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid"
 import Button from "@material-ui/core/Button"
 import UserInfoForm from "../components/input/UserInfoForm"
 import PasswordChangeForm from "../components/input/PasswordChangeForm"
-import Loader from "../components/Loader"
+import Loader, {loaderTypes} from "../components/Loader"
 
 import styled from "styled-components"
 
@@ -125,7 +125,7 @@ class Profile extends React.Component {
                       </ActionButtons>
                     </div>
                   )}
-                <Loader loading={this.props.store.user.loading}>
+                <Loader loading={this.props.store.user.loading} type={loaderTypes.paper}>
                   {this.state.infoFormOpen && (
                     <form onSubmit={this.saveUserInfo}>
                       <UserInfoForm

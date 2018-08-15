@@ -5,12 +5,11 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import TextField from "@material-ui/core/TextField"
-import Loader from "../Loader"
+import Loader , {loaderTypes}from "../Loader"
 import withMobileDialog from "@material-ui/core/withMobileDialog"
 import LinkButtonLeft from "./LinkButtonLeft"
 
 import PropTypes from "prop-types"
-import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { mapStateToProps } from "../../store/helpers"
@@ -64,7 +63,7 @@ class VerificationCodeWindow extends React.Component {
         <DialogTitle id="verification-code-dialog-title">
           Enter Verification Code
         </DialogTitle>
-        <Loader loading={this.props.store.user.loading}>
+        <Loader loading={this.props.store.user.loading} type={loaderTypes.modal}>
           <form onSubmit={this.submit}>
             <DialogContent>
               <TextField
