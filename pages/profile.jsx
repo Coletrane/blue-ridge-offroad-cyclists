@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid"
 import Button from "@material-ui/core/Button"
 import UserInfoForm from "../components/input/UserInfoForm"
 import PasswordChangeForm from "../components/input/PasswordChangeForm"
-import Loader, {loaderTypes} from "../components/Loader"
+import Loader, { loaderTypes } from "../components/Loader"
 
 import styled from "styled-components"
 
@@ -92,40 +92,45 @@ class Profile extends React.Component {
           <Grid container spacing={24}>
             <Grid item xs={12} sm={6}>
               <BROCPaper>
-                <h2>Profile</h2>
-                {!this.state.infoFormOpen &&
-                  !this.state.passwordFormOpen && (
-                    <div>
-                      {!this.props.store.user.email_verified && (
-                        <Button onClick={this.openVerificationCodeWindow}>
-                          Click here to verify email
-                        </Button>
-                      )}
-                      <EmailText
-                        verified={this.props.store.user.email_verified}
-                      >
-                        {this.props.store.user.email}
-                      </EmailText>
+                <Loader
+                  loading={this.props.store.user.loading}
+                  type={loaderTypes.paper}
+                >
+                  <h2>Profile</h2>
+                  {!this.state.infoFormOpen &&
+                    !this.state.passwordFormOpen && (
+                      <div>
+                        {!this.props.store.user.email_verified && (
+                          <Button onClick={this.openVerificationCodeWindow}>
+                            Click here to verify email
+                          </Button>
+                        )}
+                        <EmailText
+                          verified={this.props.store.user.email_verified}
+                        >
+                          {this.props.store.user.email}
+                        </EmailText>
 
-                      {!this.props.store.user.email_verified && (
-                        <NotVerifiedText>*Not verified</NotVerifiedText>
-                      )}
-                      <UserInfoText>
-                        {this.props.store.user.phone_number}
-                      </UserInfoText>
-                      <UserInfoText>{this.props.store.user.name}</UserInfoText>
-                      <UserInfoText>
-                        {this.props.store.user.address}
-                      </UserInfoText>
-                      <ActionButtons>
-                        <Button onClick={this.openPassowrdChangeForm}>
-                          Change Password
-                        </Button>
-                        <Button onClick={this.openUserInfoForm}>Edit</Button>
-                      </ActionButtons>
-                    </div>
-                  )}
-                <Loader loading={this.props.store.user.loading} type={loaderTypes.paper}>
+                        {!this.props.store.user.email_verified && (
+                          <NotVerifiedText>*Not verified</NotVerifiedText>
+                        )}
+                        <UserInfoText>
+                          {this.props.store.user.phone_number}
+                        </UserInfoText>
+                        <UserInfoText>
+                          {this.props.store.user.name}
+                        </UserInfoText>
+                        <UserInfoText>
+                          {this.props.store.user.address}
+                        </UserInfoText>
+                        <ActionButtons>
+                          <Button onClick={this.openPassowrdChangeForm}>
+                            Change Password
+                          </Button>
+                          <Button onClick={this.openUserInfoForm}>Edit</Button>
+                        </ActionButtons>
+                      </div>
+                    )}
                   {this.state.infoFormOpen && (
                     <form onSubmit={this.saveUserInfo}>
                       <UserInfoForm

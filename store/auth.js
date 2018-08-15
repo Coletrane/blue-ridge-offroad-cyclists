@@ -5,7 +5,8 @@ import { userActionTypes } from "./user"
 
 export const authState = {
   loading: false,
-  loggedIn: false
+  loggedIn: false,
+  loginTries: 0
 }
 
 export const authActionTypes = {
@@ -13,7 +14,8 @@ export const authActionTypes = {
   REGISTER: "REGISTER",
   FORGOT_PASSWORD: "FORGOT_PASSWORD",
   LOGOUT: "LOGOUT",
-  CHECK_LOGGED_IN: "CHECK_LOGGED_IN"
+  CHECK_LOGGED_IN: "CHECK_LOGGED_IN",
+  INCREMENT_LOGIN_TRIES: "INCREMENT_LOGIN_TRIES"
 }
 const _authActionTypes = {
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
@@ -228,7 +230,8 @@ export const authReducer = (state = authState, action) => {
       return {
         ...state,
         loading: false,
-        loggedIn: false
+        loggedIn: false,
+        loginTries: state.loginTries + 1
       }
     case authActionTypes.REGISTER:
       return {
@@ -273,6 +276,11 @@ export const authReducer = (state = authState, action) => {
       return {
         ...state,
         loading: true
+      }
+    case authActionTypes.INCREMENT_LOGIN_TRIES:
+      return {
+        ...state,
+        loginTries: state.loginTries + 1
       }
     default:
       return state

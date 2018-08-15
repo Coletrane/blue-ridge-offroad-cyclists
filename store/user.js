@@ -1,8 +1,10 @@
 import _ from "lodash"
 import UserService from "../services/UserService"
 import { viewActionTypes } from "./view"
-import { variants, plsContact } from "../components/modals/Notifications"
+import { variants, plsContact, NotificationMessage } from "../components/modals/Notifications"
 import { validPassword } from "../util/user-info-helpers"
+import AwsStatuses from "../util/aws-statuses"
+import { authActionTypes } from "./auth"
 
 // Maps to what we have in Cognito
 export const userState = {
@@ -203,7 +205,7 @@ export const resendCode = () => async (dispatch, getState) => {
   }
 }
 
-export const updatePassword = payload => async dispatch => {
+export const updatePassword = payload => async (dispatch, getState) => {
   if (
     !payload.oldPassword ||
     !payload.newPassword ||
@@ -216,27 +218,70 @@ export const updatePassword = payload => async dispatch => {
   dispatch({
     type: _userActionTypes.UPDATE_PASSWORD
   })
-  const user = await UserService.changePassword(
+  const res = await UserService.changePassword(
     payload.oldPassword,
     payload.newPassword
   )
-  if (user) {
-    dispatch({
-      type: _userActionTypes.UPDATE_PASSWORD_SUCCESS
-    })
-    dispatch({
-      type: viewActionTypes.OPEN_NOTIFICATION,
-      payload: {
-        message: "Your password has been updated successfully.",
-        variant: variants.success
+  console.log(res)
+  if (res) {
+    if (res === AwsStatuses.success) {
+      dispatch({
+        type: _userActionTypes.UPDATE_PASSWORD_SUCCESS
+      })
+      dispatch({
+        type: viewActionTypes.OPEN_NOTIFICATION,
+        payload: {
+          message: "Your password has been updated successfully.",
+          variant: variants.success
+        }
+      })
+    } else if (res === AwsStatuses.notAuthorized) {
+      dispatch({
+        type: _userActionTypes.UPDATE_PASSWORD_FAIL
+      })
+      const messageProps = {
+        passwordOnly: true
       }
-    })
+      if (getState().auth.loginTries > 3) {
+        messageProps.resetPassword = true
+      }
+      dispatch({
+        type: viewActionTypes.OPEN_NOTIFICATION,
+        payload: {
+          message: NotificationMessage(messageProps),
+          variant: variants.error
+        }
+      })
+      dispatch({
+        type: authActionTypes.INCREMENT_LOGIN_TRIES
+      })
+    } else if (res === AwsStatuses.limitExceededException) {
+      dispatch({
+        type: _userActionTypes.UPDATE_PASSWORD_FAIL
+      })
+      dispatch({
+        type: viewActionTypes.OPEN_NOTIFICATION,
+        payload: {
+          message: NotificationMessage({
+            passwordOnly: true,
+            resetPassword: true
+          }),
+          variant: variants.error
+        }
+      })
+    }else {
+      genericErrorNotification()
+    }
   } else {
+    genericErrorNotification()
+  }
+
+  const genericErrorNotification = () => {
     dispatch({
       type: _userActionTypes.UPDATE_PASSWORD_FAIL
     })
     dispatch({
-      type: viewActionTypes.CLOSE_NOTIFICATION,
+      type: viewActionTypes.OPEN_NOTIFICATION,
       payload: {
         message: `There was a problem updating your password ${plsContact}`,
         variant: variants.error

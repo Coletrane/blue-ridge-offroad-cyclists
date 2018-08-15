@@ -1,4 +1,5 @@
 import React from "react"
+import Link from "next/link"
 import Snackbar from "@material-ui/core/Snackbar"
 import SnackbarContent from "@material-ui/core/SnackbarContent"
 import CheckCircleIcon from "@material-ui/icons/CheckCircle"
@@ -17,6 +18,7 @@ import styled from "styled-components"
 import { connect } from "react-redux"
 import { mapStateToProps } from "../../store/helpers"
 import { viewActionTypes } from "../../store/view"
+import { authActionTypes } from "../../store/auth"
 
 export const variants = {
   error: "error",
@@ -25,7 +27,30 @@ export const variants = {
   info: "info"
 }
 export const plsContact = "Please contact Cole Inman at eloc49@gmail.com"
-
+export const NotificationMessage = ({ passwordOnly, resetPassword }) => {
+  const passIncorrect = "Your password was incorrect"
+  if (passwordOnly && !resetPassword) {
+    return `${passIncorrect} please try again.`
+  } else if (passwordOnly && resetPassword) {
+    // TODO: test this
+    return (
+      <span>
+        `${passIncorrect}. Forgot your password?`
+        <Link
+          onClick={this.props.dispatch({
+            type: authActionTypes.FORGOT_PASSWORD
+          })}
+        >
+          <a>Reset your password here.</a>
+        </Link>
+      </span>
+    )
+  } else {
+    return `Your username or ${passIncorrect
+      .charAt(0)
+      .toLowerCase()}${passIncorrect.slice(1)}.`
+  }
+}
 class Notifications extends React.Component {
   variant = () => {
     switch (this.props.store.view.notification.variant) {
